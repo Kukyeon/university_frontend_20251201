@@ -3,13 +3,13 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import NoticePage from "./pages/NoticePage";
 import SchedulePage from "./pages/SchedulePage";
 import EvaluationPage from "./pages/EvaluationPage";
-import VideoRoomPage from "./pages/VideoRoomPage";
+import VideoRoomApp from "./VideoRoomApp";
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/videoroom" element={<VideoRoomPage />} />
+        <Route path="/videoroomapp" element={<VideoRoomApp />} />
         <Route path="/" element={<Navigate to="/notice" />} />
         <Route path="/notice" element={<NoticePage />} />
         <Route path="/schedule" element={<SchedulePage />} />
