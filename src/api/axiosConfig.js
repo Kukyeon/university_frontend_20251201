@@ -8,3 +8,4 @@ const api = axios.create({
   },
   withCredentials: true, // 세션 인증이 필요할 경우
 });
+export default api;
