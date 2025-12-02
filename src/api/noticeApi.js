@@ -1,38 +1,48 @@
-import api from "./api";
+import api from "./axiosConfig"; // 위에서 만든 Axios 인스턴스 사용
 
-export const getNoticeList = async (page = 1) => {
-  const response = await api.get(`/notice/list/${page}`);
-  return response.data;
+// 공지 리스트 조회
+export const getNoticeList = async () => {
+  const res = await api.get("/notice/list");
+  return res.data;
 };
 
+// 공지 상세 조회
 export const getNoticeDetail = async (id) => {
-  const response = await api.get(`/notice/read?id=${id}`);
-  return response.data;
+  const res = await api.get(`/notice/read/${id}`);
+  return res.data;
 };
 
-export const createNotice = async (data) => {
+// 공지 등록
+export const createNotice = async (form) => {
   const formData = new FormData();
-  for (const key in data) {
-    formData.append(key, data[key]);
-  }
-  const response = await api.post("/notice/write", formData, {
+  formData.append("title", form.title);
+  formData.append("content", form.content);
+  formData.append("category", form.category);
+  if (form.file) formData.append("file", form.file);
+
+  const res = await api.post("/notice/write", formData, {
+    headers: { "Content-Type": "multipart/form-data" }, // JSON 대신 multipart
+  });
+  return res.data;
+};
+
+// 공지 수정
+export const updateNotice = async (id, form) => {
+  const formData = new FormData();
+  formData.append("id", id);
+  formData.append("title", form.title);
+  formData.append("content", form.content);
+  formData.append("category", form.category);
+  if (form.file) formData.append("file", form.file);
+
+  const res = await api.post("/notice/update", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-  return response.data;
+  return res.data;
 };
 
-export const updateNotice = async (id, data) => {
-  const formData = new FormData();
-  for (const key in data) {
-    formData.append(key, data[key]);
-  }
-  const response = await api.put(`/notice/update?id=${id}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return response.data;
-};
-
+// 공지 삭제
 export const deleteNotice = async (id) => {
-  const response = await api.delete(`/notice/delete?id=${id}`);
-  return response.data;
+  const res = await api.delete(`/notice/delete/${id}`);
+  return res.data;
 };

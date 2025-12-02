@@ -1,25 +1,31 @@
 import api from "./axiosConfig";
 
-// 전체 학사일정 조회
-export const getSchedules = async () => {
-  const res = await api.get("/schedule");
+// 전체 일정 조회
+export const getScheduleList = async () => {
+  const res = await api.get("/schedule/list");
   return res.data;
 };
 
-// 학사일정 등록
+// 단일 일정 조회
+export const getScheduleDetail = async (id) => {
+  const res = await api.get(`/schedule/${id}`);
+  return res.data;
+};
+
+// 일정 생성
 export const createSchedule = async (data) => {
   const res = await api.post("/schedule/write", data);
   return res.data;
 };
 
-// 학사일정 수정
+// 일정 수정
 export const updateSchedule = async (id, data) => {
-  const res = await api.post("/schedule/update", { ...data, id });
+  const res = await api.put(`/schedule/update/${id}`, data);
   return res.data;
 };
 
-// 학사일정 삭제
+// 일정 삭제
 export const deleteSchedule = async (id) => {
-  const res = await api.get(`/schedule/delete?id=${id}`);
+  const res = await api.delete(`/schedule/delete/${id}`);
   return res.data;
 };
