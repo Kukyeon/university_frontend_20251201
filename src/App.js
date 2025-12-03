@@ -9,14 +9,20 @@ import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
 import CounselingRecordPage from "./pages/CounselingRecordPage";
 
 function App() {
+  const [user, setUser] = useState({
+    name: "박시우",
+    id: "2023000001",
+  }); // 로그인 상태 예시
   return (
     <div className="App">
       <nav>
         <Link to="/videoroom">회의</Link>
       </nav>
+      <Header user={user} />
       <Routes>
         <Route path="/videoroom" element={<VideoRoomApp />} />
-        <Route path="/" element={<Navigate to="/notice" />} />
+        {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
+        <Route path="/" element={<Home />} />
         <Route path="/notice" element={<NoticePage />} />
 
         <Route path="/evaluation" element={<EvaluationPage />} />
@@ -34,6 +40,7 @@ function App() {
         />
         <Route path="/records" element={<CounselingRecordPage />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

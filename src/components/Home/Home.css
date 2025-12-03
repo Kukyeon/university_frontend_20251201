@@ -1,0 +1,287 @@
+/* Hero.css */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 650px; /* 기존 400px → 650px로 늘림 */
+  overflow: hidden;
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.hero-overlay h1 {
+  font-size: 56px; /* 글자도 살짝 키워도 좋음 */
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.hero-overlay p {
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+/* Notice css */
+.notices {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.notices h2 {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.notices ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notices li:hover {
+  background-color: #f0f8ff;
+}
+
+.notice-title {
+  font-weight: 500;
+  color: #0d4a8f;
+}
+
+.notice-date {
+  color: #888;
+  font-size: 14px;
+}
+.notices li,
+.schedule li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px; /* 일정 높이 고정 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Schdule css */
+.schedule {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.schedule h2 {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.schedule ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.schedule li:hover {
+  background-color: #f0f8ff;
+}
+
+.calendar-icon {
+  color: #0d4a8f;
+  margin-right: 8px;
+}
+
+.schedule-title {
+  font-weight: 500;
+  flex: 1;
+}
+
+.schedule-date {
+  color: #888;
+  font-size: 14px;
+}
+/* student css */
+.student-info {
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #fefefe;
+  color: #333;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.student-info:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+}
+
+.student-info h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #333;
+  text-align: center;
+}
+
+.student-profile {
+  display: flex;
+  justify-content: center; /* 중앙 정렬 추가 */
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.profile-icon {
+  font-size: 60px;
+  color: #ff6f61; /* 포인트 색상 */
+}
+.student-details {
+  min-width: 180px; /* 필요 시 조정 */
+  text-align: left; /* 중앙 정렬 안에서 텍스트는 왼쪽 정렬 */
+}
+.student-details p {
+  margin: 0;
+  font-size: 14px;
+}
+.student-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.student-info li {
+  display: flex;
+  justify-content: space-between; /* 레이블과 값 양 끝 정렬 */
+  padding: 5px 0; /* 위아래 간격 */
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.student-info li:last-child {
+  border-bottom: none;
+}
+.student-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.student-actions .btn {
+  padding: 8px 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ff6f61;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.student-actions .btn:hover {
+  background-color: #ff4a3d;
+}
+
+.student-actions .logout {
+  background-color: #aaa;
+}
+
+.student-actions .logout:hover {
+  background-color: #888;
+}
+/* Home css */
+.home {
+  background-color: #f5f5f5;
+}
+.home-cards {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 40px 20px;
+  flex-wrap: wrap; /* 화면 좁으면 자동 세로 정렬 */
+}
+
+/* 모든 카드 공통 스타일 */
+.home-cards > section {
+  flex: 1 1 30%;
+  background-color: #ffffff;
+  /* min-height: 280px; 카드 최소 높이 */
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.home-cards > section:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* 학생 정보 카드 강조 */
+.home-cards > section:first-child {
+  background-color: #fefefe; /* #e0f7ff → 깔끔한 아이보리 */
+}
+.student-info h2,
+.profile-icon {
+  color: #333; /* 기존 파랑 제거 */
+}
+
+/* 카드 제목 */
+.home-cards h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #444;
+}
+
+/* 카드 리스트 스타일 */
+.home-cards ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.home-cards li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 15px;
+}
+
+.home-cards li:last-child {
+  border-bottom: none;
+}
+.notices li span:first-child,
+.schedule li span:first-child {
+  font-weight: 500;
+}
+
+.notices li span:last-child,
+.schedule li span:last-child {
+  color: #888;
+}
+button,
+.material-symbols-outlined {
+  color: #ff6f61;
+}
+/* 반응형 */
+@media (max-width: 900px) {
+  .home-cards > section {
+    flex: 1 1 100%;
+  }
+}
