@@ -1,0 +1,69 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+
+.modal-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  min-width: 300px;
+  z-index: 1000;
+}
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  border: none;
+  background: none;
+  font-size: 16px; /* 기존 20px → 16px로 줄임 */
+  cursor: pointer;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 8px 0;
+  background-color: #ff6f61;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.modal-btn:hover {
+  background-color: #ff4a3d;
+}
+.role-checkboxes {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+
+.role-checkboxes label {
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.role-checkboxes input[type="radio"] {
+  margin-right: 5px;
+}

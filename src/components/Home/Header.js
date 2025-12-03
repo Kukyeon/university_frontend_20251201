@@ -39,6 +39,9 @@ const Header = ({ user }) => {
             <li>
               <Link to="/notices">공지사항</Link>
             </li>
+            <li>
+              <Link to="/videoroom">회의</Link>
+            </li>
           </ul>
         </nav>
       </div>
