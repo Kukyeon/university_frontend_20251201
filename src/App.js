@@ -1,9 +1,12 @@
 import "./App.css";
 import { Routes, Route, Navigate, Link } from "react-router-dom";
 import NoticePage from "./pages/NoticePage";
-import SchedulePage from "./pages/SchedulePage";
+
 import EvaluationPage from "./pages/EvaluationPage";
 import VideoRoomApp from "./VideoRoomApp";
+import StudentSchedulePage from "./pages/StudentSchedulePage";
+import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
+import CounselingRecordPage from "./pages/CounselingRecordPage";
 import Home from "./pages/Home";
 import Header from "./components/Home/Header";
 import Footer from "./components/Home/Footer";
@@ -28,8 +31,19 @@ function App() {
         {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/notice" element={<NoticePage />} />
-        <Route path="/schedule" element={<SchedulePage />} />
+
         <Route path="/evaluation" element={<EvaluationPage />} />
+
+        {/* 임시 테스트 중*/}
+        <Route
+          path="/student"
+          element={<StudentSchedulePage studentId={1} professorId={1} />}
+        />
+        <Route
+          path="/professor"
+          element={<ProfessorSchedulePage professorId={1} />}
+        />
+        <Route path="/records" element={<CounselingRecordPage />} />
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
 
