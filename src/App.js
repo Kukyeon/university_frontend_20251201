@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link } from "react-router-dom";
 import NoticePage from "./pages/NoticePage";
 import SchedulePage from "./pages/SchedulePage";
 import EvaluationPage from "./pages/EvaluationPage";
@@ -8,8 +8,11 @@ import VideoRoomApp from "./VideoRoomApp";
 function App() {
   return (
     <div className="App">
+      <nav>
+        <Link to="/videoroom">회의</Link>
+      </nav>
       <Routes>
-        <Route path="/videoroomapp" element={<VideoRoomApp />} />
+        <Route path="/videoroom" element={<VideoRoomApp />} />
         <Route path="/" element={<Navigate to="/notice" />} />
         <Route path="/notice" element={<NoticePage />} />
         <Route path="/schedule" element={<SchedulePage />} />
