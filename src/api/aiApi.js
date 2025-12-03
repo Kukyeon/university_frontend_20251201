@@ -29,6 +29,8 @@ export const adminApi = {
   
   // 데이터 동기화 실행
   syncData: () => api.post("/api/system/sync"),
+
+  getLogs: () => api.get("/api/system/logs"),
 };
 
 export default chatApi;

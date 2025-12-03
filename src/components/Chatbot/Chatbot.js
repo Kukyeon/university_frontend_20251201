@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './Chatbot.css'; // 스타일은 나중에
-import { chatApi } from "../../api/aiApiapi"; // [핵심] api.js에서 가져옴
+//import './Chatbot.css'; // 스타일은 나중에
+import { chatApi } from "../../api/aiApi"; // [핵심] api.js에서 가져옴
 
 const Chatbot = ({ studentId }) => {
   const [isOpen, setIsOpen] = useState(false); // 채팅창 열림/닫힘 상태
