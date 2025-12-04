@@ -39,10 +39,10 @@ function App() {
           path="/student"
           element={<StudentSchedulePage studentId={1} professorId={1} />}
         /> */}
-        <Route
+        {/* <Route
           path="/professor"
           element={<ProfessorSchedulePage professorId={1} />}
-        />
+        /> */}
         <Route path="/records" element={<CounselingRecordPage />} />
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />

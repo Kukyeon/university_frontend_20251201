@@ -38,6 +38,18 @@ const AdminPage = () => {
       alert("분석 실패: " + err.message);
     }
   };
+  // [추가] 로그 초기화 함수
+  const handleClearLogs = async () => {
+    if (!window.confirm("⚠️ 경고: 모든 수집 이력 로그가 영구 삭제됩니다.\n진행하시겠습니까?")) return;
+
+    try {
+      await adminApi.clearLogs();
+      alert("🗑️ 로그가 초기화되었습니다.");
+      loadLogs(); // 테이블 새로고침 (빈 화면으로 바뀜)
+    } catch (err) {
+      alert("삭제 실패: " + err.message);
+    }
+  };
 
   return (
     <div style={{ padding: '50px', textAlign: 'center' }}>
@@ -58,6 +70,9 @@ const AdminPage = () => {
             <button onClick={runSync} style={{background: "green"}}>
             데이터 동기화 실행
             </button>
+        </div>
+        <div>
+          <button onClick={handleClearLogs}>기록 초기화</button>
         </div>
       </div>
       {/* === [추가] 데이터 수집 이력 모니터링 === */}

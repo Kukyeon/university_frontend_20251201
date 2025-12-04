@@ -20,6 +20,9 @@ export const dashboardApi = {
   // 위험 학생 리스트 조회
   getRiskList: (professorId) => 
     api.get(`/dashboard/risk-list?professorId=${professorId}`),
+
+  deleteRisk: (id) =>
+    api.delete(`/dashboard/risk/${id}`)
 };
 
 // [관리자용] 시스템 제어
@@ -31,6 +34,8 @@ export const adminApi = {
   syncData: () => api.post("/system/sync"),
 
   getLogs: () => api.get("/system/logs"),
+
+  clearLogs: () => api.delete("/system/logs")
 };
 
 export default chatApi;
