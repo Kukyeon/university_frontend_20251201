@@ -19,7 +19,7 @@ const StudentInfo = ({ student }) => (
         </li>
         <li>
           <span>소속</span>
-          <span>{student.department}</span>
+          <span>{student.department.name}</span>
         </li>
         <li>
           <span>학기</span>
