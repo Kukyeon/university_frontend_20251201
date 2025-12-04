@@ -15,6 +15,8 @@ import StudentMain from "./pages/StudentMain"; // 챗봇, 강의추천 있는 �
 import ProfDashboard from "./pages/ProfDashboard"; // 위험군 대시보드
 import AdminPage from "./pages/AdminPage"; // 분석 실행 버튼
 import Login from "./pages/Login";
+import NoticeDetail from "./components/Notice/NoticeDetail";
+import NoticeForm from "./components/Notice/NoticeForm";
 
 function App() {
   const [user, setUser] = useState({
@@ -31,6 +33,9 @@ function App() {
         {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/notice" element={<NoticePage />} />
+        <Route path="/notice/:id" element={<NoticeDetail />} />
+        <Route path="/notice/write" element={<NoticeForm />} />
+        <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
         <Route path="/evaluation" element={<EvaluationPage />} />
 

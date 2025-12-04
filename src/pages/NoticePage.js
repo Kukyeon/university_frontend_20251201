@@ -1,35 +1,57 @@
-import React, { useState } from "react";
-import NoticeList from "../components/Notice/NoticeList";
-import NoticeDetail from "../components/Notice/NoticeDetail";
-import NoticeForm from "../components/Notice/NoticeForm";
+import React, { useEffect, useState } from "react";
+import { getNoticeList, deleteNotice } from "../api/noticeApi";
+import { useNavigate } from "react-router-dom";
 
 const NoticePage = () => {
-  const [selectedId, setSelectedId] = useState(null);
-  const [editingId, setEditingId] = useState(null);
-  const [refresh, setRefresh] = useState(false);
+  const [notices, setNotices] = useState([]);
+  const navigate = useNavigate();
 
-  const handleRefresh = () => setRefresh((f) => !f);
+  const fetchList = async () => {
+    const data = await getNoticeList();
+    setNotices(data);
+  };
 
-  if (editingId)
-    return (
-      <NoticeForm
-        id={editingId}
-        onSubmit={() => {
-          setEditingId(null);
-          handleRefresh();
-        }}
-      />
-    );
-  if (selectedId) return <NoticeDetail id={selectedId} />;
+  useEffect(() => {
+    fetchList();
+  }, []);
 
   return (
     <div>
-      <button onClick={() => setEditingId(null)}>새 글 등록</button>
-      <NoticeList
-        onSelect={setSelectedId}
-        onEdit={setEditingId}
-        key={refresh}
-      />
+      <h2>공지사항</h2>
+      <button onClick={() => navigate("/notice/write")}>새 글 등록</button>
+
+      <table border="1" width="100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>작성일</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody>
+          {notices.map((n) => (
+            <tr key={n.id}>
+              <td>{n.id}</td>
+              <td
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/notice/${n.id}`)}
+              >
+                {n.title}
+              </td>
+              <td>{new Date(n.createdTime).toLocaleString()}</td>
+              <td>
+                <button onClick={() => navigate(`/notice/edit/${n.id}`)}>
+                  수정
+                </button>
+                <button onClick={() => deleteNotice(n.id).then(fetchList)}>
+                  삭제
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -6,6 +6,6 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // 세션 인증이 필요할 경우
+  // withCredentials: true, // 세션 인증이 필요할 경우
 });
 export default api;

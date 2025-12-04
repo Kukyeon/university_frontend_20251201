@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getNoticeList, deleteNotice } from "../../api/noticeApi";
+import { useNavigate } from "react-router-dom";
 
-const NoticeList = ({ onSelect, onEdit }) => {
+const NoticeList = () => {
   const [notices, setNotices] = useState([]);
+  const navigate = useNavigate();
 
   const fetchList = async () => {
     const data = await getNoticeList();
     setNotices(data);
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("삭제하시겠습니까?")) {
-      await deleteNotice(id);
-      fetchList();
-    }
   };
 
   useEffect(() => {
@@ -21,7 +16,7 @@ const NoticeList = ({ onSelect, onEdit }) => {
   }, []);
 
   return (
-    <table border="1">
+    <table border="1" width="100%">
       <thead>
         <tr>
           <th>ID</th>
@@ -30,17 +25,29 @@ const NoticeList = ({ onSelect, onEdit }) => {
           <th>관리</th>
         </tr>
       </thead>
+
       <tbody>
         {notices.map((n) => (
           <tr key={n.id}>
             <td>{n.id}</td>
-            <td onClick={() => onSelect(n.id)} style={{ cursor: "pointer" }}>
+
+            {/* 상세보기 이동 */}
+            <td
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate(`/notice/${n.id}`)}
+            >
               {n.title}
             </td>
-            <td>{n.timeFormat}</td>
+
+            <td>{new Date(n.createdTime).toLocaleString()}</td>
+
             <td>
-              <button onClick={() => onEdit(n.id)}>수정</button>
-              <button onClick={() => handleDelete(n.id)}>삭제</button>
+              <button onClick={() => navigate(`/notice/edit/${n.id}`)}>
+                수정
+              </button>
+              <button onClick={() => deleteNotice(n.id).then(fetchList)}>
+                삭제
+              </button>
             </td>
           </tr>
         ))}
