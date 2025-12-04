@@ -3,10 +3,24 @@ import { chatApi } from "../api/aiApi";
 import Chatbot from "../components/Chatbot/Chatbot"; // 아까 만든 챗봇 불러오기
 
 const StudentMain = () => {
-  const studentId = 101; // (로그인 전 임시 ID)
+  const [studentId, setStudentId] = useState(2023000001); 
+  const [studentName, setStudentName] = useState("테스트학생"); // 이름도 임의로 설정
   const [recommendation, setRecommendation] = useState("");
   const [loading, setLoading] = useState(false);
-
+  // [수정 2] 로그인 체크 로직을 주석 처리 (로그인 안 해도 튕겨나가지 않게)
+  /*
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setStudentId(user.id);
+      setStudentName(user.name);
+    } else {
+      alert("로그인이 필요합니다.");
+      navigate("/login"); 
+    }
+  }, [navigate]);
+  */
   // AI 강의 추천 요청 함수
   const getRecommend = async () => {
     setLoading(true);

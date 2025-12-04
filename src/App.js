@@ -35,10 +35,10 @@ function App() {
         <Route path="/evaluation" element={<EvaluationPage />} />
 
         {/* 임시 테스트 중*/}
-        <Route
+        {/* <Route
           path="/student"
           element={<StudentSchedulePage studentId={1} professorId={1} />}
-        />
+        /> */}
         <Route
           path="/professor"
           element={<ProfessorSchedulePage professorId={1} />}
