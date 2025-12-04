@@ -1,23 +1,34 @@
+// src/api/scheduleApi.js
+
 import api from "./axiosConfig";
 
-// --- 기존 일정 CRUD ---
+// --- 일반 학사 일정 (백엔드 ScheduleController 경로: /api/schedule) ---
+// 목록 조회
 export const getScheduleList = () =>
-  api.get("/schedule/list").then((res) => res.data);
+  api.get("/schedule").then((res) => res.data);
+
+//상세 조회
 export const getScheduleDetail = (id) =>
   api.get(`/schedule/${id}`).then((res) => res.data);
+
+//  등록
 export const createSchedule = (data) =>
   api.post("/schedule/write", data).then((res) => res.data);
-export const updateSchedule = (id, data) =>
-  api.put(`/schedule/update/${id}`, data).then((res) => res.data);
-export const deleteSchedule = (id) =>
-  api.delete(`/schedule/delete/${id}`).then((res) => res.data);
 
-// --- 상담 일정/기록 API ---
+// 수정
+export const updateSchedule = (id, data) =>
+  api.put(`/schedule/${id}`, data).then((res) => res.data);
+
+//삭제
+export const deleteSchedule = (id) =>
+  api.delete(`/schedule/${id}`).then((res) => res.data);
+
+// --- 상담 일정/기록 API (백엔드 CounselingController 경로: /api/schedules) ---
 const requestCounseling = async (method, url, data = {}, params = {}) => {
   try {
     const response = await api({
       method,
-      url: `/schedules${url}`,
+      url: `/schedules${url}`, // /api/schedules 경로 사용
       data: method !== "get" ? data : undefined,
       params: method === "get" ? params : undefined,
     });
@@ -39,6 +50,7 @@ export const getProfessorAvailability = (profId) =>
 
 // 학생 상담 예약
 export const bookAppointment = (availabilityId, studentId) =>
+  // BookingRequestDto: { availabilityId, studentId } 구조로 전송
   requestCounseling("post", "/book", { availabilityId, studentId });
 
 // 학생 예약 일정 조회

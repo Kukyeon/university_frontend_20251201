@@ -1,17 +1,34 @@
+// src/components/CounselingRecord/CounselingRecordView.js
+
 import React, { useState } from "react";
 import { searchRecords } from "../../api/scheduleApi";
+
+// 날짜/시간 포맷팅 함수 (MM-DD HH:mm)
+const formatDateTime = (dateTimeStr) => {
+  if (!dateTimeStr) return "";
+  const date = new Date(dateTimeStr);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${month}-${day} ${hours}:${minutes}`;
+};
 
 const CounselingRecordView = () => {
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState({
     studentName: "",
-    consultationDate: "",
+    consultationDate: "", // YYYY-MM-DD
     keyword: "",
   });
 
   const handleSearch = async () => {
-    const data = await searchRecords(search);
-    setRecords(data);
+    try {
+      const data = await searchRecords(search);
+      setRecords(data);
+    } catch (error) {
+      alert("검색 실패: " + error.message);
+    }
   };
 
   return (
@@ -39,7 +56,8 @@ const CounselingRecordView = () => {
       <ul>
         {records.map((r) => (
           <li key={r.id}>
-            {r.studentName} | {r.consultationDate} | {r.notes} | {r.keywords}
+            **{r.studentName}** | {formatDateTime(r.consultationDate)} |{" "}
+            {r.notes} | {r.keywords}
           </li>
         ))}
       </ul>

@@ -17,6 +17,7 @@ import AdminPage from "./pages/AdminPage"; // 분석 실행 버튼
 import Login from "./pages/Login";
 import NoticeDetail from "./components/Notice/NoticeDetail";
 import NoticeForm from "./components/Notice/NoticeForm";
+import ScheduleManagerPage from "./pages/ScheduleManagerPage";
 
 function App() {
   const [user, setUser] = useState({
@@ -24,6 +25,13 @@ function App() {
     id: "2023000001",
   }); // 로그인 상태 예시
   const isLoginPage = window.location.pathname === "/login";
+
+  //상담 테스트 용
+  const currentUserId = user.id;
+  const studentTargetId = currentUserId;
+  const professorTargetId = currentUserId;
+  //상담 테스트용
+
   return (
     <div className="App">
       {!isLoginPage && <Header user={user} />}
@@ -38,17 +46,23 @@ function App() {
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
         <Route path="/evaluation" element={<EvaluationPage />} />
-
-        {/* 임시 테스트 중*/}
+        <Route path="/academic-schedule" element={<ScheduleManagerPage />} />
+        {/* 상담 관련*/}
         <Route
-          path="/student"
-          element={<StudentSchedulePage studentId={1} professorId={1} />}
+          path="/counseling/student"
+          element={
+            <StudentSchedulePage
+              studentId={studentTargetId}
+              professorId={professorTargetId}
+            />
+          }
         />
         <Route
-          path="/professor"
-          element={<ProfessorSchedulePage professorId={1} />}
+          path="/counseling/professor"
+          element={<ProfessorSchedulePage professorId={professorTargetId} />}
         />
         <Route path="/records" element={<CounselingRecordPage />} />
+
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
 

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+
 import { createEvaluation, getEvaluationDetail } from "../../api/evaluationApi";
 
-const EvaluationForm = ({ id, onSubmit }) => {
+const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
   const [form, setForm] = useState({
     answer1: "",
     answer2: "",
@@ -14,14 +15,14 @@ const EvaluationForm = ({ id, onSubmit }) => {
   });
 
   useEffect(() => {
-    if (id && id !== 0) {
+    if (evaluationId && evaluationId !== 0) {
       const fetchData = async () => {
-        const data = await getEvaluationDetail(id);
+        const data = await getEvaluationDetail(evaluationId);
         setForm(data);
       };
       fetchData();
     }
-  }, [id]);
+  }, [evaluationId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,8 +31,26 @@ const EvaluationForm = ({ id, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createEvaluation(id, form);
-    onSubmit();
+
+    try {
+      if (evaluationId && evaluationId !== 0) {
+        //  평가 수정
+        // await updateEvaluation(evaluationId, form);
+        console.warn(
+          "수정 기능은 현재 백엔드/프론트엔드에 구현되어 있지 않습니다."
+        );
+      } else if (subjectId) {
+        await createEvaluation(subjectId, form);
+      } else {
+        alert("평가할 과목 ID를 찾을 수 없습니다.");
+        return;
+      }
+
+      onSubmit();
+    } catch (error) {
+      console.error("평가 제출 실패:", error);
+      alert(`제출 실패: ${error.response?.data?.message || error.message}`);
+    }
   };
 
   const answers = [
@@ -44,34 +63,44 @@ const EvaluationForm = ({ id, onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {" "}
       {Array.from({ length: 7 }, (_, i) => (
         <div key={i}>
+          {" "}
           <p>
-            {i + 1}. 질문 {i + 1}
-          </p>
+            {i + 1}. 질문 {i + 1}{" "}
+          </p>{" "}
           {answers.map((a) => (
             <label key={a.value}>
+              {" "}
               <input
                 type="radio"
                 name={`answer${i + 1}`}
                 value={a.value}
-                checked={form[`answer${i + 1}`] === a.value.toString()}
-                onChange={handleChange}
+                checked={Number(form[`answer${i + 1}`]) === a.value}
+                onChange={(e) =>
+                  handleChange({
+                    target: {
+                      name: e.target.name,
+                      value: Number(e.target.value),
+                    },
+                  })
+                }
               />
-              {a.label}
+              {a.label}{" "}
             </label>
-          ))}
+          ))}{" "}
         </div>
-      ))}
+      ))}{" "}
       <div>
-        <p>개선사항</p>
+        <p>개선사항</p>{" "}
         <textarea
           name="improvements"
           value={form.improvements}
           onChange={handleChange}
-        />
+        />{" "}
       </div>
-      <button type="submit">제출하기</button>
+      <button type="submit">제출하기</button>{" "}
     </form>
   );
 };
