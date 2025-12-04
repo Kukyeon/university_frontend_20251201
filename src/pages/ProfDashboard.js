@@ -3,7 +3,7 @@ import { dashboardApi } from "../api/aiApi"; // [핵심] api.js 사용
 
 const ProfDashboard = () => {
   const [risks, setRisks] = useState([]);
-  const professorId = 101; // (로그인 기능 완성 전까지 임시 ID 사용)
+  const professorId = 23000001; // (로그인 기능 완성 전까지 임시 ID 사용)
 
   useEffect(() => {
     // 백엔드에서 위험 학생 리스트 가져오기
