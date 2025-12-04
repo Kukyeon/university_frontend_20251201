@@ -16,7 +16,8 @@ const LoginPage = () => {
     userId: "",
     role: "student",
   });
-
+  const [tempPassword, setTempPassword] = useState("");
+  const [foundId, setFoundId] = useState(""); // 새 상태
   // 입력값 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,19 +32,39 @@ const LoginPage = () => {
   };
   // 아이디 찾기 처리
   const handleFindId = async () => {
-    console.log("아이디 찾기 데이터:", modalData);
-
-    // API 호출 후
-    setOpenModal(null); // 모달 닫기
-    setModalData({ name: "", email: "", userId: "", role: "student" }); // 초기화
+    try {
+      console.log("보내는 데이터:", modalData); // 확인용
+      const response = await api.post("/user/findId", {
+        name: modalData.name,
+        email: modalData.email,
+        userRole: modalData.role,
+      });
+      setFoundId(response.data.id); // 모달 안에서 바로 보여주기
+    } catch (err) {
+      alert(err.response?.data?.message || err.message);
+    }
   };
 
   // 비밀번호 찾기 처리
-  const handleFindPw = () => {
-    console.log("비밀번호 찾기 데이터:", modalData);
-    // API 호출 후
-    setOpenModal(null);
-    setModalData({ name: "", email: "", userId: "", role: "student" });
+  const handleFindPw = async () => {
+    try {
+      const response = await api.post("/user/findPw", {
+        name: modalData.name,
+        email: modalData.email,
+        id: parseInt(modalData.userId, 10),
+        userRole: modalData.role,
+      });
+      setTempPassword(response.data.tempPassword);
+    } catch (err) {
+      console.error(
+        "임시 비밀번호 발급 실패:",
+        err.response?.data || err.message
+      );
+      alert(
+        err.response?.data?.message ||
+          "임시 비밀번호 발급 중 오류가 발생했습니다."
+      );
+    }
   };
   const handleLoginSubmit = async (e) => {
     e.preventDefault(); // 새로고침 방지
@@ -143,6 +164,11 @@ const LoginPage = () => {
           <button className="modal-btn" onClick={handleFindId}>
             조회
           </button>
+          {foundId && (
+            <div className="found-id-display">
+              조회된 ID: <strong>{foundId}</strong>
+            </div>
+          )}
         </Modal>
       )}
 
@@ -188,6 +214,11 @@ const LoginPage = () => {
           <button className="modal-btn" onClick={handleFindPw}>
             임시 비밀번호 발급
           </button>
+          {tempPassword && (
+            <div className="temp-password-display">
+              임시 비밀번호: <strong>{tempPassword}</strong>
+            </div>
+          )}
         </Modal>
       )}
     </div>
