@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./Login.css";
 import Modal from "../components/Modal"; // 모달 컴포넌트
 import api from "../api/axiosConfig";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../components/Context/UserContext";
 
 const LoginPage = () => {
   const [openModal, setOpenModal] = useState(null);
@@ -18,6 +20,8 @@ const LoginPage = () => {
   });
   const [tempPassword, setTempPassword] = useState("");
   const [foundId, setFoundId] = useState(""); // 새 상태
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
   // 입력값 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,12 +78,14 @@ const LoginPage = () => {
         password: loginData.password,
       });
       console.log("로그인 성공:", response.data);
+      setUser(response.data);
+      console.log(response.data);
+      navigate("/");
       // 로그인 성공 후 처리
     } catch (err) {
       console.error("로그인 실패:", err.response?.data || err.message);
     }
   };
-
   return (
     <div className="login-container">
       <div className="login-card">
@@ -131,7 +137,13 @@ const LoginPage = () => {
 
       {/* 아이디 찾기 모달 */}
       {openModal === "findId" && (
-        <Modal onClose={() => setOpenModal(null)}>
+        <Modal
+          onClose={() => {
+            setOpenModal(null); // 모달 닫기
+            setModalData({ name: "", email: "", userId: "", role: "student" }); // 초기화
+            setFoundId(""); // 조회 결과 초기화
+          }}
+        >
           <h3>아이디 찾기</h3>
           <input
             className="modal-input"
@@ -174,7 +186,13 @@ const LoginPage = () => {
 
       {/* 비밀번호 찾기 모달 */}
       {openModal === "findPw" && (
-        <Modal onClose={() => setOpenModal(null)}>
+        <Modal
+          onClose={() => {
+            setOpenModal(null); // 모달 닫기
+            setModalData({ name: "", email: "", userId: "", role: "student" }); // 초기화
+            setTempPassword(""); // 조회 결과 초기화
+          }}
+        >
           <h3>비밀번호 찾기</h3>
           <input
             className="modal-input"

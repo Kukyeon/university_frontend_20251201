@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const StudentInfo = ({ student }) => (
   <section className="student-info">
@@ -19,7 +20,7 @@ const StudentInfo = ({ student }) => (
         </li>
         <li>
           <span>소속</span>
-          <span>{student.department}</span>
+          <span>{student.department.name}</span>
         </li>
         <li>
           <span>학기</span>
@@ -34,7 +35,9 @@ const StudentInfo = ({ student }) => (
       </ul>
     </div>
     <div className="student-actions">
-      <button className="btn">마이페이지</button>
+      <button className="btn">
+        <Link to={"/my"}> 마이페이지</Link>
+      </button>
       <button className="btn logout">로그아웃</button>
     </div>
   </section>
