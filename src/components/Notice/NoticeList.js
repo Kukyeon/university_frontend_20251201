@@ -19,9 +19,11 @@ const NoticeList = () => {
     <table border="1" width="100%">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>번호</th>
+          <th>말머리</th>
           <th>제목</th>
           <th>작성일</th>
+          <th>조회수</th>
           <th>관리</th>
         </tr>
       </thead>

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getNoticeList, deleteNotice } from "../api/noticeApi";
+import { getNoticeList } from "../api/noticeApi";
 import { useNavigate } from "react-router-dom";
 
 const NoticePage = () => {
   const [notices, setNotices] = useState([]);
   const navigate = useNavigate();
 
+  //목록 불러오기
   const fetchList = async () => {
     const data = await getNoticeList();
     setNotices(data);
@@ -23,16 +24,18 @@ const NoticePage = () => {
       <table border="1" width="100%">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>번호</th>
+            <th>말머리</th>
             <th>제목</th>
             <th>작성일</th>
-            <th>관리</th>
+            <th>조회수</th>
           </tr>
         </thead>
         <tbody>
           {notices.map((n) => (
             <tr key={n.id}>
               <td>{n.id}</td>
+              <td>{n.category}</td>
               <td
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate(`/notice/${n.id}`)}
@@ -40,14 +43,7 @@ const NoticePage = () => {
                 {n.title}
               </td>
               <td>{new Date(n.createdTime).toLocaleString()}</td>
-              <td>
-                <button onClick={() => navigate(`/notice/edit/${n.id}`)}>
-                  수정
-                </button>
-                <button onClick={() => deleteNotice(n.id).then(fetchList)}>
-                  삭제
-                </button>
-              </td>
+              <td>{n.views}</td>
             </tr>
           ))}
         </tbody>
