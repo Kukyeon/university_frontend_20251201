@@ -1,5 +1,3 @@
-// src/components/Schedule/ProfessorAvailability.js
-
 import React, { useState } from "react";
 import { setAvailability } from "../../api/scheduleApi";
 

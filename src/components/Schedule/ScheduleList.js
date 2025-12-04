@@ -9,7 +9,6 @@ const ScheduleList = ({ onSelect, onActionComplete }) => {
     setLoading(true);
     try {
       const data = await getScheduleList();
-      // 백엔드에서 반환되는 데이터 구조에 따라 수정이 필요할 수 있습니다.
       setSchedules(data);
     } catch (error) {
       console.error("일정 목록 조회 실패:", error.message);
@@ -52,18 +51,9 @@ const ScheduleList = ({ onSelect, onActionComplete }) => {
         </thead>
         <tbody>
           {schedules.map((s) => (
-            // 백엔드에서 ID가 'id'로 넘어온다고 가정
             <tr key={s.id}>
-              <td>{s.startDay}</td>
-              <td>{s.endDay}</td>
-              <td>{s.information}</td>
+              <td>{s.startDay}</td> <td>{s.endDay}</td> <td>{s.information}</td>{" "}
               <td>
-                <button
-                  onClick={() => onSelect(s.id, "detail")}
-                  style={{ marginRight: "5px" }}
-                >
-                  상세
-                </button>
                 <button
                   onClick={() => onSelect(s.id, "edit")}
                   style={{ marginRight: "5px" }}

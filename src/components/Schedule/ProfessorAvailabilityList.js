@@ -1,5 +1,3 @@
-// src/components/Schedule/ProfessorAvailabilityList.js (새로 생성)
-
 import React, { useState, useEffect } from "react";
 import { getProfessorAvailability } from "../../api/scheduleApi";
 

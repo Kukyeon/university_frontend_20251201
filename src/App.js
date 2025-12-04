@@ -18,7 +18,8 @@ import Login from "./pages/Login";
 import NoticeDetail from "./components/Notice/NoticeDetail";
 import NoticeForm from "./components/Notice/NoticeForm";
 import ScheduleManagerPage from "./pages/ScheduleManagerPage";
-
+import AcademicPage from "./pages/AcademicPage";
+import ScheduleForm from "./components/Schedule/ScheduleForm";
 function App() {
   const [user, setUser] = useState({
     name: "박시우",
@@ -40,13 +41,24 @@ function App() {
         <Route path="/videoroom" element={<VideoRoomApp />} />
         {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
         <Route path="/" element={<Home />} />
-        <Route path="/notice" element={<NoticePage />} />
+
+        {/* 학사정보 메인: 공지사항/학사일정 탭 전환 */}
+        <Route path="/academic" element={<AcademicPage />} />
+
+        {/* 학사일정 관리 목록 (ScheduleList 포함) */}
+        <Route path="/admin/schedule" element={<ScheduleManagerPage />} />
+
+        {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
+        <Route path="/admin/schedule/write" element={<ScheduleForm />} />
+        <Route path="/admin/schedule/edit/:id" element={<ScheduleForm />} />
+
+        {/* 공지사항 상세/등록/수정 (NoticeDetail 내부에서 역할 기반 버튼 노출) */}
         <Route path="/notice/:id" element={<NoticeDetail />} />
         <Route path="/notice/write" element={<NoticeForm />} />
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
         <Route path="/evaluation" element={<EvaluationPage />} />
-        <Route path="/academic-schedule" element={<ScheduleManagerPage />} />
+
         {/* 상담 관련*/}
         <Route
           path="/counseling/student"
