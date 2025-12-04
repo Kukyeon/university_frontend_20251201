@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+// src/components/Schedule/ScheduleForm.js
+import React, { useState, useEffect } from "react";
 import {
   createSchedule,
   updateSchedule,
@@ -35,8 +36,8 @@ const ScheduleForm = ({ id, onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <table className="table">
+    <form onSubmit={handleSubmit} className="schedule-form">
+      <table>
         <tbody>
           <tr>
             <td>시작날짜</td>
