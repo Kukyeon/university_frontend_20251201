@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import HeaderTop from "./HeaderTop";
 import "./Header.css";
+import { UserContext } from "../Context/UserContext";
 
-const Header = ({ user }) => {
+const Header = () => {
+  const { user } = useContext(UserContext);
   return (
     <header>
       {/* 상단 헤더 */}
@@ -20,6 +22,11 @@ const Header = ({ user }) => {
             <li>
               <Link to="/">홈</Link>
             </li>
+            {user && (
+              <li>
+                <Link to="/my">MY</Link>
+              </li>
+            )}
 
             <li className="dropdown">
               <Link to="/departments">학과소개</Link>

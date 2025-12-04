@@ -79,13 +79,13 @@ const LoginPage = () => {
       });
       console.log("로그인 성공:", response.data);
       setUser(response.data);
+      console.log(response.data);
       navigate("/");
       // 로그인 성공 후 처리
     } catch (err) {
       console.error("로그인 실패:", err.response?.data || err.message);
     }
   };
-
   return (
     <div className="login-container">
       <div className="login-card">

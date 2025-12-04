@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, Navigate, Link } from "react-router-dom";
+import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import NoticePage from "./pages/NoticePage";
 
 import EvaluationPage from "./pages/EvaluationPage";
@@ -14,12 +14,13 @@ import { useState } from "react";
 import StudentMain from "./pages/StudentMain"; // 챗봇, 강의추천 있는 곳
 import ProfDashboard from "./pages/ProfDashboard"; // 위험군 대시보드
 import AdminPage from "./pages/AdminPage"; // 분석 실행 버튼
-import Login from "./pages/MyPage";
-import MyPage from "./pages/Login";
+import Login from "./pages/Login";
+import MyPage from "./pages/MyPage";
 import { UserProvider } from "./components/Context/UserContext";
 
 function App() {
-  const isLoginPage = window.location.pathname === "/login";
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/login";
   return (
     <div className="App">
       <UserProvider>
