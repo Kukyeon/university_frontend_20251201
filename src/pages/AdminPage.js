@@ -17,6 +17,16 @@ const AdminPage = () => {
     }
   };
   
+  const runSync = async () => {
+    try {
+      await adminApi.syncData(); // 백엔드 호출 -> DB insert 발생
+      alert("✅ 데이터 동기화 완료!");
+      loadLogs(); // 로그 테이블 새로고침
+    } catch (err) {
+      alert("동기화 실패: " + err.message);
+    }
+  };
+
   const runAnalysis = async () => {
     if(!window.confirm("전체 학생 분석을 시작하시겠습니까? (시간이 소요됩니다)")) return;
     
@@ -26,6 +36,18 @@ const AdminPage = () => {
       alert("✅ 분석 완료! 교수님 대시보드에서 확인하세요.");
     } catch (err) {
       alert("분석 실패: " + err.message);
+    }
+  };
+  // [추가] 로그 초기화 함수
+  const handleClearLogs = async () => {
+    if (!window.confirm("⚠️ 경고: 모든 수집 이력 로그가 영구 삭제됩니다.\n진행하시겠습니까?")) return;
+
+    try {
+      await adminApi.clearLogs();
+      alert("🗑️ 로그가 초기화되었습니다.");
+      loadLogs(); // 테이블 새로고침 (빈 화면으로 바뀜)
+    } catch (err) {
+      alert("삭제 실패: " + err.message);
     }
   };
 
@@ -42,6 +64,16 @@ const AdminPage = () => {
         >
           중도이탈 위험 분석 즉시 실행
         </button>
+        <div>
+            <h3>🔄 데이터 동기화</h3>
+            <p>외부 시스템(LMS, 출결)에서<br/>데이터를 가져옵니다.</p>
+            <button onClick={runSync} style={{background: "green"}}>
+            데이터 동기화 실행
+            </button>
+        </div>
+        <div>
+          <button onClick={handleClearLogs}>기록 초기화</button>
+        </div>
       </div>
       {/* === [추가] 데이터 수집 이력 모니터링 === */}
       <h3>📜 데이터 수집 및 통합 이력 (System Logs)</h3>
