@@ -132,7 +132,7 @@
   font-size: 14px;
   vertical-align: middle;
 }
-leave-form td > label {
+.leave-form td > label {
   display: inline-flex; /* 가로 배치 */
   align-items: center;
   margin-right: 15px; /* 버튼 간 간격 */
