@@ -1,11 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "./Login.css";
 import Modal from "../components/Modal"; // 모달 컴포넌트
 import api from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../components/Context/UserContext";
 
-const LoginPage = () => {
+const LoginPage = ({ setUser }) => {
   const [openModal, setOpenModal] = useState(null);
   const [loginData, setLoginData] = useState({
     id: "",
@@ -21,7 +20,6 @@ const LoginPage = () => {
   const [tempPassword, setTempPassword] = useState("");
   const [foundId, setFoundId] = useState(""); // 새 상태
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
   // 입력값 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,9 +75,10 @@ const LoginPage = () => {
         id: parseInt(loginData.id, 10),
         password: loginData.password,
       });
-      console.log("로그인 성공:", response.data);
-      setUser(response.data);
-      console.log(response.data);
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      setUser(response.data.user);
+      console.log(response.data.user);
       navigate("/");
       // 로그인 성공 후 처리
     } catch (err) {
