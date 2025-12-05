@@ -13,6 +13,10 @@ export const chatApi = {
   // 강의 추천 받기
   getRecommendation: (studentId) => 
     api.get(`/course/recommend?studentId=${studentId}`),
+
+  //대화 종료하기
+  clearHistory: (studentId) => 
+    api.delete(`/chatbot/history?studentId=${studentId}`),
 };
 
 // [교수용] 대시보드
