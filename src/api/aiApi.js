@@ -26,7 +26,9 @@ export const dashboardApi = {
     api.get(`/dashboard/risk-list?professorId=${professorId}`),
 
   deleteRisk: (id) =>
-    api.delete(`/dashboard/risk/${id}`)
+    api.delete(`/dashboard/risk/${id}`),
+
+  getAllRiskList: () => api.get("/dashboard/admin/risk-list"),
 };
 
 // [관리자용] 시스템 제어

@@ -1,45 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { chatApi } from "../api/aiApi";
 import Chatbot from "../components/Chatbot/Chatbot"; // 아까 만든 챗봇 불러오기
+import { Navigate, useNavigate } from "react-router-dom";
 
-const StudentMain = () => {
-  const [studentId, setStudentId] = useState(2023000001); //1번
-  const [studentName, setStudentName] = useState("테스트학생"); // 이름도 임의로 설정
+const StudentMain = ({user}) => {
+  
+  const [studentId, setStudentId] = useState(null); //1번
+  const [studentName, setStudentName] = useState();
   const [recommendation, setRecommendation] = useState("");
   const [loading, setLoading] = useState(false);
-  // [수정 2] 로그인 체크 로직을 주석 처리 (로그인 안 해도 튕겨나가지 않게)
-  /*
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      setStudentId(user.id);
-      setStudentName(user.name);
-    } else {
-      alert("로그인이 필요합니다.");
+    if (!user) {
+     alert("로그인이 필요합니다.");
       navigate("/login"); 
-    }
-  }, [navigate]);
-  */
+      return;
+    } 
+    
+     setStudentId(user.id);
+     setStudentName(user.name);
+    }, [user,navigate]);
+
   // AI 강의 추천 요청 함수
-  const getRecommend = async () => {
-    setLoading(true);
-    setRecommendation(""); // 기존 결과 초기화
-    try {
-      // 백엔드: CourseController 호출
-      const res = await chatApi.getRecommendation(studentId);
-      setRecommendation(res.data.result);
-    } catch (err) {
-      alert("추천 실패: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const getRecommend = async () => {
+  //   setLoading(true);
+  //   setRecommendation(""); // 기존 결과 초기화
+  //   try {
+  //     // 백엔드: CourseController 호출
+  //     const res = await chatApi.getRecommendation(studentId);
+  //     setRecommendation(res.data.result);
+  //   } catch (err) {
+  //     alert("추천 실패: " + err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div style={{ padding: "30px", maxWidth: "800px", margin: "0 auto" }}>
       <h1>🎓 학생용 학사지원 시스템</h1>
-      <p>안녕하세요, {studentId}번 학생님! 무엇을 도와드릴까요?</p>
+      <p>안녕하세요, {user.name} 학생님! 무엇을 도와드릴까요?</p>
       
       <hr style={{ margin: "30px 0" }} />
 

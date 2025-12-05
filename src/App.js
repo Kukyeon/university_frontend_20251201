@@ -18,6 +18,7 @@ import MyPage from "./pages/MyPage";
 import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -96,13 +97,14 @@ function App() {
 
         {/* 챗봇 및 중도 이탈방지 관련부분 */}
         {/* 학생이 로그인하면 들어가는 메인 화면 */}
-        <Route path="/student" element={<StudentMain />} />
+        <Route path="/student" element={<StudentMain user={user}/>} />
 
         {/* === [3] 교수용 (위험군 대시보드) === */}
         <Route path="/professor" element={<ProfDashboard user={user} />} />
 
         {/* === [4] 관리자용 (분석 실행) === */}
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin" element={<AdminPage user={user} />} />
+        <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
       </Routes>
       {!isLoginPage && <Footer />}
     </div>

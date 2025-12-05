@@ -1,8 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { adminApi } from "../api/aiApi"; // [핵심] api.js 사용
+import { useNavigate } from 'react-router-dom';
 
-const AdminPage = () => {
+const AdminPage = (user) => {
+  const navigate = useNavigate()
+  const [adminId, setAdminId] = useState(null);
+  const [adminname, setAdminname] = useState();
+  const role = user.role || user.userRole;
+   useEffect(() => {
+        if (!user) {
+         alert("로그인이 필요합니다.");
+          navigate("/login"); 
+          return;
+        } 
+        
+         setAdminId(user.id);
+         setAdminname(user.name);
+        }, [user,navigate]);
   const [logs, setLogs] = useState([]); // 로그 목록 상태
+
   // 페이지 열리면 로그 가져오기
   useEffect(() => {
     loadLogs();
