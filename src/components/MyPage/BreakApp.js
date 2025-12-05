@@ -1,13 +1,64 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import api from "../../api/axiosConfig";
 
 const BreakApp = ({ user }) => {
   const [leaveType, setLeaveType] = useState("");
   const [startSemester, setStartSemester] = useState("");
   const [endSemester, setEndSemester] = useState("");
+  const [endOptions, setEndOptions] = useState([]);
 
-  const handleSubmit = () => {
-    console.log("휴학 신청:", { leaveType, startSemester, endSemester });
-    alert("휴학 신청 완료! (API 연결 전 임시 기능)");
+  // 시작 학기 초기화
+  useEffect(() => {
+    const now = new Date();
+    let year = now.getFullYear();
+    let month = now.getMonth() + 1;
+    let sem = month <= 6 ? 1 : 2;
+    const start = `${year}-${sem}`;
+    setStartSemester(start);
+
+    // 종료 학기 옵션 생성 (최대 4학기 선택 가능)
+    const options = [];
+    let optYear = year;
+    let optSem = sem;
+    for (let i = 0; i < 4; i++) {
+      options.push(`${optYear}-${optSem}`);
+      optSem += 1;
+      if (optSem > 2) {
+        optSem = 1;
+        optYear += 1;
+      }
+    }
+    setEndOptions(options);
+    setEndSemester(options[0]); // 기본 종료 학기 첫 옵션으로
+  }, []);
+  const handleSubmit = async () => {
+    if (!leaveType || !endSemester) {
+      alert("모든 항목을 선택해주세요.");
+      return;
+    }
+    const [fromYear, fromSem] = startSemester.split("-").map(Number);
+    const [toYear, toSem] = endSemester.split("-").map(Number);
+
+    if (toYear < fromYear || (toYear === fromYear && toSem < fromSem)) {
+      alert("종료 학기가 시작 학기 이전일 수 없습니다.");
+      return;
+    }
+    try {
+      await api.post("/break/app", {
+        type: leaveType,
+        fromYear,
+        fromSemester: fromSem,
+        toYear,
+        toSemester: toSem,
+      });
+      alert("휴학 신청 완료!");
+    } catch (err) {
+      if (err.response) {
+        alert(err.response.data.message || "신청 실패");
+      } else {
+        alert("서버와 통신 중 오류 발생");
+      }
+    }
   };
 
   return (
@@ -42,12 +93,20 @@ const BreakApp = ({ user }) => {
             <td colSpan="3">
               <input
                 type="text"
-                placeholder="2023년도 1학기부터 2023년도 2학기까지"
-                value={`${startSemester || "2023-1"} ~ ${
-                  endSemester || "2023-2"
-                }`}
+                value={startSemester}
                 readOnly
+                style={{ width: "80px", marginRight: "10px" }}
               />
+              <select
+                value={endSemester}
+                onChange={(e) => setEndSemester(e.target.value)}
+              >
+                {endOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt.replace("-", "년도 ")}학기
+                  </option>
+                ))}
+              </select>
             </td>
           </tr>
           <tr>
@@ -89,7 +148,10 @@ const BreakApp = ({ user }) => {
       <p style={{ marginTop: "20px" }}>
         위와 같이 휴학하고자 하오니 허가하여 주시기 바랍니다.
       </p>
-      <p style={{ textAlign: "right" }}>2025년 12월 04일</p>
+      <p style={{ textAlign: "right" }}>
+        {new Date().getFullYear()}년 {new Date().getMonth() + 1}월{" "}
+        {new Date().getDate()}일
+      </p>
     </section>
   );
 };
