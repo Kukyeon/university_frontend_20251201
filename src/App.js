@@ -99,7 +99,7 @@ function App() {
         <Route path="/student" element={<StudentMain />} />
 
         {/* === [3] 교수용 (위험군 대시보드) === */}
-        <Route path="/professor" element={<ProfDashboard />} />
+        <Route path="/professor" element={<ProfDashboard user={user} />} />
 
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage />} />
