@@ -34,6 +34,7 @@ function App() {
     if (!token) {
       console.log("로그인 필요");
       setUser(null);
+      setLoading(false);
       return;
     }
     const fetchMe = async () => {
