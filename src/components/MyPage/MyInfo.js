@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../../api/axiosConfig";
 
-const MyInfo = ({ user, userData, setUserData }) => {
+const MyInfo = ({ user, userData, setUserData, role }) => {
   const [editMode, setEditMode] = useState(false); // 수정 모드
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,72 +23,106 @@ const MyInfo = ({ user, userData, setUserData }) => {
       <h3>내 정보 조회</h3>
       <table>
         <tbody>
-          <tr>
-            <td>학번</td>
-            <td>{userData.id}</td>
-            <td>소속</td>
-            <td>{userData.department?.name}</td>
-          </tr>
-          <tr>
-            <td>학년</td>
-            <td>{userData.grade}</td>
-            <td>학기</td>
-            <td>{userData.semester}</td>
-          </tr>
-          <tr>
-            <td>입학일</td>
-            <td>{userData.entranceDate}</td>
-            <td>졸업(예정)일</td>
-            <td>{userData.graduationDate || "-"}</td>
-          </tr>
-          <tr>
-            <td>이름</td>
-            <td>{userData.name}</td>
-            <td>생년월일</td>
-            <td>{userData.birthDate}</td>
-          </tr>
-          <tr>
-            <td>성별</td>
-            <td>{userData.gender}</td>
-            <td>이메일</td>
-            <td>
-              {editMode ? (
-                <input
-                  name="email"
-                  value={userData.email}
-                  onChange={handleChange}
-                />
-              ) : (
-                userData.email
-              )}
-            </td>
-          </tr>
-          <tr>
-            <td>연락처</td>
-            <td>
-              {editMode ? (
-                <input
-                  name="tel"
-                  value={userData.tel}
-                  onChange={handleChange}
-                />
-              ) : (
-                userData.tel
-              )}
-            </td>
-            <td>주소</td>
-            <td>
-              {editMode ? (
-                <input
-                  name="address"
-                  value={userData.address}
-                  onChange={handleChange}
-                />
-              ) : (
-                userData.address
-              )}
-            </td>
-          </tr>
+          {role === "student" ? (
+            <>
+              <tr>
+                <td>학번</td>
+                <td>{userData?.id}</td>
+                <td>소속</td>
+                <td>{userData?.department?.name}</td>
+              </tr>
+              <tr>
+                <td>학년</td>
+                <td>{userData?.grade}</td>
+                <td>학기</td>
+                <td>{userData?.semester}</td>
+              </tr>
+              <tr>
+                <td>입학일</td>
+                <td>{userData?.entranceDate}</td>
+                <td>졸업(예정)일</td>
+                <td>{userData?.graduationDate || "-"}</td>
+              </tr>
+              <tr>
+                <td>이름</td>
+                <td>{userData?.name}</td>
+                <td>생년월일</td>
+                <td>{userData?.birthDate}</td>
+              </tr>
+              <tr>
+                <td>성별</td>
+                <td>{userData?.gender}</td>
+                <td>이메일</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="email"
+                      value={userData?.email}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.email
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>연락처</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="tel"
+                      value={userData?.tel}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.tel
+                  )}
+                </td>
+                <td>주소</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="address"
+                      value={userData?.address}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.address
+                  )}
+                </td>
+              </tr>
+            </>
+          ) : (
+            <>
+              <tr>
+                <td>ID</td>
+                <td>{userData?.id}</td>
+                <td>소속</td>
+                <td>
+                  {userData?.department?.college.name}{" "}
+                  {userData?.department?.name}
+                </td>
+              </tr>
+              <tr>
+                <td>성명</td>
+                <td>{userData?.name}</td>
+                <td>생년월일</td>
+                <td>{userData?.birthDate}</td>
+              </tr>
+              <tr>
+                <td>성별</td>
+                <td>{userData?.gender}</td>
+                <td>주소</td>
+                <td>{userData?.address}</td>
+              </tr>
+              <tr>
+                <td>연락처</td>
+                <td>{userData?.tel}</td>
+                <td>email</td>
+                <td>{userData?.email}</td>
+              </tr>
+            </>
+          )}
         </tbody>
       </table>
 
@@ -116,7 +150,7 @@ const MyInfo = ({ user, userData, setUserData }) => {
           </tr>
         </thead>
         <tbody>
-          {userData.academicChanges?.map((change, idx) => (
+          {userData?.academicChanges?.map((change, idx) => (
             <tr key={idx}>
               <td>{change.date}</td>
               <td>{change.type}</td>
@@ -125,7 +159,7 @@ const MyInfo = ({ user, userData, setUserData }) => {
               <td>{change.returnSemester}</td>
             </tr>
           ))}
-          {!userData.academicChanges?.length && (
+          {!userData?.academicChanges?.length && (
             <tr>
               <td colSpan="5" style={{ textAlign: "center" }}>
                 학적 변동 내역이 없습니다.

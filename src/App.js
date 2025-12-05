@@ -21,6 +21,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
@@ -39,8 +40,9 @@ function App() {
     const fetchMe = async () => {
       try {
         const res = await api.get("/user/me");
-        setUser(res.data); // 사용자 정보 저장
-        console.log(res.data);
+        setUser(res.data.user); // 사용자 정보 저장
+        setRole(res.data.role);
+        console.log(res.data.user);
       } catch (err) {
         console.log("로그인 필요");
         setUser(null);
@@ -62,7 +64,7 @@ function App() {
           path="/My"
           element={
             <ProtectedRoute user={user}>
-              <MyPage user={user} />
+              <MyPage user={user} role={role} />
             </ProtectedRoute>
           }
         />

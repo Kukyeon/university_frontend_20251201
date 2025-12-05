@@ -11,9 +11,7 @@ const BreakHistory = ({ user }) => {
   useEffect(() => {
     const fetchLeaveHistory = async () => {
       try {
-        const res = await api.get("/break/list", {
-          params: { studentId: user.id },
-        });
+        const res = await api.get("/break/list");
         setLeaveHistory(res.data); // 백엔드에서 내려주는 리스트
       } catch (err) {
         console.error(err);

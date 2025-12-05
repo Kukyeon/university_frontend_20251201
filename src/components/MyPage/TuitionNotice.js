@@ -1,52 +1,103 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import api from "../../api/axiosConfig";
 
-const TuitionNotice = ({ tuition }) => {
+const TuitionNotice = ({ user }) => {
+  const [tuitionNotice, setTuitionNotice] = useState(null); // 단일 객체
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTuitionNotice = async () => {
+      try {
+        const res = await api.get("/tuition/payment");
+        setTuitionNotice(res.data);
+        console.log(res.data);
+      } catch (err) {
+        console.error(err);
+        alert("등록금 고지서를 불러오는 중 오류가 발생했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTuitionNotice();
+  }, [user.id]);
+  const handleSubmit = async () => {
+    if (!window.confirm("정말로 등록금을 납부하시겠습니까?")) return;
+    try {
+      await api.post("/tuition/payment");
+      alert("등록금 납부가 완료되었습니다.");
+      const res = await api.get("/tuition/payment");
+      setTuitionNotice(res.data);
+    } catch (error) {
+      if (error.response) {
+        alert(error.response.data.message || "납부 실패");
+      } else {
+        alert("서버와 통신 중 오류 발생");
+      }
+    }
+  };
+  if (loading) return <p>로딩 중...</p>;
+
   return (
     <section className="mypage-card">
       <h3>등록금 납부 고지서</h3>
-      {tuition ? (
+      {tuitionNotice ? (
         <>
           <p>
-            {tuition.year}년도 {tuition.semester}학기
+            {tuitionNotice.tuiYear}년도 {tuitionNotice.semester}학기
           </p>
           <table>
             <tbody>
               <tr>
                 <td>단과대</td>
-                <td>{tuition.college}</td>
+                <td>
+                  {tuitionNotice.student?.department?.college?.name || "-"}
+                </td>
                 <td>학과</td>
-                <td>{tuition.department}</td>
+                <td>{tuitionNotice.student?.department?.name || "-"}</td>
               </tr>
               <tr>
                 <td>학번</td>
-                <td>{tuition.id}</td>
+                <td>{tuitionNotice.student?.id || "-"}</td>
                 <td>성명</td>
-                <td>{tuition.name}</td>
+                <td>{tuitionNotice.student?.name || "-"}</td>
               </tr>
               <tr>
                 <td>장학유형</td>
-                <td>{tuition.scholarshipType}</td>
+                <td>{tuitionNotice.scholarshipType?.type || "-"}</td>
                 <td>등록금</td>
-                <td>{tuition.totalFee.toLocaleString()}원</td>
+                <td>{tuitionNotice.tuiAmount?.toLocaleString() || 0}원</td>
               </tr>
               <tr>
                 <td>장학금</td>
-                <td>{tuition.scholarship.toLocaleString()}원</td>
+                <td>{tuitionNotice.schAmount?.toLocaleString() || 0}원</td>
                 <td>납부금</td>
-                <td>{tuition.payable.toLocaleString()}원</td>
+                <td>
+                  {(
+                    (tuitionNotice.tuiAmount || 0) -
+                    (tuitionNotice.schAmount || 0)
+                  ).toLocaleString()}
+                  원
+                </td>
               </tr>
               <tr>
                 <td>납부계좌</td>
-                <td colSpan="3">{tuition.account}</td>
+                <td colSpan="3">그린은행 483-531345-536</td>
               </tr>
               <tr>
                 <td>납부기간</td>
-                <td colSpan="3">{tuition.period}</td>
+                <td colSpan="3">~ 2026.05.02</td>
               </tr>
             </tbody>
           </table>
           <div style={{ marginTop: "20px" }}>
-            <button onClick={() => alert("납부 처리 (임시)")}>납부</button>
+            {tuitionNotice.status ? (
+              <p style={{ color: "green", fontWeight: "bold" }}>
+                이번 학기 등록금이 납부되었습니다.
+              </p>
+            ) : (
+              <button onClick={handleSubmit}>납부</button>
+            )}
           </div>
         </>
       ) : (
