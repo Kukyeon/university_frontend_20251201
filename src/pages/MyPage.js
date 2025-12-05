@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../components/Context/UserContext";
+import React, { useEffect, useState } from "react";
 import "./MyPage.css";
 import ChangePw from "../components/MyPage/ChangePw";
 import MyInfo from "../components/MyPage/MyInfo";
@@ -8,8 +7,7 @@ import BreakHistory from "../components/MyPage/BreakHistory";
 import TuitionNotice from "../components/MyPage/TuitionNotice";
 import TuitionHistory from "../components/MyPage/TuitionHistory";
 
-const MyPage = () => {
-  const { user } = useContext(UserContext);
+const MyPage = ({ user }) => {
   const [activeTab, setActiveTab] = useState("myInfo");
 
   const [userData, setUserData] = useState({});

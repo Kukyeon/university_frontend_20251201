@@ -1,19 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Hero from "../components/Home/Hero";
 import Notice from "../components/Home/Notice";
 import Schedule from "../components/Home/Schedule";
 import StudentInfo from "../components/Home/StudentInfo";
 import "../components/Home/Home.css";
-import { UserContext } from "../components/Context/UserContext";
 
-const Home = () => {
-  const { user } = useContext(UserContext);
+const Home = ({ user, logout }) => {
   return (
     <div className="home">
       <Hero />
 
       <div className="home-cards">
-        {user && <StudentInfo student={user} />}
+        {user && <StudentInfo student={user} logout={logout} />}
         <Notice />
         <Schedule />
       </div>

@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
 import api from "../../api/axiosConfig";
-import { UserContext } from "../Context/UserContext";
 
 const ChangePw = () => {
-  const { user, setUser } = useContext(UserContext);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
@@ -17,13 +15,12 @@ const ChangePw = () => {
     }
     try {
       const payload = {
-        userId: user.id,
+        //userId,
         oldPassword,
         newPassword,
       };
       await api.put("/user/update/pw", payload);
       alert("비밀번호 변경 완료! (API 연동 전 임시 기능)");
-      setUser({ ...user });
       // 입력 초기화
       setOldPassword("");
       setNewPassword("");

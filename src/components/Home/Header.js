@@ -2,14 +2,12 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import HeaderTop from "./HeaderTop";
 import "./Header.css";
-import { UserContext } from "../Context/UserContext";
 
-const Header = () => {
-  const { user } = useContext(UserContext);
+const Header = ({ user, logout }) => {
   return (
     <header>
       {/* 상단 헤더 */}
-      {user && <HeaderTop user={user} />}
+      {user && <HeaderTop user={user} logout={logout} />}
 
       {/* 메인 네비게이션 */}
       <div className="main-header">
