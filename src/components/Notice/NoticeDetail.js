@@ -35,7 +35,7 @@ const NoticeDetail = () => {
       </p>
       {notice.imageUrl && (
         <img
-          src={notice.imageUrl}
+          src={`http://localhost:8888${notice.imageUrl}`}
           alt="첨부 이미지"
           style={{ maxWidth: "500px", marginBottom: "10px" }}
         />
