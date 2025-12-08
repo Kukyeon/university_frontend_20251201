@@ -28,6 +28,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminSubjectPage from "./pages/AdminSubjectPage";
 import GradePage from "./pages/GradePage";
 import EnrollmentPage from "./pages/EnrollmentPage";
+import CourseListPage from "./pages/CourseListPage";
+import EnrollmentHistoryPage from "./pages/EnrollmentHistoryPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -138,9 +140,14 @@ function App() {
         <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
 
         {/* 수강신청 관련부분 */} 
-        <Route path="/enroll" element={<EnrollmentPage user={user}/>} />
-        <Route path="/admin/subject" element={<AdminSubjectPage user={user}/>} />
-        <Route path="/grade" element={<GradePage user={user}/>} />
+        {/* 1. 전체 강좌 조회 */}
+        <Route path="/student/course-list" element={<CourseListPage />} />
+        
+        {/* 2. 수강신청 (예비수강신청도 이 컴포넌트 재사용 가능) */}
+        <Route path="/student/enrollment" element={<EnrollmentPage />} />
+        
+        {/* 3. 수강신청 내역 조회 (별도 페이지) */}
+        <Route path="/student/enrollment-history" element={<EnrollmentHistoryPage />} />
 
        
       </Routes>
