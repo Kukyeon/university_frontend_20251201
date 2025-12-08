@@ -1,28 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { courseApi } from '../api/gradeApi';
+import { courseApi } from '../api/gradeApi'; // api 파일 경로 확인
 
 const CourseListPage = () => {
   const [subjects, setSubjects] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  // [수정] 검색 조건 상태 관리 (초기값: 구분은 전체, 이름은 빈값)
-  const [searchParams, setSearchParams] = useState({ type: '', name: '' });
-  
-  // 실제 API 요청 시 사용할 확정된 필터 (검색 버튼 눌렀을 때만 변경됨)
-  const [appliedFilters, setAppliedFilters] = useState({ type: '', name: '' });
+  // [추가] 학과 목록 상태
+  const [departments, setDepartments] = useState([]);
 
-  // 페이지나 검색조건(appliedFilters)이 바뀌면 로딩
+  // [수정] 검색 조건 상태 (deptId 추가)
+  const [searchParams, setSearchParams] = useState({ type: '', name: '', deptId: '' });
+  
+  // 실제 API 요청 시 사용할 확정된 필터
+  const [appliedFilters, setAppliedFilters] = useState({ type: '', name: '', deptId: '' });
+
+  // 1. 초기 로딩 (학과 목록 가져오기)
+  useEffect(() => {
+    loadDepartments();
+  }, []);
+
+  // 2. 데이터 로딩 (페이지나 검색조건이 바뀌면 실행)
   useEffect(() => {
     loadData();
   }, [page, appliedFilters]);
 
+  // [신규] 학과 목록 로딩
+  const loadDepartments = async () => {
+    try {
+      const res = await courseApi.getDeptList();
+      setDepartments(res.data || []);
+    } catch (err) {
+      console.error("학과 목록 로딩 실패", err);
+    }
+  };
+
+  // 강의 데이터 로딩
   const loadData = async () => {
     try {
       const res = await courseApi.getSubjectList({ 
         page: page,
         type: appliedFilters.type,
-        name: appliedFilters.name
+        name: appliedFilters.name,
+        deptId: appliedFilters.deptId // [추가] 학과 ID 전송
       });
       setSubjects(res.data.content || []);
       setTotalPages(res.data.totalPages || 0);
@@ -41,15 +61,17 @@ const CourseListPage = () => {
   // 조회 버튼 클릭 핸들러
   const handleSearch = () => {
     setPage(0); // 검색 시 1페이지로 초기화
-    setAppliedFilters({ ...searchParams }); // 검색 조건 확정 -> useEffect 실행됨
+    setAppliedFilters({ ...searchParams }); // 검색 조건 확정
   };
 
   return (
     <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
       <h1>📖 전체 강좌 조회</h1>
       
-      {/* [수정] 검색 필터 영역 */}
+      {/* 검색 필터 영역 */}
       <div style={filterContainerStyle}>
+        
+        {/* 1. 강의 구분 */}
         <div style={inputGroupStyle}>
           <label style={labelStyle}>강의 구분</label>
           <select 
@@ -64,6 +86,23 @@ const CourseListPage = () => {
           </select>
         </div>
 
+        {/* 2. [추가] 개설 학과 */}
+        <div style={inputGroupStyle}>
+          <label style={labelStyle}>개설 학과</label>
+          <select 
+            name="deptId" 
+            value={searchParams.deptId} 
+            onChange={handleInputChange} 
+            style={{...selectStyle, width: '150px'}}
+          >
+             <option value="">전체</option>
+             {departments.map(dept => (
+                 <option key={dept.id} value={dept.id}>{dept.name}</option>
+             ))}
+          </select>
+        </div>
+
+        {/* 3. 강의명 */}
         <div style={inputGroupStyle}>
           <label style={labelStyle}>강의명</label>
           <input 
@@ -72,7 +111,7 @@ const CourseListPage = () => {
             onChange={handleInputChange} 
             placeholder="강의명을 입력하세요"
             style={inputStyle}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()} // 엔터키 처리
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()} 
           />
         </div>
 
@@ -95,8 +134,9 @@ const CourseListPage = () => {
           ) : (
             subjects.map(sub => (
               <tr key={sub.id}>
-                <td>{sub.department?.college?.name}</td>
-                <td>{sub.department?.name}</td>
+                {/* 데이터 접근 경로 확인 (sub.department.name) */}
+                <td>{sub.department?.college?.name || '-'}</td>
+                <td>{sub.department?.name || '-'}</td>
                 <td>{sub.id}</td>
                 <td>{sub.type}</td>
                 <td style={{textAlign:'left', paddingLeft:'15px', fontWeight:'bold'}}>{sub.name}</td>

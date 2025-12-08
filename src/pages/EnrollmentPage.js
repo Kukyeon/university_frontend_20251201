@@ -1,89 +1,123 @@
 import React, { useState, useEffect } from 'react';
 import { courseApi } from '../api/gradeApi';
 
-const EnrollmentPage = () => {
+const CourseListPage = () => {
   const [subjects, setSubjects] = useState([]);
-  const [myList, setMyList] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  // [수정] 검색 상태
-  const [searchParams, setSearchParams] = useState({ type: '', name: '' });
-  const [appliedFilters, setAppliedFilters] = useState({ type: '', name: '' });
+  // [추가] 학과 목록 상태
+  const [departments, setDepartments] = useState([]); 
 
+  // [수정] 검색 조건 상태 (deptId 추가)
+  const [searchParams, setSearchParams] = useState({ type: '', name: '', deptId: '' });
+  
+  // 실제 API 요청 시 사용할 확정된 필터
+  const [appliedFilters, setAppliedFilters] = useState({ type: '', name: '', deptId: '' });
+
+  // 1. 초기 로딩 (학과 목록)
   useEffect(() => {
-    loadAllData();
-  }, [page, appliedFilters]); // 필터가 확정되거나 페이지가 바뀌면 재조회
+    loadDepartments();
+  }, []);
 
-  const loadAllData = async () => {
+  // 2. 데이터 로딩 (페이지나 검색조건이 바뀌면 실행)
+  useEffect(() => {
+    loadData();
+  }, [page, appliedFilters]);
+
+  // 학과 목록 가져오기
+  const loadDepartments = async () => {
     try {
-      // 1. 강의 목록 조회 (검색조건 포함)
-      const subRes = await courseApi.getSubjectList({
+      const res = await courseApi.getDeptList();
+      setDepartments(res.data || []);
+    } catch (err) {
+      console.error("학과 목록 로딩 실패", err);
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      // [수정] deptId 파라미터 추가 전송
+      const res = await courseApi.getSubjectList({ 
         page: page,
         type: appliedFilters.type,
-        name: appliedFilters.name
+        name: appliedFilters.name,
+        deptId: appliedFilters.deptId 
       });
-      setSubjects(subRes.data.content || []);
-      setTotalPages(subRes.data.totalPages || 0);
-
-      // 2. 내 신청 내역 조회
-      const myRes = await courseApi.getMyHistory();
-      setMyList(myRes.data || []);
+      setSubjects(res.data.content || []);
+      setTotalPages(res.data.totalPages || 0);
     } catch (err) {
       console.error(err);
+      setSubjects([]);
     }
   };
 
-  const handleApply = async (subjectId) => {
-    if(!window.confirm("수강신청 하시겠습니까?")) return;
-    try {
-      await courseApi.register(subjectId);
-      alert("✅ 신청 완료");
-      loadAllData();
-    } catch (err) {
-      alert("❌ " + (err.response?.data || "신청 실패"));
-    }
-  };
-
-  // 검색 핸들러
+  // 입력값 변경 핸들러
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSearchParams({ ...searchParams, [name]: value });
   };
 
+  // 조회 버튼 클릭 핸들러
   const handleSearch = () => {
-    setPage(0);
-    setAppliedFilters({ ...searchParams });
+    setPage(0); // 검색 시 1페이지로 초기화
+    setAppliedFilters({ ...searchParams }); // 검색 조건 확정
   };
 
   return (
     <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>📅 수강신청</h1>
-
-      {/* [수정] 검색 필터 영역 */}
+      <h1>📖 전체 강좌 조회</h1>
+      
+      {/* 검색 필터 영역 */}
       <div style={filterContainerStyle}>
+        
+        {/* 1. 강의 구분 */}
         <div style={inputGroupStyle}>
           <label style={labelStyle}>강의 구분</label>
-          <select name="type" value={searchParams.type} onChange={handleInputChange} style={selectStyle}>
+          <select 
+            name="type" 
+            value={searchParams.type} 
+            onChange={handleInputChange} 
+            style={selectStyle}
+          >
              <option value="">전체</option>
              <option value="전공">전공</option>
              <option value="교양">교양</option>
           </select>
         </div>
 
+        {/* 2. [추가] 개설 학과 */}
+        <div style={inputGroupStyle}>
+          <label style={labelStyle}>개설 학과</label>
+          <select 
+            name="deptId" 
+            value={searchParams.deptId} 
+            onChange={handleInputChange} 
+            style={{...selectStyle, width: '150px'}} // 학과명은 좀 기니까 넓게
+          >
+             <option value="">전체</option>
+             {departments.map(dept => (
+                 <option key={dept.id} value={dept.id}>{dept.name}</option>
+             ))}
+          </select>
+        </div>
+
+        {/* 3. 강의명 */}
         <div style={inputGroupStyle}>
           <label style={labelStyle}>강의명</label>
           <input 
             name="name" 
             value={searchParams.name} 
             onChange={handleInputChange} 
-            placeholder="강의명 검색"
+            placeholder="강의명을 입력하세요"
             style={inputStyle}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()} 
           />
         </div>
 
-        <button onClick={handleSearch} style={searchButtonStyle}>조회</button>
+        <button onClick={handleSearch} style={searchButtonStyle}>
+          검색
+        </button>
       </div>
 
       <table border="1" style={tableStyle}>
@@ -91,48 +125,27 @@ const EnrollmentPage = () => {
           <tr>
             <th>단과대학</th><th>개설학과</th><th>학수번호</th><th>강의구분</th>
             <th>강의명</th><th>담당교수</th><th>학점</th><th>요일/시간 (강의실)</th>
-            <th>인원</th><th>수강신청</th>
+            <th>인원</th><th>강의계획서</th>
           </tr>
         </thead>
         <tbody>
           {subjects.length === 0 ? (
-             <tr><td colSpan="10" style={{padding:'20px'}}>검색된 강좌가 없습니다.</td></tr>
+            <tr><td colSpan="10" style={{padding:'20px'}}>검색된 강좌가 없습니다.</td></tr>
           ) : (
-            subjects.map(sub => {
-              const isFull = sub.numOfStudent >= sub.capacity;
-              const isRegistered = myList.some(my => my.subject?.id === sub.id);
-
-              return (
-                <tr key={sub.id}>
-                  <td>{sub.department?.college?.name}</td>
-                  <td>{sub.department?.name}</td>
-                  <td>{sub.id}</td>
-                  <td>{sub.type}</td>
-                  <td style={{textAlign:'left', paddingLeft:'15px', fontWeight:'bold'}}>{sub.name}</td>
-                  <td>{sub.professor?.name || "미정"}</td>
-                  <td>{sub.grades}</td>
-                  <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.roomId})</td>
-                  <td>
-                    <span style={{color: isFull ? 'red' : 'green', fontWeight:'bold'}}>
-                        {sub.numOfStudent}
-                    </span> / {sub.capacity}
-                  </td>
-                  <td>
-                    {isRegistered ? (
-                      <button disabled style={disabledBtnStyle}>신청됨</button>
-                    ) : (
-                      <button 
-                        onClick={() => handleApply(sub.id)}
-                        disabled={isFull}
-                        style={isFull ? disabledBtnStyle : applyBtnStyle}
-                      >
-                        {isFull ? '마감' : '신청'}
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })
+            subjects.map(sub => (
+              <tr key={sub.id}>
+                <td>{sub.department?.college?.name}</td>
+                <td>{sub.department?.name}</td>
+                <td>{sub.id}</td>
+                <td>{sub.type}</td>
+                <td style={{textAlign:'left', paddingLeft:'15px', fontWeight:'bold'}}>{sub.name}</td>
+                <td>{sub.professor?.name || "미정"}</td>
+                <td>{sub.grades}</td>
+                <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.roomId})</td>
+                <td>{sub.numOfStudent} / {sub.capacity}</td>
+                <td><button style={smallBtnStyle} onClick={() => alert('강의계획서 팝업')}>조회</button></td>
+              </tr>
+            ))
           )}
         </tbody>
       </table>
@@ -147,7 +160,7 @@ const EnrollmentPage = () => {
   );
 };
 
-// --- 스타일 정의 (CourseListPage와 동일하게 유지하여 통일감 부여) ---
+// --- 스타일 정의 ---
 const tableStyle = { width: '100%', textAlign: 'center', borderCollapse: 'collapse', marginTop:'10px', fontSize: '14px' };
 const filterContainerStyle = { 
   background: '#f1f3f5', padding: '20px', borderRadius: '8px', marginBottom: '20px',
@@ -162,7 +175,6 @@ const searchButtonStyle = {
   borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' 
 };
 const pageBtnStyle = { padding: '5px 10px', background: 'white', border: '1px solid #ddd', cursor: 'pointer' };
-const applyBtnStyle = { padding: '5px 15px', background: '#007bff', color: 'white', border: 'none', borderRadius:'4px', cursor: 'pointer' };
-const disabledBtnStyle = { padding: '5px 15px', background: '#ccc', color: '#666', border: 'none', borderRadius:'4px', cursor: 'not-allowed' };
+const smallBtnStyle = { padding: '3px 8px', fontSize: '12px', cursor: 'pointer' };
 
-export default EnrollmentPage;
+export default CourseListPage;
