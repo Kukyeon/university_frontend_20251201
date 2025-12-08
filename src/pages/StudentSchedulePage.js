@@ -7,7 +7,7 @@ import ScheduleDetail from "../components/Schedule/ScheduleDetail";
 // 로그인된 학생 ID (임시)
 const CURRENT_STUDENT_ID = 1;
 
-const StudentSchedulePage = () => {
+const StudentSchedulePage = ({ user, role }) => {
   const [selectedScheduleId, setSelectedScheduleId] = useState(null);
   const [inRoom, setInRoom] = useState(false);
   const [viewDetail, setViewDetail] = useState(false);
@@ -16,17 +16,19 @@ const StudentSchedulePage = () => {
     setSelectedScheduleId(scheduleId);
     setViewDetail(true);
   };
-
+  const studentId = user?.id;
+  if (role !== "student") {
+    return (
+      <div style={{ padding: "20px", color: "red" }}>접근 권한이 없습니다.</div>
+    );
+  }
   return (
     <div style={{ padding: "20px" }}>
       {!inRoom && !viewDetail && (
         <>
           <h1>학생 상담 일정</h1>
-          <StudentScheduleList
-            studentId={CURRENT_STUDENT_ID}
-            onSelect={handleSelect}
-          />
-          <BookAppointment studentId={CURRENT_STUDENT_ID} professorId={1} />
+          <StudentScheduleList studentId={studentId} onSelect={handleSelect} />
+          <BookAppointment studentId={studentId} />
         </>
       )}
 

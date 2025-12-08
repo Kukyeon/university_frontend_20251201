@@ -12,6 +12,7 @@ import NoticeForm from "./components/Notice/NoticeForm";
 import EvaluationPage from "./pages/EvaluationPage";
 import VideoRoomApp from "./VideoRoomApp";
 import AcademicPage from "./pages/AcademicPage";
+import Academic from "./pages/Academic";
 import CounselingRecordPage from "./pages/CounselingRecordPage";
 import Home from "./pages/Home";
 import Header from "./components/Home/Header";
@@ -31,6 +32,8 @@ import ScheduleForm from "./components/Schedule/ScheduleForm";
 import AdminSubjectPage from "./pages/AdminSubjectPage";
 import GradePage from "./pages/GradePage";
 import EnrollmentPage from "./pages/EnrollmentPage";
+import StudentSchedulePage from "./pages/StudentSchedulePage";
+import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
 import CourseListPage from "./pages/CourseListPage";
 import EnrollmentHistoryPage from "./pages/EnrollmentHistoryPage";
 import CoursePlanPage from "./pages/CoursePlanPage";
@@ -128,7 +131,7 @@ function App() {
         />
         {/* 공지사항, 학사일정 상세/등록/수정  */}
         <Route path="/notice" element={<NoticePage role={role} />} />
-        <Route path="/notice/:id" element={<NoticeDetail />} />
+        <Route path="/notice/:id" element={<NoticeDetail role={role} />} />
         <Route path="/notice/write" element={<NoticeForm />} />
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
@@ -140,9 +143,26 @@ function App() {
         <Route path="/admin/schedule/edit/:id" element={<ScheduleForm />} />
 
         {/* 강의 평가 */}
-        <Route path="/evaluation" element={<EvaluationPage />} />
+        <Route path="/evaluation" element={<EvaluationPage user={user} />} />
         {/* 화상 회의 */}
-        <Route path="/records" element={<CounselingRecordPage />} />
+        <Route path="/records" element={<CounselingRecordPage user={user} />} />
+        <Route
+          path="/student-schedule"
+          element={
+            // <ProtectedRoute user={user} role={role} roleRequired="STUDENT">
+            <StudentSchedulePage user={user} role={role} />
+            // </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/professor-schedule"
+          element={
+            // <ProtectedRoute user={user} role={role} roleRequired="PROFESSOR">
+            <ProfessorSchedulePage user={user} role={role} />
+            // </ProtectedRoute>
+          }
+        />
 
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
