@@ -64,6 +64,16 @@ const CourseListPage = () => {
     setAppliedFilters({ ...searchParams }); // 검색 조건 확정
   };
 
+  // 팝업 띄우기 함수
+const openSyllabus = (subjectId) => {
+  // 새 창으로 열기 (너비 1000, 높이 900)
+  window.open(
+    `/course/syllabus/${subjectId}`, 
+    '_blank', 
+    'width=1000,height=900,left=200,top=50'
+  );
+};
+
   return (
     <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
       <h1>📖 전체 강좌 조회</h1>
@@ -144,7 +154,7 @@ const CourseListPage = () => {
                 <td>{sub.grades}</td>
                 <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.roomId})</td>
                 <td>{sub.numOfStudent} / {sub.capacity}</td>
-                <td><button style={smallBtnStyle} onClick={() => alert('강의계획서 팝업')}>조회</button></td>
+                <td><button style={smallBtnStyle} onClick={() => openSyllabus(sub.id)}>조회</button></td>
               </tr>
             ))
           )}

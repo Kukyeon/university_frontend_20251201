@@ -32,6 +32,10 @@ export const courseApi = {
 
   //학과 목록 조회
   getDeptList: () => api.get("/department/list"),
+
+  //  강의계획서 상세 조회
+  // GET /api/course/syllabus/101
+  getSyllabus: (subjectId) => api.get(`/course/syllabus/${subjectId}`),
 };
 
 // 관리자 강의 관리 API

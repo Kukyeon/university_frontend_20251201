@@ -30,6 +30,7 @@ import GradePage from "./pages/GradePage";
 import EnrollmentPage from "./pages/EnrollmentPage";
 import CourseListPage from "./pages/CourseListPage";
 import EnrollmentHistoryPage from "./pages/EnrollmentHistoryPage";
+import CoursePlanPage from "./pages/CoursePlanPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -149,7 +150,8 @@ function App() {
         {/* 3. 수강신청 내역 조회 (별도 페이지) */}
         <Route path="/student/enrollment-history" element={<EnrollmentHistoryPage />} />
 
-       
+        {/* 4. 강의계획서 (별도 페이지) */}
+        <Route path="/course/syllabus/:subjectId" element={<CoursePlanPage />} />
       </Routes>
       {!isLoginPage && <Footer />}
     </div>
