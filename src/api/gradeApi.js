@@ -29,11 +29,20 @@ export const courseApi = {
   // 5. 수강취소
   // DELETE /api/course/cancel?subjectId=101
   cancel: (subjectId) => api.delete("/course/cancel", { params: { subjectId } }),
+
+  //학과 목록 조회
+  getDeptList: () => api.get("/department/list"),
+
+  //  강의계획서 상세 조회
+  // GET /api/course/syllabus/101
+  getSyllabus: (subjectId) => api.get(`/course/syllabus/${subjectId}`),
 };
 
-// [신규] 관리자 강의 관리 API
+// 관리자 강의 관리 API
 export const adminSubjectApi = {
   getList: () => api.get("/admin/subject"),
   insert: (data) => api.post("/admin/subject", data),
   delete: (id) => api.delete(`/admin/subject/${id}`),
+
+
 };

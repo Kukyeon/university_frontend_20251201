@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { courseApi } from '../api/gradeApi';
+import { courseApi } from '../api/gradeApi'; // api 파일 경로 확인
 
 const CourseListPage = () => {
   const [subjects, setSubjects] = useState([]);
@@ -7,7 +7,7 @@ const CourseListPage = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   // [추가] 학과 목록 상태
-  const [departments, setDepartments] = useState([]); 
+  const [departments, setDepartments] = useState([]);
 
   // [수정] 검색 조건 상태 (deptId 추가)
   const [searchParams, setSearchParams] = useState({ type: '', name: '', deptId: '' });
@@ -15,7 +15,7 @@ const CourseListPage = () => {
   // 실제 API 요청 시 사용할 확정된 필터
   const [appliedFilters, setAppliedFilters] = useState({ type: '', name: '', deptId: '' });
 
-  // 1. 초기 로딩 (학과 목록)
+  // 1. 초기 로딩 (학과 목록 가져오기)
   useEffect(() => {
     loadDepartments();
   }, []);
@@ -25,7 +25,7 @@ const CourseListPage = () => {
     loadData();
   }, [page, appliedFilters]);
 
-  // 학과 목록 가져오기
+  // [신규] 학과 목록 로딩
   const loadDepartments = async () => {
     try {
       const res = await courseApi.getDeptList();
@@ -35,14 +35,14 @@ const CourseListPage = () => {
     }
   };
 
+  // 강의 데이터 로딩
   const loadData = async () => {
     try {
-      // [수정] deptId 파라미터 추가 전송
       const res = await courseApi.getSubjectList({ 
         page: page,
         type: appliedFilters.type,
         name: appliedFilters.name,
-        deptId: appliedFilters.deptId 
+        deptId: appliedFilters.deptId // [추가] 학과 ID 전송
       });
       setSubjects(res.data.content || []);
       setTotalPages(res.data.totalPages || 0);
@@ -63,6 +63,16 @@ const CourseListPage = () => {
     setPage(0); // 검색 시 1페이지로 초기화
     setAppliedFilters({ ...searchParams }); // 검색 조건 확정
   };
+
+  // 팝업 띄우기 함수
+const openSyllabus = (subjectId) => {
+  // 새 창으로 열기 (너비 1000, 높이 900)
+  window.open(
+    `/course/syllabus/${subjectId}`, 
+    '_blank', 
+    'width=1000,height=900,left=200,top=50'
+  );
+};
 
   return (
     <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -93,7 +103,7 @@ const CourseListPage = () => {
             name="deptId" 
             value={searchParams.deptId} 
             onChange={handleInputChange} 
-            style={{...selectStyle, width: '150px'}} // 학과명은 좀 기니까 넓게
+            style={{...selectStyle, width: '150px'}}
           >
              <option value="">전체</option>
              {departments.map(dept => (
@@ -134,8 +144,9 @@ const CourseListPage = () => {
           ) : (
             subjects.map(sub => (
               <tr key={sub.id}>
-                <td>{sub.department?.college?.name}</td>
-                <td>{sub.department?.name}</td>
+                {/* 데이터 접근 경로 확인 (sub.department.name) */}
+                <td>{sub.department?.college?.name || '-'}</td>
+                <td>{sub.department?.name || '-'}</td>
                 <td>{sub.id}</td>
                 <td>{sub.type}</td>
                 <td style={{textAlign:'left', paddingLeft:'15px', fontWeight:'bold'}}>{sub.name}</td>
@@ -143,7 +154,7 @@ const CourseListPage = () => {
                 <td>{sub.grades}</td>
                 <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.roomId})</td>
                 <td>{sub.numOfStudent} / {sub.capacity}</td>
-                <td><button style={smallBtnStyle} onClick={() => alert('강의계획서 팝업')}>조회</button></td>
+                <td><button style={smallBtnStyle} onClick={() => openSyllabus(sub.id)}>조회</button></td>
               </tr>
             ))
           )}
