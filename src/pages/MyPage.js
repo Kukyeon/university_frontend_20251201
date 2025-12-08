@@ -14,10 +14,13 @@ const MyPage = ({ user, role }) => {
 
   useEffect(() => {
     if (user) {
-      setUserData({ ...user });
+      setUserData(user ? { ...user } : null);
     }
   }, [user]);
-  console.log(user);
+  useEffect(() => {
+    setActiveTab("myInfo"); // role이 바뀌면 기본 탭으로 초기화
+    console.log(role);
+  }, [role]);
   if (!user) return <div>로그인 정보를 불러오는 중...</div>;
 
   return (
@@ -81,7 +84,9 @@ const MyPage = ({ user, role }) => {
         )}
         {activeTab === "changePw" && <ChangePw user={user} />}
         {activeTab === "leave" && <BreakApp user={user} />}
-        {activeTab === "leaveHistory" && <BreakHistory user={user} />}
+        {activeTab === "leaveHistory" && (
+          <BreakHistory user={user} role={role} />
+        )}
         {activeTab === "tuitionHistory" && <TuitionHistory user={user} />}
         {activeTab === "tuitionNotice" && <TuitionNotice user={user} />}
       </main>
