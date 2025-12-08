@@ -5,14 +5,13 @@ import NoticePage from "./NoticePage";
 import AcademicCalendar from "../components/Schedule/AcademicCalendar";
 import ScheduleManagerPage from "./ScheduleManagerPage";
 
-const AcademicPage = () => {
+const AcademicPage = ({ role }) => {
   const [selectedTab, setSelectedTab] = useState("calendar");
-  const [role, setRole] = useState(null);
 
-  useEffect(() => {
-    const storedRole = localStorage.getItem("role");
-    setRole(storedRole?.toUpperCase()); // STAFF / STUDENT / PROFESSOR
-  }, []);
+  // useEffect(() => {
+  //   const storedRole = localStorage.getItem("role");
+  //   setRole(storedRole?.toUpperCase()); // STAFF / STUDENT / PROFESSOR
+  // }, []);
 
   return (
     <div style={{ display: "flex" }}>
@@ -45,24 +44,29 @@ const AcademicPage = () => {
           학사일정
         </div>
         {/*  학사일정등록 탭 */}
-        {/* {role === "STAFF" && (<> */} {/* role 안먹는다요 ㅠㅠㅠㅠ */}
-        <div
-          onClick={() => setSelectedTab("schedule-manager")}
-          style={{
-            cursor: "pointer",
-            padding: "10px 0",
-            fontWeight: selectedTab === "schedule-manager" ? "bold" : "normal",
-            color: selectedTab === "schedule-manager" ? "#28a745" : "inherit", // 관리자 강조색
-          }}
-        >
-          학사일정관리
-        </div>
-        {/* )} */}
+        {role === "staff" && (
+          <>
+            {/* role 안먹는다요 ㅠㅠㅠㅠ */}
+            <div
+              onClick={() => setSelectedTab("schedule-manager")}
+              style={{
+                cursor: "pointer",
+                padding: "10px 0",
+                fontWeight:
+                  selectedTab === "schedule-manager" ? "bold" : "normal",
+                color:
+                  selectedTab === "schedule-manager" ? "#28a745" : "inherit", // 관리자 강조색
+              }}
+            >
+              학사일정관리
+            </div>
+          </>
+        )}
       </div>
 
       {/* 2. 메인 컨텐츠 영역 */}
       <div style={{ flexGrow: 1, paddingLeft: "20px" }}>
-        {selectedTab === "notice" && <NoticePage />}
+        {selectedTab === "notice" && <NoticePage role={role} />}
         {selectedTab === "calendar" && <AcademicCalendar />}
         {selectedTab === "schedule-manager" && <ScheduleManagerPage />}
         {/* && role === "STAFF" 나중에 넣기 */}
