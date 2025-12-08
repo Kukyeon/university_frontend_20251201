@@ -26,12 +26,18 @@ import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import Academic from "./pages/Academic";
+import AcademicRegistration from "./pages/AcademicRegistration";
 import ScheduleForm from "./components/Schedule/ScheduleForm";
 import AdminSubjectPage from "./pages/AdminSubjectPage";
 import GradePage from "./pages/GradePage";
 import EnrollmentPage from "./pages/EnrollmentPage";
 import StudentSchedulePage from "./pages/StudentSchedulePage";
 import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
+import CourseListPage from "./pages/CourseListPage";
+import EnrollmentHistoryPage from "./pages/EnrollmentHistoryPage";
+import CoursePlanPage from "./pages/CoursePlanPage";
+
 function App() {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
@@ -102,8 +108,19 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/registration"
+          element={
+            <ProtectedRoute user={user} role={role} roleRequired="staff">
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <AcademicRegistration user={user} role={role} />
+              )}
+            </ProtectedRoute>
+          }
+        />
         <Route path="/videoroom" element={<VideoRoomApp />} />
-        {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
         <Route
           path="/"
           element={
@@ -119,7 +136,7 @@ function App() {
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
         {/* 📚 학사일정 및 공지사항 통합 페이지 */}
-        <Route path="/academicpage" element={<AcademicPage role={role} />} />
+        <Route path="/academicPage" element={<AcademicPage role={role} />} />
 
         {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
         <Route path="/admin/schedule/write" element={<ScheduleForm />} />
@@ -171,6 +188,29 @@ function App() {
           element={<AdminSubjectPage user={user} />}
         />
         <Route path="/grade" element={<GradePage user={user} />} />
+        <Route
+          path="/admin/dashboard/risk-list"
+          element={<AdminDashboard user={user} />}
+        />
+
+        {/* 수강신청 관련부분 */}
+        {/* 1. 전체 강좌 조회 */}
+        <Route path="/student/course-list" element={<CourseListPage />} />
+
+        {/* 2. 수강신청 (예비수강신청도 이 컴포넌트 재사용 가능) */}
+        <Route path="/student/enrollment" element={<EnrollmentPage />} />
+
+        {/* 3. 수강신청 내역 조회 (별도 페이지) */}
+        <Route
+          path="/student/enrollment-history"
+          element={<EnrollmentHistoryPage />}
+        />
+
+        {/* 4. 강의계획서 (별도 페이지) */}
+        <Route
+          path="/course/syllabus/:subjectId"
+          element={<CoursePlanPage />}
+        />
       </Routes>
       {!isLoginPage && <Footer />}
     </div>

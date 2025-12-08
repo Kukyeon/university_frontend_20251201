@@ -12,7 +12,7 @@ const Footer = () => {
       <div className="footer-center">
         <Link to="/departments">학과소개</Link>
         <Link to="/admission">입학안내</Link>
-        <Link to="/academicpage">공지사항</Link>
+        <Link to="/academicPage">공지사항</Link>
       </div>
       <div className="footer-right">
         <p>전화: 02-1234-5678</p>
