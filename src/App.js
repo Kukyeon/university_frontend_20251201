@@ -19,6 +19,9 @@ import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminSubjectPage from "./pages/AdminSubjectPage";
+import GradePage from "./pages/GradePage";
+import EnrollmentPage from "./pages/EnrollmentPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -107,6 +110,12 @@ function App() {
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage user={user} />} />
         <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
+
+        {/* 수강신청 관련부분 */} 
+        <Route path="/enroll" element={<EnrollmentPage user={user}/>} />
+        <Route path="/admin/subject" element={<AdminSubjectPage user={user}/>} />
+        <Route path="/grade" element={<GradePage user={user}/>} />
+
       </Routes>
       {!isLoginPage && <Footer />}
     </div>

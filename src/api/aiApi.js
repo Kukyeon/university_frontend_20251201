@@ -44,4 +44,3 @@ export const adminApi = {
   clearLogs: () => api.delete("/system/logs")
 };
 
-export default chatApi;
