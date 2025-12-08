@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import Academic from "./pages/Academic";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -84,7 +85,18 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/academic"
+          element={
+            <ProtectedRoute user={user} role={role} roleRequired="staff">
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <Academic user={user} role={role} />
+              )}
+            </ProtectedRoute>
+          }
+        />
         <Route path="/videoroom" element={<VideoRoomApp />} />
         {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
         <Route
@@ -114,7 +126,7 @@ function App() {
 
         {/* 챗봇 및 중도 이탈방지 관련부분 */}
         {/* 학생이 로그인하면 들어가는 메인 화면 */}
-        <Route path="/student" element={<StudentMain user={user}/>} />
+        <Route path="/student" element={<StudentMain user={user} />} />
 
         {/* === [3] 교수용 (위험군 대시보드) === */}
         <Route path="/professor" element={<ProfDashboard user={user} />} />
