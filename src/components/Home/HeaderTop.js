@@ -1,6 +1,6 @@
 import React from "react";
 
-const HeaderTop = ({ user }) => {
+const HeaderTop = ({ user, logout }) => {
   return (
     <div className="header-top">
       <ul>
@@ -15,9 +15,9 @@ const HeaderTop = ({ user }) => {
           <span className="material-symbols-outlined logout-icon">logout</span>
         </li>
         <li>
-          <a href="/logout" className="logout-link">
+          <button className="btn logout" onClick={logout}>
             로그아웃
-          </a>
+          </button>
         </li>
       </ul>
     </div>

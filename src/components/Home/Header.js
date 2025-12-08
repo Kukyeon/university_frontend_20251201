@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import HeaderTop from "./HeaderTop";
 import "./Header.css";
 
-const Header = ({ user }) => {
+const Header = ({ user, logout }) => {
   return (
     <header>
       {/* 상단 헤더 */}
-      {user && <HeaderTop user={user} />}
+      {user && <HeaderTop user={user} logout={logout} />}
 
       {/* 메인 네비게이션 */}
       <div className="main-header">
@@ -20,6 +20,11 @@ const Header = ({ user }) => {
             <li>
               <Link to="/">홈</Link>
             </li>
+            {user && (
+              <li>
+                <Link to="/my">MY</Link>
+              </li>
+            )}
 
             <li className="dropdown">
               <Link to="/departments">학과소개</Link>
