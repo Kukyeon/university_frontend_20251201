@@ -93,7 +93,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* <Route
+        <Route
           path="/academic"
           element={
             <ProtectedRoute user={user} role={role} roleRequired="staff">
@@ -118,7 +118,7 @@ function App() {
           }
         />
         <Route path="/videoroom" element={<VideoRoomApp />} />
-        {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
+        <Route path="/" element={<Navigate to="/notice" />} />
         <Route
           path="/"
           element={
@@ -169,20 +169,29 @@ function App() {
           element={<AdminSubjectPage user={user} />}
         />
         <Route path="/grade" element={<GradePage user={user} />} />
-        <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
+        <Route
+          path="/admin/dashboard/risk-list"
+          element={<AdminDashboard user={user} />}
+        />
 
-        {/* 수강신청 관련부분 */} 
+        {/* 수강신청 관련부분 */}
         {/* 1. 전체 강좌 조회 */}
         <Route path="/student/course-list" element={<CourseListPage />} />
-        
+
         {/* 2. 수강신청 (예비수강신청도 이 컴포넌트 재사용 가능) */}
         <Route path="/student/enrollment" element={<EnrollmentPage />} />
-        
+
         {/* 3. 수강신청 내역 조회 (별도 페이지) */}
-        <Route path="/student/enrollment-history" element={<EnrollmentHistoryPage />} />
+        <Route
+          path="/student/enrollment-history"
+          element={<EnrollmentHistoryPage />}
+        />
 
         {/* 4. 강의계획서 (별도 페이지) */}
-        <Route path="/course/syllabus/:subjectId" element={<CoursePlanPage />} />
+        <Route
+          path="/course/syllabus/:subjectId"
+          element={<CoursePlanPage />}
+        />
       </Routes>
       {!isLoginPage && <Footer />}
     </div>
