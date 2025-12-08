@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import HeaderTop from "./HeaderTop";
 import "./Header.css";
 
-const Header = ({ user, logout }) => {
+const Header = ({ user, logout, role }) => {
   return (
     <header>
       {/* 상단 헤더 */}
