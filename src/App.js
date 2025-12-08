@@ -7,11 +7,11 @@ import {
   useNavigate,
 } from "react-router-dom";
 import NoticePage from "./pages/NoticePage";
-
+import NoticeDetail from "./components/Notice/NoticeDetail";
+import NoticeForm from "./components/Notice/NoticeForm";
 import EvaluationPage from "./pages/EvaluationPage";
 import VideoRoomApp from "./VideoRoomApp";
-import StudentSchedulePage from "./pages/StudentSchedulePage";
-import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
+import AcademicPage from "./pages/AcademicPage";
 import CounselingRecordPage from "./pages/CounselingRecordPage";
 import Home from "./pages/Home";
 import Header from "./components/Home/Header";
@@ -27,6 +27,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import Academic from "./pages/Academic";
 import AcademicRegistration from "./pages/AcademicRegistration";
+import ScheduleForm from "./components/Schedule/ScheduleForm";
+import AdminSubjectPage from "./pages/AdminSubjectPage";
+import GradePage from "./pages/GradePage";
+import EnrollmentPage from "./pages/EnrollmentPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -120,20 +124,24 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/notice" element={<NoticePage />} />
+        {/* 공지사항, 학사일정 상세/등록/수정  */}
+        <Route path="/notice" element={<NoticePage role={role} />} />
+        <Route path="/notice/:id" element={<NoticeDetail />} />
+        <Route path="/notice/write" element={<NoticeForm />} />
+        <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
+        {/* 📚 학사일정 및 공지사항 통합 페이지 */}
+        <Route path="/academic" element={<AcademicPage role={role} />} />
+
+        {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
+        <Route path="/admin/schedule/write" element={<ScheduleForm />} />
+        <Route path="/admin/schedule/edit/:id" element={<ScheduleForm />} />
+
+        {/* 강의 평가 */}
         <Route path="/evaluation" element={<EvaluationPage />} />
-
-        {/* 임시 테스트 중*/}
-        {/* <Route
-          path="/student"
-          element={<StudentSchedulePage studentId={1} professorId={1} />}
-        /> */}
-        {/* <Route
-          path="/professor"
-          element={<ProfessorSchedulePage professorId={1} />}
-        /> */}
+        {/* 화상 회의 */}
         <Route path="/records" element={<CounselingRecordPage />} />
+
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
 
@@ -146,10 +154,14 @@ function App() {
 
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage user={user} />} />
-        <Route
-          path="/admin/dashboard/risk-list"
-          element={<AdminDashboard user={user} />}
-        />
+        <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
+
+        {/* 수강신청 관련부분 */} 
+        <Route path="/enroll" element={<EnrollmentPage user={user}/>} />
+        <Route path="/admin/subject" element={<AdminSubjectPage user={user}/>} />
+        <Route path="/grade" element={<GradePage user={user}/>} />
+
+       
       </Routes>
       {!isLoginPage && <Footer />}
     </div>
