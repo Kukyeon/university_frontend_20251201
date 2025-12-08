@@ -95,9 +95,9 @@ function App() {
         <Route path="/admin/schedule/edit/:id" element={<ScheduleForm />} />
 
         {/* 강의 평가 */}
-        <Route path="/evaluation" element={<EvaluationPage />} />
+        <Route path="/evaluation" element={<EvaluationPage user={user} />} />
         {/* 화상 회의 */}
-        <Route path="/records" element={<CounselingRecordPage />} />
+        <Route path="/records" element={<CounselingRecordPage user={user} />} />
 
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
