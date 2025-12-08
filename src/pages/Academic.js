@@ -4,8 +4,13 @@ import "./Academic.css";
 import StudentList from "../components/Academic/StudentList";
 import ProfessorList from "../components/Academic/ProfessorList";
 import StudentRegister from "../components/Academic/StudentRegister";
+import ProfessorRegister from "../components/Academic/ProfessorRegister";
+import StaffRegister from "../components/Academic/StaffRegister";
+import TuitionNotice from "../components/Academic/TuitionNotice";
+import BreakManagement from "../components/Academic/BreakManagement";
+import CoursePeriod from "../components/Academic/CoursePeriod";
 
-const Academic = () => {
+const Academic = ({ role }) => {
   const [activeTab, setActiveTab] = useState("studentList");
 
   return (
@@ -70,19 +75,11 @@ const Academic = () => {
         {activeTab === "studentList" && <StudentList />}
         {activeTab === "professorList" && <ProfessorList />}
         {activeTab === "studentRegister" && <StudentRegister />}
-        {/* {activeTab === "breakManagement" && <BreakManagement />} */}
-        {/* 나머지 기능 컴포넌트는 추후 추가 */}
-        {[
-          "professorRegister",
-          "staffRegister",
-          "tuitionNotice",
-          "coursePeriod",
-        ].includes(activeTab) && (
-          <div style={{ padding: "20px" }}>
-            <h3>{activeTab}</h3>
-            <p>해당 기능은 아직 준비 중입니다.</p>
-          </div>
-        )}
+        {activeTab === "professorRegister" && <ProfessorRegister />}
+        {activeTab === "staffRegister" && <StaffRegister />}
+        {activeTab === "tuitionNotice" && <TuitionNotice />}
+        {activeTab === "breakManagement" && <BreakManagement role={role} />}
+        {activeTab === "coursePeriod" && <CoursePeriod />}
       </main>
     </div>
   );

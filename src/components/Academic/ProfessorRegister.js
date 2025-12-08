@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../../api/axiosConfig";
 
-const StudentRegister = () => {
+const ProfessorRegister = () => {
   const [formData, setFormData] = useState({
     name: "",
     birthDate: "",
@@ -12,7 +12,6 @@ const StudentRegister = () => {
     department: {
       id: "",
     },
-    entranceDate: "",
   });
 
   const handleChange = (e) => {
@@ -28,9 +27,9 @@ const StudentRegister = () => {
   };
   const handleSubmit = async () => {
     try {
-      const res = await api.post("/staff/student", formData); // formData 전송
-      console.log("학생 등록 성공:", res.data);
-      alert("학생 등록 완료!");
+      const res = await api.post("/staff/professor", formData); // formData 전송
+      console.log("교수 등록 성공:", res.data);
+      alert("교수 등록 완료!");
       // 폼 초기화
       setFormData({
         name: "",
@@ -42,18 +41,15 @@ const StudentRegister = () => {
         department: {
           id: "",
         },
-        entranceDate: "",
       });
     } catch (err) {
       console.error(err);
-      alert("학생 등록 실패: " + err.response?.data?.message || err.message);
+      alert("교수 등록 실패: " + err.response?.data?.message || err.message);
     }
   };
-
   return (
     <div className="student-form-vertical mypage-card">
-      <h3>학생 등록</h3>
-
+      <h3>교수 등록</h3>
       <div className="form-row">
         <label>이름</label>
         <input
@@ -140,16 +136,6 @@ const StudentRegister = () => {
         />
       </div>
 
-      <div className="form-row">
-        <label>입학일</label>
-        <input
-          type="date"
-          name="entranceDate"
-          value={formData.entranceDate}
-          onChange={handleChange}
-        />
-      </div>
-
       <div style={{ marginTop: "20px" }}>
         <button onClick={handleSubmit}>등록</button>
       </div>
@@ -157,4 +143,4 @@ const StudentRegister = () => {
   );
 };
 
-export default StudentRegister;
+export default ProfessorRegister;

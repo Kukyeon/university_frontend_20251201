@@ -1,7 +1,15 @@
 import React from "react";
 import api from "../../api/axiosConfig";
 
-const BreakAppModal = ({ show, onClose, app, onDeleted }) => {
+const BreakAppModal = ({
+  show,
+  onClose,
+  app,
+  onDeleted,
+  role,
+  handleUpdateStatus,
+}) => {
+  // console.log(role);
   if (!show || !app) return null;
   const handleCancel = async () => {
     if (!window.confirm("정말로 휴학 신청을 취소하시겠습니까?")) return;
@@ -17,6 +25,18 @@ const BreakAppModal = ({ show, onClose, app, onDeleted }) => {
       } else {
         alert("서버와 통신 중 오류 발생");
       }
+    }
+  };
+  const handleApproveReject = async (status) => {
+    if (!window.confirm(`정말로 "${status}" 처리하시겠습니까?`)) return;
+
+    try {
+      await api.put(`/break/update/${app.id}`, { status }); // 예: 상태 변경 API
+      alert(`휴학 신청이 "${status}" 처리되었습니다.`);
+      handleUpdateStatus(app.id);
+      onClose();
+    } catch (err) {
+      alert(err.response?.data?.message || "처리 실패");
     }
   };
   const formatDate = (dateStr) => {
@@ -77,7 +97,20 @@ const BreakAppModal = ({ show, onClose, app, onDeleted }) => {
         <p style={{ textAlign: "right" }}>{formatDate(app.appDate)}</p>
 
         <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <button onClick={handleCancel}>취소하기</button>
+          {role === "student" && app.status !== "승인" && (
+            <button onClick={handleCancel}>취소하기</button>
+          )}
+          {role === "staff" && (
+            <>
+              <button
+                onClick={() => handleApproveReject("승인")}
+                style={{ marginRight: "10px" }}
+              >
+                승인
+              </button>
+              <button onClick={() => handleApproveReject("반려")}>반려</button>
+            </>
+          )}
         </div>
       </div>
     </div>
