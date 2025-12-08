@@ -17,26 +17,40 @@ const formatDateTime = (dateTimeStr) => {
   return `${month}-${day} ${hours}:${minutes}`;
 };
 
-const BookAppointment = ({ studentId, professorId }) => {
+const BookAppointment = ({ studentId }) => {
   const [slots, setSlots] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!professorId) return;
+    if (!studentId) {
+      setLoading(false);
+      setError("상담 예약 정보를 가져올 수 없습니다. (학생 ID 부재)");
+      return;
+    }
 
     const fetchSlots = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const data = await getProfessorAvailability(professorId);
+        const data = await getProfessorAvailability();
         setSlots(data);
-      } catch (error) {
-        console.error("교수 예약 조회 실패:", error.message);
+      } catch (err) {
+        console.error(
+          "교수 예약 조회 실패:",
+          err.response?.data?.message || err.message
+        );
+        setError("가능 시간을 불러오는 데 실패했습니다.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchSlots();
-  }, [professorId]);
+  }, [studentId]);
 
   const handleBook = async (availabilityId) => {
-    if (!studentId) return alert("학생 ID가 필요합니다.");
+    if (!studentId) return alert("예약은 학생만 가능합니다..");
     try {
       await bookAppointment(availabilityId, studentId);
       alert("예약 완료");
@@ -49,7 +63,13 @@ const BookAppointment = ({ studentId, professorId }) => {
       alert("예약 실패: " + error.message);
     }
   };
-
+  if (!studentId) {
+    return (
+      <div style={{ marginTop: "20px", color: "gray" }}>
+        상담 예약 기능은 학생만 이용 가능합니다.
+      </div>
+    );
+  }
   return (
     <div style={{ marginTop: "20px" }}>
       <h3>상담 예약</h3>

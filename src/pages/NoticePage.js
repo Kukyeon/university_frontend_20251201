@@ -48,9 +48,10 @@ const NoticePage = ({ role }) => {
           검색
         </button>
       </div>
-      {/* {role === "STAFF" && ( */} {/* role 안먹는다요 ㅠㅠㅠㅠ */}
-      <button onClick={() => navigate("/notice/write")}>새 글 등록</button>
-      {/* )} */}
+
+      {role === "staff" && (
+        <button onClick={() => navigate("/notice/write")}>새 글 등록</button>
+      )}
       {/* 목록 */}
       <table border="1" width="100%">
         <thead>

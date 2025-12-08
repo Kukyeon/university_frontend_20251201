@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Academic.css"; // 기존 스타일 그대로 사용
 import College from "../components/Registration/College";
 import Department from "../components/Registration/Department";
+import Classroom from "../components/Registration/ClassRoom";
 const AcademicRegistration = () => {
   const [activeTab, setActiveTab] = useState("college");
   return (
@@ -49,12 +50,7 @@ const AcademicRegistration = () => {
 
         {activeTab === "department" && <Department />}
 
-        {activeTab === "classroom" && (
-          <div className="mypage-card">
-            <h3>강의실 관리</h3>
-            <p>강의실 등록/삭제 폼 및 리스트</p>
-          </div>
-        )}
+        {activeTab === "classroom" && <Classroom />}
 
         {activeTab === "course" && (
           <div className="mypage-card">

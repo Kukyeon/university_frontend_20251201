@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getNoticeDetail, deleteNotice } from "../../api/noticeApi";
 import { useParams, useNavigate } from "react-router-dom";
 
-const NoticeDetail = () => {
+const NoticeDetail = ({ role }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [notice, setNotice] = useState(null);
@@ -45,9 +45,12 @@ const NoticeDetail = () => {
 
       <br />
       <br />
-
-      <button onClick={() => navigate(`/notice/edit/${id}`)}>수정</button>
-      <button onClick={handleDelete}>삭제</button>
+      {role === "staff" && (
+        <>
+          <button onClick={() => navigate(`/notice/edit/${id}`)}>수정</button>
+          <button onClick={handleDelete}>삭제</button>
+        </>
+      )}
       <button onClick={() => navigate("/notice")}>목록</button>
     </div>
   );

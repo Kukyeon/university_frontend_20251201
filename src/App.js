@@ -12,6 +12,7 @@ import NoticeForm from "./components/Notice/NoticeForm";
 import EvaluationPage from "./pages/EvaluationPage";
 import VideoRoomApp from "./VideoRoomApp";
 import AcademicPage from "./pages/AcademicPage";
+import Academic from "./pages/Academic";
 import CounselingRecordPage from "./pages/CounselingRecordPage";
 import Home from "./pages/Home";
 import Header from "./components/Home/Header";
@@ -25,12 +26,13 @@ import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
-import Academic from "./pages/Academic";
 import AcademicRegistration from "./pages/AcademicRegistration";
 import ScheduleForm from "./components/Schedule/ScheduleForm";
 import AdminSubjectPage from "./pages/AdminSubjectPage";
 import GradePage from "./pages/GradePage";
 import EnrollmentPage from "./pages/EnrollmentPage";
+import StudentSchedulePage from "./pages/StudentSchedulePage";
+import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
 import CourseListPage from "./pages/CourseListPage";
 import EnrollmentHistoryPage from "./pages/EnrollmentHistoryPage";
 import CoursePlanPage from "./pages/CoursePlanPage";
@@ -93,7 +95,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* <Route
+        <Route
           path="/academic"
           element={
             <ProtectedRoute user={user} role={role} roleRequired="staff">
@@ -118,7 +120,6 @@ function App() {
           }
         />
         <Route path="/videoroom" element={<VideoRoomApp />} />
-        {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
         <Route
           path="/"
           element={
@@ -129,21 +130,38 @@ function App() {
         />
         {/* 공지사항, 학사일정 상세/등록/수정  */}
         <Route path="/notice" element={<NoticePage role={role} />} />
-        <Route path="/notice/:id" element={<NoticeDetail />} />
+        <Route path="/notice/:id" element={<NoticeDetail role={role} />} />
         <Route path="/notice/write" element={<NoticeForm />} />
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
         {/* 📚 학사일정 및 공지사항 통합 페이지 */}
-        <Route path="/academic" element={<AcademicPage role={role} />} />
+        <Route path="/academicPage" element={<AcademicPage role={role} />} />
 
         {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
         <Route path="/admin/schedule/write" element={<ScheduleForm />} />
         <Route path="/admin/schedule/edit/:id" element={<ScheduleForm />} />
 
         {/* 강의 평가 */}
-        <Route path="/evaluation" element={<EvaluationPage />} />
+        <Route path="/evaluation" element={<EvaluationPage user={user} />} />
         {/* 화상 회의 */}
-        <Route path="/records" element={<CounselingRecordPage />} />
+        <Route path="/records" element={<CounselingRecordPage user={user} />} />
+        <Route
+          path="/student-schedule"
+          element={
+            // <ProtectedRoute user={user} role={role} roleRequired="STUDENT">
+            <StudentSchedulePage user={user} role={role} />
+            // </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/professor-schedule"
+          element={
+            // <ProtectedRoute user={user} role={role} roleRequired="PROFESSOR">
+            <ProfessorSchedulePage user={user} role={role} />
+            // </ProtectedRoute>
+          }
+        />
 
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
@@ -157,20 +175,41 @@ function App() {
 
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage user={user} />} />
-        <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
+        <Route
+          path="/admin/dashboard/risk-list"
+          element={<AdminDashboard user={user} />}
+        />
 
-        {/* 수강신청 관련부분 */} 
+        {/* 수강신청 관련부분 */}
+        <Route path="/enroll" element={<EnrollmentPage user={user} />} />
+        <Route
+          path="/admin/subject"
+          element={<AdminSubjectPage user={user} />}
+        />
+        <Route path="/grade" element={<GradePage user={user} />} />
+        <Route
+          path="/admin/dashboard/risk-list"
+          element={<AdminDashboard user={user} />}
+        />
+
+        {/* 수강신청 관련부분 */}
         {/* 1. 전체 강좌 조회 */}
         <Route path="/student/course-list" element={<CourseListPage />} />
-        
+
         {/* 2. 수강신청 (예비수강신청도 이 컴포넌트 재사용 가능) */}
         <Route path="/student/enrollment" element={<EnrollmentPage />} />
-        
+
         {/* 3. 수강신청 내역 조회 (별도 페이지) */}
-        <Route path="/student/enrollment-history" element={<EnrollmentHistoryPage />} />
+        <Route
+          path="/student/enrollment-history"
+          element={<EnrollmentHistoryPage />}
+        />
 
         {/* 4. 강의계획서 (별도 페이지) */}
-        <Route path="/course/syllabus/:subjectId" element={<CoursePlanPage />} />
+        <Route
+          path="/course/syllabus/:subjectId"
+          element={<CoursePlanPage />}
+        />
       </Routes>
       {!isLoginPage && <Footer />}
     </div>

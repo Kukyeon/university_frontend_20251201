@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
-
-import { createEvaluation, getEvaluationDetail } from "../../api/evaluationApi";
+import React, { useState, useEffect } from "react";
+import {
+  createEvaluation,
+  getEvaluationDetail,
+  getEvaluationQuestions,
+} from "../../api/evaluationApi";
 
 const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
   const [form, setForm] = useState({
@@ -13,15 +16,29 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
     answer7: "",
     improvements: "",
   });
+  const [questions, setQuestions] = useState(null);
 
   useEffect(() => {
-    if (evaluationId && evaluationId !== 0) {
-      const fetchData = async () => {
+    // 1. 질문 데이터 가져오기
+    const fetchQuestions = async () => {
+      try {
+        const qData = await getEvaluationQuestions();
+        setQuestions(qData);
+      } catch (error) {
+        console.error("평가 질문 로드 실패:", error);
+      }
+    };
+
+    // 2. 기존 평가 데이터 가져오기 (수정 모드일 때)
+    const fetchDetail = async () => {
+      if (evaluationId && evaluationId !== 0) {
         const data = await getEvaluationDetail(evaluationId);
         setForm(data);
-      };
-      fetchData();
-    }
+      }
+    };
+
+    fetchQuestions();
+    fetchDetail();
   }, [evaluationId]);
 
   const handleChange = (e) => {
@@ -34,8 +51,6 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
 
     try {
       if (evaluationId && evaluationId !== 0) {
-        //  평가 수정
-        // await updateEvaluation(evaluationId, form);
         console.warn(
           "수정 기능은 현재 백엔드/프론트엔드에 구현되어 있지 않습니다."
         );
@@ -61,46 +76,79 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
     { value: 1, label: "전혀 그렇지 않다" },
   ];
 
+  // 로딩 처리
+  if (!questions) return <div>평가 질문 로딩 중...</div>;
+
   return (
     <form onSubmit={handleSubmit}>
-      {" "}
-      {Array.from({ length: 7 }, (_, i) => (
-        <div key={i}>
-          {" "}
-          <p>
-            {i + 1}. 질문 {i + 1}{" "}
-          </p>{" "}
-          {answers.map((a) => (
-            <label key={a.value}>
-              {" "}
-              <input
-                type="radio"
-                name={`answer${i + 1}`}
-                value={a.value}
-                checked={Number(form[`answer${i + 1}`]) === a.value}
-                onChange={(e) =>
-                  handleChange({
-                    target: {
-                      name: e.target.name,
-                      value: Number(e.target.value),
-                    },
-                  })
-                }
-              />
-              {a.label}{" "}
-            </label>
-          ))}{" "}
-        </div>
-      ))}{" "}
-      <div>
-        <p>개선사항</p>{" "}
+      <h3>평가 항목</h3>
+
+      {Array.from({ length: 7 }, (_, i) => {
+        const questionKey = `question${i + 1}`;
+        const questionText =
+          questions[questionKey] || `[질문 ${i + 1} 텍스트 없음]`;
+        const answerName = `answer${i + 1}`;
+
+        return (
+          <div
+            key={i}
+            style={{
+              marginBottom: "15px",
+              borderBottom: "1px solid #eee",
+              paddingBottom: "10px",
+            }}
+          >
+            <p style={{ fontWeight: "bold", margin: "5px 0" }}>
+              {i + 1}. {questionText}
+            </p>
+            <div style={{ display: "flex", gap: "15px", marginTop: "5px" }}>
+              {answers.map((a) => (
+                <label key={a.value}>
+                  <input
+                    type="radio"
+                    name={answerName}
+                    value={a.value}
+                    checked={Number(form[answerName]) === a.value}
+                    onChange={(e) =>
+                      handleChange({
+                        target: {
+                          name: e.target.name,
+                          value: Number(e.target.value),
+                        },
+                      })
+                    }
+                  />
+                  {a.label}
+                </label>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+
+      <div style={{ marginTop: "20px" }}>
+        <p style={{ fontWeight: "bold" }}>개선사항 (자유 기술)</p>
         <textarea
           name="improvements"
           value={form.improvements}
           onChange={handleChange}
-        />{" "}
+          rows={4}
+          style={{ width: "100%", padding: "10px", boxSizing: "border-box" }}
+        />
       </div>
-      <button type="submit">제출하기</button>{" "}
+      <button
+        type="submit"
+        style={{
+          padding: "10px 20px",
+          backgroundColor: "#007bff",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}
+      >
+        제출하기
+      </button>
     </form>
   );
 };
