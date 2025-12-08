@@ -24,6 +24,7 @@ import MyPage from "./pages/MyPage";
 import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -99,24 +100,24 @@ function App() {
         <Route path="/evaluation" element={<EvaluationPage />} />
 
         {/* 임시 테스트 중*/}
-        <Route
+        {/* <Route
           path="/student"
           element={<StudentSchedulePage studentId={1} professorId={1} />}
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="/professor"
           element={<ProfessorSchedulePage professorId={1} />}
-        />
+        /> */}
         <Route path="/records" element={<CounselingRecordPage />} />
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
 
         {/* 챗봇 및 중도 이탈방지 관련부분 */}
         {/* 학생이 로그인하면 들어가는 메인 화면 */}
-        <Route path="/student" element={<StudentMain user={user} />} />
+        <Route path="/student" element={<StudentMain user={user}/>} />
 
         {/* === [3] 교수용 (위험군 대시보드) === */}
-        <Route path="/professor" element={<ProfDashboard />} />
+        <Route path="/professor" element={<ProfDashboard user={user} />} />
 
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage user={user} />} />
