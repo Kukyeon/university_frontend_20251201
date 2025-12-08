@@ -131,7 +131,7 @@ function App() {
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
         {/* 📚 학사일정 및 공지사항 통합 페이지 */}
-        <Route path="/academic" element={<AcademicPage role={role} />} />
+        <Route path="/academicPage" element={<AcademicPage role={role} />} />
 
         {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
         <Route path="/admin/schedule/write" element={<ScheduleForm />} />
