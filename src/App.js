@@ -118,7 +118,6 @@ function App() {
           }
         />
         <Route path="/videoroom" element={<VideoRoomApp />} />
-        <Route path="/" element={<Navigate to="/notice" />} />
         <Route
           path="/"
           element={
