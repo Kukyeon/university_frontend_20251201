@@ -1,45 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { getEvaluationDetail } from "../../api/evaluationApi";
+
+import {
+  getEvaluationDetail,
+  getEvaluationQuestions,
+} from "../../api/evaluationApi";
 
 const EvaluationDetail = ({ id, onBack }) => {
   const [evaluation, setEvaluation] = useState(null);
+  const [questions, setQuestions] = useState(null);
 
   useEffect(() => {
     const fetchDetail = async () => {
-      const data = await getEvaluationDetail(id);
-      setEvaluation(data);
+      const [evalData, qData] = await Promise.all([
+        getEvaluationDetail(id),
+        getEvaluationQuestions(),
+      ]);
+      setEvaluation(evalData);
+      setQuestions(qData);
     };
     fetchDetail();
   }, [id]);
 
-  if (!evaluation) return <div>로딩중...</div>;
+  if (!evaluation || !questions) return <div>로딩중...</div>;
+
+  const subjectName = evaluation.subject?.name || "과목 정보 없음";
 
   return (
     <div>
       <button onClick={onBack}>목록으로</button>
-      <h2>{evaluation.subjectName}</h2>
+      <h2>{subjectName}</h2>
       <ul>
-        <li>
-          1. {evaluation.question1}: {evaluation.answer1}
-        </li>
-        <li>
-          2. {evaluation.question2}: {evaluation.answer2}
-        </li>
-        <li>
-          3. {evaluation.question3}: {evaluation.answer3}
-        </li>
-        <li>
-          4. {evaluation.question4}: {evaluation.answer4}
-        </li>
-        <li>
-          5. {evaluation.question5}: {evaluation.answer5}
-        </li>
-        <li>
-          6. {evaluation.question6}: {evaluation.answer6}
-        </li>
-        <li>
-          7. {evaluation.question7}: {evaluation.answer7}
-        </li>
+        {Array.from({ length: 7 }, (_, i) => i + 1).map((i) => (
+          <li key={i}>
+            {questions[`question${i}`]}: {evaluation[`answer${i}`]}
+          </li>
+        ))}
       </ul>
       <p>개선사항: {evaluation.improvements}</p>
     </div>

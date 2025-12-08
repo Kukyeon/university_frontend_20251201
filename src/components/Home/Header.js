@@ -46,7 +46,7 @@ const Header = ({ user, logout, role }) => {
               <Link to="/admission">입학안내</Link>
             </li>
             <li>
-              <Link to="/notices">공지사항</Link>
+              <Link to="/academic">공지사항</Link>
             </li>
             <li>
               <Link to="/videoroom">회의</Link>
