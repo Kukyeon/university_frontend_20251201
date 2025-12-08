@@ -1,3 +1,5 @@
+// src/components/Schedule/AcademicCalendar.js (수정 버튼 등 제거)
+
 import React, { useState, useEffect } from "react";
 import { getScheduleList } from "../../api/scheduleApi";
 
@@ -19,6 +21,7 @@ const AcademicCalendar = () => {
     fetchSchedule();
   }, []);
 
+  // ... (groupAndFormatSchedule 함수 유지)
   const groupAndFormatSchedule = (data) => {
     const grouped = data.reduce((acc, item) => {
       const month = item.startDay.substring(5, 7);
@@ -49,19 +52,26 @@ const AcademicCalendar = () => {
 
   return (
     <div>
-      <h2>학사일정</h2>
+      <h2>🗓️ 전체 학사일정</h2>
+      <p style={{ color: "#666" }}>학교 전체 학사 일정을 확인할 수 있습니다.</p>
       <table
         border="1"
-        style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          textAlign: "left",
+          marginTop: "20px",
+        }}
       >
         <thead>
-          <tr>
+          <tr style={{ border: "1px solid #ddd" }}>
             <th
               style={{
                 width: "10%",
                 textAlign: "center",
-                backgroundColor: "#f5f5f5",
+                backgroundColor: "#eaf4ff",
                 padding: "10px",
+                borderRight: "1px solid #ddd",
               }}
             >
               월
@@ -69,8 +79,9 @@ const AcademicCalendar = () => {
             <th
               style={{
                 width: "25%",
-                backgroundColor: "#f5f5f5",
+                backgroundColor: "#eaf4ff",
                 padding: "10px",
+                borderRight: "1px solid #ddd",
               }}
             >
               기간
@@ -78,7 +89,7 @@ const AcademicCalendar = () => {
             <th
               style={{
                 width: "65%",
-                backgroundColor: "#f5f5f5",
+                backgroundColor: "#eaf4ff",
                 padding: "10px",
               }}
             >
@@ -96,15 +107,20 @@ const AcademicCalendar = () => {
                     style={{
                       textAlign: "center",
                       verticalAlign: "top",
-                      borderRight: "1px solid #ddd",
+                      border: "1px solid #ddd",
                       fontWeight: "bold",
+                      backgroundColor: "#f9f9f9",
                     }}
                   >
                     {month}
                   </td>
                 )}
-                <td style={{ padding: "8px" }}>{event.period}</td>
-                <td style={{ padding: "8px" }}>{event.content}</td>
+                <td style={{ padding: "8px", border: "1px solid #eee" }}>
+                  {event.period}
+                </td>
+                <td style={{ padding: "8px", border: "1px solid #eee" }}>
+                  {event.content}
+                </td>
               </tr>
             ))
           )}

@@ -1,8 +1,14 @@
 import api from "./axiosConfig";
 
 // 공지 리스트 조회
-export const getNoticeList = async () => {
-  const res = await api.get("/notice/list");
+export const getNoticeList = async (
+  page = 0,
+  keyword = "",
+  searchType = "title"
+) => {
+  const res = await api.get(`/notice/list`, {
+    params: { page, keyword, searchType },
+  });
   return res.data;
 };
 

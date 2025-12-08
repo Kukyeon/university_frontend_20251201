@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import NoticePage from "./NoticePage";
 
 import AcademicCalendar from "../components/Schedule/AcademicCalendar";
+import ScheduleManagerPage from "./ScheduleManagerPage";
 
 const AcademicPage = () => {
   const [selectedTab, setSelectedTab] = useState("calendar");
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    setRole(storedRole?.toUpperCase()); // STAFF / STUDENT / PROFESSOR
+  }, []);
 
   return (
     <div style={{ display: "flex" }}>
       {/* 사이드 네비게이션 (좌측 탭 메뉴) */}
       <div style={{ width: "200px", paddingRight: "20px" }}>
         <h3>공지사항</h3>
-
         {/*  공지사항 탭 */}
         <div
           onClick={() => setSelectedTab("notice")}
@@ -26,7 +32,6 @@ const AcademicPage = () => {
         >
           공지사항
         </div>
-
         {/*  학사일정 탭 */}
         <div
           onClick={() => setSelectedTab("calendar")}
@@ -39,12 +44,28 @@ const AcademicPage = () => {
         >
           학사일정
         </div>
+        {/*  학사일정등록 탭 */}
+        {/* {role === "STAFF" && (<> */} {/* role 안먹는다요 ㅠㅠㅠㅠ */}
+        <div
+          onClick={() => setSelectedTab("schedule-manager")}
+          style={{
+            cursor: "pointer",
+            padding: "10px 0",
+            fontWeight: selectedTab === "schedule-manager" ? "bold" : "normal",
+            color: selectedTab === "schedule-manager" ? "#28a745" : "inherit", // 관리자 강조색
+          }}
+        >
+          학사일정관리
+        </div>
+        {/* )} */}
       </div>
 
       {/* 2. 메인 컨텐츠 영역 */}
       <div style={{ flexGrow: 1, paddingLeft: "20px" }}>
         {selectedTab === "notice" && <NoticePage />}
         {selectedTab === "calendar" && <AcademicCalendar />}
+        {selectedTab === "schedule-manager" && <ScheduleManagerPage />}
+        {/* && role === "STAFF" 나중에 넣기 */}
       </div>
     </div>
   );

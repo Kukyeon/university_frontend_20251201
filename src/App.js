@@ -82,11 +82,13 @@ function App() {
           }
         />
         {/* 공지사항, 학사일정 상세/등록/수정  */}
-        <Route path="/notice" element={<NoticePage />} />
+        <Route path="/notice" element={<NoticePage role={role} />} />
         <Route path="/notice/:id" element={<NoticeDetail />} />
         <Route path="/notice/write" element={<NoticeForm />} />
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
-        <Route path="/academic" element={<AcademicPage />} />
+
+        {/* 📚 학사일정 및 공지사항 통합 페이지 */}
+        <Route path="/academic" element={<AcademicPage role={role} />} />
 
         {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
         <Route path="/admin/schedule/write" element={<ScheduleForm />} />

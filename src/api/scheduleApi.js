@@ -4,9 +4,17 @@ import api from "./axiosConfig";
 
 // --- 일반 학사 일정 (백엔드 ScheduleController 경로: /api/schedule) ---
 // 목록 조회
-export const getScheduleList = () =>
-  api.get("/schedule").then((res) => res.data);
-
+// export const getScheduleList = () =>
+//   api.get("/schedule").then((res) => res.data);
+export const getScheduleList = async () => {
+  try {
+    const res = await api.get("/schedule");
+    return res.data;
+  } catch (err) {
+    console.error("🔥 학사 일정 요청 에러:", err.response?.data || err.message);
+    throw err;
+  }
+};
 //상세 조회
 export const getScheduleDetail = (id) =>
   api.get(`/schedule/${id}`).then((res) => res.data);
