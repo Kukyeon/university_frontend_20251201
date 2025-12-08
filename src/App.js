@@ -1,5 +1,11 @@
 import "./App.css";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import NoticePage from "./pages/NoticePage";
 
 import EvaluationPage from "./pages/EvaluationPage";
@@ -23,53 +29,62 @@ import AdminDashboard from "./pages/AdminDashboard";
 function App() {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
   const isLoginPage = location.pathname === "/login";
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null); // 즉시 로그아웃 상태로 전환
+    setRole(null); // ← role 초기화
+    navigate("/login");
   };
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
     if (!token) {
       console.log("로그인 필요");
       setUser(null);
+      setRole(null);
       setLoading(false);
       return;
     }
-    const fetchMe = async () => {
-      try {
-        const res = await api.get("/user/me");
-        setUser(res.data.user); // 사용자 정보 저장
+    api
+      .get("/user/me")
+      .then((res) => {
+        console.log("로로로롤로!" + res.data);
+        setUser(res.data.user);
         setRole(res.data.role);
-        console.log(res.data.user);
-      } catch (err) {
-        console.log("로그인 필요");
+      })
+      .catch(() => {
         setUser(null);
-      } finally {
+        setRole(null);
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
-
-    fetchMe();
-  }, []);
-
+      });
+  }, [token]);
   if (loading) return <div>로딩중..</div>;
   return (
     <div className="App">
-      {!isLoginPage && <Header user={user} logout={logout} />}
+      {!isLoginPage && <Header user={user} role={role} logout={logout} />}
       <Routes>
-        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route
+          path="/login"
+          element={<Login setUser={setUser} setRole={setRole} />}
+        />
         <Route
           path="/My"
           element={
             <ProtectedRoute user={user}>
-              <MyPage user={user} role={role} />
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <MyPage user={user} role={role} />
+              )}
             </ProtectedRoute>
           }
         />
+
         <Route path="/videoroom" element={<VideoRoomApp />} />
         {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
         <Route
@@ -106,7 +121,10 @@ function App() {
 
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage user={user} />} />
-        <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
+        <Route
+          path="/admin/dashboard/risk-list"
+          element={<AdminDashboard user={user} />}
+        />
       </Routes>
       {!isLoginPage && <Footer />}
     </div>

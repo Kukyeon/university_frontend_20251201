@@ -4,7 +4,7 @@ import Modal from "../components/Modal"; // 모달 컴포넌트
 import api from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = ({ setUser }) => {
+const LoginPage = ({ setUser, setRole }) => {
   const [openModal, setOpenModal] = useState(null);
   const [loginData, setLoginData] = useState({
     id: "",
@@ -78,7 +78,9 @@ const LoginPage = ({ setUser }) => {
       const token = response.data.token;
       localStorage.setItem("token", token);
       setUser(response.data.user);
-      console.log(response.data.user);
+      setRole(response.data.role);
+
+      console.log(response.data);
       navigate("/");
       // 로그인 성공 후 처리
     } catch (err) {
