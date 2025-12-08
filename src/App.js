@@ -26,7 +26,6 @@ import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
-import Academic from "./pages/Academic";
 import AcademicRegistration from "./pages/AcademicRegistration";
 import ScheduleForm from "./components/Schedule/ScheduleForm";
 import AdminSubjectPage from "./pages/AdminSubjectPage";
