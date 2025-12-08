@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 
 const MyInfo = ({ user, userData, setUserData, role }) => {
   const [editMode, setEditMode] = useState(false); // 수정 모드
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
@@ -23,7 +24,7 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
       <h3>내 정보 조회</h3>
       <table>
         <tbody>
-          {role === "student" ? (
+          {role === "student" && (
             <>
               <tr>
                 <td>학번</td>
@@ -57,7 +58,7 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
                   {editMode ? (
                     <input
                       name="email"
-                      value={userData?.email}
+                      value={userData?.email || ""}
                       onChange={handleChange}
                     />
                   ) : (
@@ -71,7 +72,7 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
                   {editMode ? (
                     <input
                       name="tel"
-                      value={userData?.tel}
+                      value={userData?.tel || ""}
                       onChange={handleChange}
                     />
                   ) : (
@@ -83,7 +84,7 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
                   {editMode ? (
                     <input
                       name="address"
-                      value={userData?.address}
+                      value={userData?.address || ""}
                       onChange={handleChange}
                     />
                   ) : (
@@ -92,7 +93,8 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
                 </td>
               </tr>
             </>
-          ) : (
+          )}
+          {role === "professor" && (
             <>
               <tr>
                 <td>ID</td>
@@ -113,13 +115,112 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
                 <td>성별</td>
                 <td>{userData?.gender}</td>
                 <td>주소</td>
-                <td>{userData?.address}</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="address"
+                      value={userData?.address || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.address
+                  )}
+                </td>
               </tr>
               <tr>
                 <td>연락처</td>
-                <td>{userData?.tel}</td>
-                <td>email</td>
-                <td>{userData?.email}</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="tel"
+                      value={userData?.tel || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.tel
+                  )}
+                </td>
+                <td>이메일</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="email"
+                      value={userData?.email || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.email
+                  )}
+                </td>
+              </tr>
+            </>
+          )}
+          {role === "staff" && (
+            <>
+              <tr>
+                <td>ID</td>
+                <td>{userData?.id}</td>
+                <td>입사일</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      type="date"
+                      name="hireDate"
+                      value={userData?.hireDate || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.hireDate
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>성명</td>
+                <td>{userData?.name}</td>
+                <td>생년월일</td>
+                <td>{userData?.birthDate}</td>
+              </tr>
+              <tr>
+                <td>성별</td>
+                <td>{userData?.gender}</td>
+                <td>주소</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="address"
+                      value={userData?.address || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.address
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>이메일</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="email"
+                      value={userData?.email || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.email
+                  )}
+                </td>
+                <td>연락처</td>
+                <td>
+                  {editMode ? (
+                    <input
+                      name="tel"
+                      value={userData?.tel || ""}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    userData?.tel
+                  )}
+                </td>
               </tr>
             </>
           )}
@@ -137,37 +238,41 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
         )}
       </div>
 
-      {/* 학적 변동 내역 */}
-      <h4 style={{ marginTop: "30px" }}>학적 변동 내역</h4>
-      <table>
-        <thead>
-          <tr>
-            <th>변동 일자</th>
-            <th>변동 구분</th>
-            <th>세부</th>
-            <th>승인 여부</th>
-            <th>복학 예정 연도/학기</th>
-          </tr>
-        </thead>
-        <tbody>
-          {userData?.academicChanges?.map((change, idx) => (
-            <tr key={idx}>
-              <td>{change.date}</td>
-              <td>{change.type}</td>
-              <td>{change.detail}</td>
-              <td>{change.approval}</td>
-              <td>{change.returnSemester}</td>
-            </tr>
-          ))}
-          {!userData?.academicChanges?.length && (
-            <tr>
-              <td colSpan="5" style={{ textAlign: "center" }}>
-                학적 변동 내역이 없습니다.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      {role === "student" && (
+        <>
+          {/* 학적 변동 내역 */}
+          <h4 style={{ marginTop: "30px" }}>학적 변동 내역</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>변동 일자</th>
+                <th>변동 구분</th>
+                <th>세부</th>
+                <th>승인 여부</th>
+                <th>복학 예정 연도/학기</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userData?.academicChanges?.map((change, idx) => (
+                <tr key={idx}>
+                  <td>{change.date}</td>
+                  <td>{change.type}</td>
+                  <td>{change.detail}</td>
+                  <td>{change.approval}</td>
+                  <td>{change.returnSemester}</td>
+                </tr>
+              ))}
+              {!userData?.academicChanges?.length && (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: "center" }}>
+                    학적 변동 내역이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </>
+      )}
     </section>
   );
 };
