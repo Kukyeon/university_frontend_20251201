@@ -154,14 +154,18 @@ function App() {
 
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage user={user} />} />
-        <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
+        <Route
+          path="/admin/dashboard/risk-list"
+          element={<AdminDashboard user={user} />}
+        />
 
-        {/* 수강신청 관련부분 */} 
-        <Route path="/enroll" element={<EnrollmentPage user={user}/>} />
-        <Route path="/admin/subject" element={<AdminSubjectPage user={user}/>} />
-        <Route path="/grade" element={<GradePage user={user}/>} />
-
-       
+        {/* 수강신청 관련부분 */}
+        <Route path="/enroll" element={<EnrollmentPage user={user} />} />
+        <Route
+          path="/admin/subject"
+          element={<AdminSubjectPage user={user} />}
+        />
+        <Route path="/grade" element={<GradePage user={user} />} />
       </Routes>
       {!isLoginPage && <Footer />}
     </div>
