@@ -1,51 +1,27 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 
-// const sampleStudents = [
-//   {
-//     id: "2023000001",
-//     name: "박시우",
-//     birthDate: "2002-06-19",
-//     gender: "남성",
-//     address: "부산시 남구",
-//     tel: "010-5267-1815",
-//     email: "psw@green.com",
-//     departmentNo: "101",
-//     grade: "1",
-//     entranceDate: "2021-03-02",
-//     graduationDate: "",
-//   },
-//   {
-//     id: "2023000002",
-//     name: "김예준",
-//     birthDate: "2002-04-25",
-//     gender: "남성",
-//     address: "부산시 북구",
-//     tel: "010-4152-9963",
-//     email: "kyj@green.com",
-//     departmentNo: "101",
-//     grade: "1",
-//     entranceDate: "2021-03-02",
-//     graduationDate: "",
-//   },
-//   // 추가 학생 데이터 필요시 더 넣기
-// ];
-
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [searchDept, setSearchDept] = useState("");
   const [searchId, setSearchId] = useState("");
 
-  const filteredStudents = students.filter(
-    (s) =>
-      (!searchDept || s.departmentNo.toString().includes(searchDept)) &&
-      (!searchId || s.id.toString().includes(searchId))
-  );
   useEffect(() => {
     getList();
   }, []);
-
   const getList = async () => {
+    try {
+      const res = await api.get("/staff/list/student");
+      const data =
+        res.data.content || (Array.isArray(res.data) ? res.data : [res.data]);
+      setStudents(data);
+    } catch (err) {
+      console.error(err);
+      setStudents([]);
+      alert("전체 학생 목록 조회 실패");
+    }
+  };
+  const getSerchList = async () => {
     try {
       const params = {};
       if (searchDept) params.deptId = searchDept;
@@ -84,7 +60,7 @@ const StudentList = () => {
             onChange={(e) => setSearchId(e.target.value)}
           />
         </label>
-        <button onClick={getList} className="search-btn">
+        <button onClick={getSerchList} className="search-btn">
           조회
         </button>
       </div>
@@ -106,8 +82,8 @@ const StudentList = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredStudents.length ? (
-            filteredStudents.map((student) => (
+          {students.length ? (
+            students.map((student) => (
               <tr key={student.id}>
                 <td>{student.id}</td>
                 <td>{student.name}</td>

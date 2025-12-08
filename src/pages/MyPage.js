@@ -84,7 +84,9 @@ const MyPage = ({ user, role }) => {
         )}
         {activeTab === "changePw" && <ChangePw user={user} />}
         {activeTab === "leave" && <BreakApp user={user} />}
-        {activeTab === "leaveHistory" && <BreakHistory user={user} />}
+        {activeTab === "leaveHistory" && (
+          <BreakHistory user={user} role={role} />
+        )}
         {activeTab === "tuitionHistory" && <TuitionHistory user={user} />}
         {activeTab === "tuitionNotice" && <TuitionNotice user={user} />}
       </main>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import BreakAppModal from "./BreakModal";
 
-const BreakHistory = ({ user }) => {
+const BreakHistory = ({ user, role }) => {
   const [leaveHistory, setLeaveHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedApp, setSelectedApp] = useState(null);
@@ -69,6 +69,7 @@ const BreakHistory = ({ user }) => {
         show={showModal}
         onClose={() => setShowModal(false)}
         app={selectedApp}
+        role={role}
         onDeleted={() => {
           // 취소 후 다시 리스트 갱신
           setLeaveHistory((prev) =>

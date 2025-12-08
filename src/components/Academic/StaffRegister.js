@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../../api/axiosConfig";
 
-const StudentRegister = () => {
+const StaffRegister = () => {
   const [formData, setFormData] = useState({
     name: "",
     birthDate: "",
@@ -9,28 +9,17 @@ const StudentRegister = () => {
     address: "",
     tel: "",
     email: "",
-    department: {
-      id: "",
-    },
-    entranceDate: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "departmentNo") {
-      setFormData((prev) => ({
-        ...prev,
-        department: { ...prev.department, id: value },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
   const handleSubmit = async () => {
     try {
-      const res = await api.post("/staff/student", formData); // formData 전송
-      console.log("학생 등록 성공:", res.data);
-      alert("학생 등록 완료!");
+      const res = await api.post("/staff/staff", formData); // formData 전송
+      console.log("직원 등록 성공:", res.data);
+      alert("직원 등록 완료!");
       // 폼 초기화
       setFormData({
         name: "",
@@ -39,21 +28,15 @@ const StudentRegister = () => {
         address: "",
         tel: "",
         email: "",
-        department: {
-          id: "",
-        },
-        entranceDate: "",
       });
     } catch (err) {
       console.error(err);
-      alert("학생 등록 실패: " + err.response?.data?.message || err.message);
+      alert("직원 등록 실패: " + err.response?.data?.message || err.message);
     }
   };
-
   return (
     <div className="student-form-vertical mypage-card">
-      <h3>학생 등록</h3>
-
+      <h3>직원 등록</h3>
       <div className="form-row">
         <label>이름</label>
         <input
@@ -129,27 +112,6 @@ const StudentRegister = () => {
           onChange={handleChange}
         />
       </div>
-
-      <div className="form-row">
-        <label>과 ID</label>
-        <input
-          type="text"
-          name="departmentNo"
-          value={formData.department.id}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-row">
-        <label>입학일</label>
-        <input
-          type="date"
-          name="entranceDate"
-          value={formData.entranceDate}
-          onChange={handleChange}
-        />
-      </div>
-
       <div style={{ marginTop: "20px" }}>
         <button onClick={handleSubmit}>등록</button>
       </div>
@@ -157,4 +119,4 @@ const StudentRegister = () => {
   );
 };
 
-export default StudentRegister;
+export default StaffRegister;
