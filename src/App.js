@@ -1,11 +1,11 @@
 import "./App.css";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import NoticePage from "./pages/NoticePage";
-
+import NoticeDetail from "./components/Notice/NoticeDetail";
+import NoticeForm from "./components/Notice/NoticeForm";
 import EvaluationPage from "./pages/EvaluationPage";
 import VideoRoomApp from "./VideoRoomApp";
-import StudentSchedulePage from "./pages/StudentSchedulePage";
-import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
+import AcademicPage from "./pages/AcademicPage";
 import CounselingRecordPage from "./pages/CounselingRecordPage";
 import Home from "./pages/Home";
 import Header from "./components/Home/Header";
@@ -80,19 +80,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* 공지사항, 학사일정 상세/등록/수정  */}
         <Route path="/notice" element={<NoticePage />} />
+        <Route path="/notice/:id" element={<NoticeDetail />} />
+        <Route path="/notice/write" element={<NoticeForm />} />
+        <Route path="/notice/edit/:id" element={<NoticeForm />} />
+        <Route path="/academic" element={<AcademicPage />} />
 
+        {/* 학생 상담 예약 */}
         <Route path="/evaluation" element={<EvaluationPage />} />
-
-        {/* 임시 테스트 중*/}
-        {/* <Route
-          path="/student"
-          element={<StudentSchedulePage studentId={1} professorId={1} />}
-        /> */}
-        {/* <Route
-          path="/professor"
-          element={<ProfessorSchedulePage professorId={1} />}
-        /> */}
+        {/* 화상 회의 */}
         <Route path="/records" element={<CounselingRecordPage />} />
 
         {/* 없는 경로는 home으로 redirect */}
