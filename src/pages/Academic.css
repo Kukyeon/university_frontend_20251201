@@ -103,3 +103,32 @@
   margin-bottom: 20px;
   color: #333;
 }
+.mypage-card select {
+  width: 150px; /* 적당한 크기 */
+  padding: 6px 10px; /* 안쪽 여백 */
+  font-size: 14px; /* 기존 input과 비슷하게 */
+  border-radius: 6px; /* 모서리 둥글게 */
+  border: 1px solid #ccc;
+  background-color: #fff;
+  appearance: none; /* 브라우저 기본 화살표 제거 (선택적) */
+  cursor: pointer;
+}
+
+.mypage-card select:focus {
+  outline: none;
+  border-color: #ff6f61; /* 포커스 시 강조 */
+  box-shadow: 0 0 3px rgba(255, 111, 97, 0.5);
+}
+.department-form input,
+.department-form select {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 120px; /* 최소 너비 */
+  max-width: 200px; /* 최대 너비 제한 */
+  margin: 7px;
+}
+.department-form button {
+  flex-shrink: 0;
+}

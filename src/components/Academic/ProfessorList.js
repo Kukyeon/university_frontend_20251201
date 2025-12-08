@@ -6,20 +6,26 @@ const ProfessorList = () => {
   const [searchDept, setSearchDept] = useState("");
   const [searchId, setSearchId] = useState("");
 
-  const filteredProfessors = professors.filter(
-    (p) =>
-      (!searchDept || p.departmentNo.toString().includes(searchDept)) &&
-      (!searchId || p.id.toString().includes(searchId))
-  );
   useEffect(() => {
     getList();
   }, []);
-
   const getList = async () => {
+    try {
+      const res = await api.get("/staff/list/professor");
+      const data =
+        res.data.content || (Array.isArray(res.data) ? res.data : [res.data]);
+      setProfessors(data);
+    } catch (err) {
+      console.error(err);
+      setProfessors([]);
+      alert("전체 교수 목록 조회 실패");
+    }
+  };
+  const getSerchList = async () => {
     try {
       const params = {};
       if (searchDept) params.deptId = searchDept;
-      if (searchId) params.studentId = searchId;
+      if (searchId) params.professorId = searchId;
 
       const res = await api.get("/staff/list/professor", { params });
       setProfessors(
@@ -54,7 +60,7 @@ const ProfessorList = () => {
             onChange={(e) => setSearchId(e.target.value)}
           />
         </label>
-        <button onClick={getList} className="search-btn">
+        <button onClick={getSerchList} className="search-btn">
           조회
         </button>
       </div>
@@ -74,8 +80,8 @@ const ProfessorList = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredProfessors.length ? (
-            filteredProfessors.map((prof) => (
+          {professors.length ? (
+            professors.map((prof) => (
               <tr key={prof.id}>
                 <td>{prof.id}</td>
                 <td>{prof.name}</td>

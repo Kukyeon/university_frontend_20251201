@@ -12,6 +12,12 @@ export const getEvaluationBySubject = async (subjectName) => {
   return res.data;
 };
 
+//평가 문항 조회 ( 질문가져오기)
+export const getEvaluationQuestions = async () => {
+  const res = await api.get("/evaluation/questions");
+  return res.data;
+};
+
 // 단일 평가 상세 조회
 export const getEvaluationDetail = async (id) => {
   const res = await api.get(`/evaluation/${id}`);
