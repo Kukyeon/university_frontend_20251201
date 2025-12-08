@@ -1,5 +1,11 @@
 import "./App.css";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import NoticePage from "./pages/NoticePage";
 
 import EvaluationPage from "./pages/EvaluationPage";
@@ -26,50 +32,70 @@ import EnrollmentPage from "./pages/EnrollmentPage";
 function App() {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
   const isLoginPage = location.pathname === "/login";
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null); // 즉시 로그아웃 상태로 전환
+    setRole(null); // ← role 초기화
+    navigate("/login");
   };
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
     if (!token) {
       console.log("로그인 필요");
       setUser(null);
+      setRole(null);
       setLoading(false);
       return;
     }
-    const fetchMe = async () => {
-      try {
-        const res = await api.get("/user/me");
-        setUser(res.data.user); // 사용자 정보 저장
+    api
+      .get("/user/me")
+      .then((res) => {
+        console.log("로로로롤로!" + res.data);
+        setUser(res.data.user);
         setRole(res.data.role);
-        console.log(res.data.user);
-      } catch (err) {
-        console.log("로그인 필요");
+      })
+      .catch(() => {
         setUser(null);
-      } finally {
+        setRole(null);
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
-
-    fetchMe();
-  }, []);
-
+      });
+  }, [token]);
   if (loading) return <div>로딩중..</div>;
   return (
     <div className="App">
-      {!isLoginPage && <Header user={user} logout={logout} />}
+      {!isLoginPage && <Header user={user} role={role} logout={logout} />}
       <Routes>
-        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route
+          path="/login"
+          element={<Login setUser={setUser} setRole={setRole} />}
+        />
         <Route
           path="/My"
           element={
             <ProtectedRoute user={user}>
-              <MyPage user={user} role={role} />
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <MyPage user={user} role={role} />
+              )}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/academic"
+          element={
+            <ProtectedRoute user={user} role={role} roleRequired="staff">
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <Academic user={user} role={role} />
+              )}
             </ProtectedRoute>
           }
         />
@@ -102,7 +128,7 @@ function App() {
 
         {/* 챗봇 및 중도 이탈방지 관련부분 */}
         {/* 학생이 로그인하면 들어가는 메인 화면 */}
-        <Route path="/student" element={<StudentMain user={user}/>} />
+        <Route path="/student" element={<StudentMain user={user} />} />
 
         {/* === [3] 교수용 (위험군 대시보드) === */}
         <Route path="/professor" element={<ProfDashboard user={user} />} />
@@ -116,6 +142,7 @@ function App() {
         <Route path="/admin/subject" element={<AdminSubjectPage user={user}/>} />
         <Route path="/grade" element={<GradePage user={user}/>} />
 
+       
       </Routes>
       {!isLoginPage && <Footer />}
     </div>

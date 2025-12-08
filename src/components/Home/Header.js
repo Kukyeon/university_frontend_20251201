@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import HeaderTop from "./HeaderTop";
 import "./Header.css";
 
-const Header = ({ user, logout }) => {
+const Header = ({ user, logout, role }) => {
   return (
     <header>
       {/* 상단 헤더 */}
@@ -25,7 +25,11 @@ const Header = ({ user, logout }) => {
                 <Link to="/my">MY</Link>
               </li>
             )}
-
+            {role === "staff" && (
+              <li>
+                <Link to="/academic">학사관리</Link>
+              </li>
+            )}
             <li className="dropdown">
               <Link to="/departments">학과소개</Link>
               <ul className="dropdown-menu">
