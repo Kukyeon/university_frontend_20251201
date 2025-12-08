@@ -87,7 +87,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/academic"
           element={
             <ProtectedRoute user={user} role={role} roleRequired="staff">
@@ -98,7 +98,7 @@ function App() {
               )}
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route path="/videoroom" element={<VideoRoomApp />} />
         {/* <Route path="/" element={<Navigate to="/notice" />} /> */}
         <Route
