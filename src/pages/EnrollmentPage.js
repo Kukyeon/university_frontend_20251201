@@ -4,28 +4,37 @@ import { courseApi } from '../api/gradeApi'; // api.js 경로 확인 필요
 const EnrollmentPage = () => {
   const [subjects, setSubjects] = useState([]);
   const [myList, setMyList] = useState([]);
+
+  const [page, setPage] = useState(0); // 현재 페이지 (0부터 시작)
+  const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수
   
   // 검색 필터 상태
   const [filters, setFilters] = useState({ type: '전체', deptId: '', name: '' });
 
   useEffect(() => {
     loadAllData();
-  }, []);
+  }, [page]);
 
   const loadAllData = async () => {
     try {
       // 1. 개설 강좌 목록 조회 (List<Subject>)
-      const subRes = await courseApi.getSubjectList(filters);
+      const subRes = await courseApi.getSubjectList({ ...filters, page: page });
       // 백엔드가 List를 바로 반환하므로 .data를 그대로 사용
-      setSubjects(subRes.data || []); 
-
+      setSubjects(subRes.data.content || []);
+      setTotalPages(subRes.data.totalPages || 0);
       // 2. 내 신청 내역 조회 (List<StuSub>)
       const myRes = await courseApi.getMyHistory();
       // 백엔드가 List를 바로 반환하므로 .data를 그대로 사용
       setMyList(myRes.data || []);
     } catch (err) {
       console.error("데이터 로딩 실패:", err);
+      setSubjects([]);
     }
+  };
+
+  const handleSearch = () => {
+    setPage(0); // 검색 버튼 누르면 1페이지(0)로 초기화
+    loadAllData();
   };
 
   // 신청 핸들러
@@ -52,6 +61,11 @@ const EnrollmentPage = () => {
       alert("❌ 취소 실패: " + (err.response?.data || "오류가 발생했습니다."));
     }
   };
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
+    }
+  };
 
   return (
     <div style={{ padding: '30px' }}>
@@ -70,7 +84,8 @@ const EnrollmentPage = () => {
             placeholder="강의명 검색" 
             onChange={(e) => setFilters({...filters, name: e.target.value})} 
         />
-        <button onClick={loadAllData} style={{marginLeft: '10px'}}>조회</button>
+        {/* 조회 버튼 누르면 1페이지부터 다시 검색 */}
+        <button onClick={handleSearch} style={{marginLeft: '10px'}}>조회</button>
       </div>
 
       <div style={{ display: 'flex', gap: '20px' }}>
@@ -123,6 +138,36 @@ const EnrollmentPage = () => {
               })}
             </tbody>
           </table>
+              {/* [신규] 페이지네이션 컨트롤 */}
+          <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            <button 
+                onClick={() => handlePageChange(page - 1)} 
+                disabled={page === 0}
+                
+            >
+                ◀ 이전
+            </button>
+
+        {/* 페이지 번호 표시 (너무 많으면 ... 처리 등은 생략하고 단순하게 표시) */}
+            {Array.from({ length: totalPages }, (_, i) => (
+                <button 
+                    key={i} 
+                    onClick={() => handlePageChange(i)}
+                   
+                >
+                    {i + 1}
+                </button>
+            ))}
+
+            <button 
+                onClick={() => handlePageChange(page + 1)} 
+                disabled={page === totalPages - 1}
+                
+            >
+                다음 ▶
+            </button>
+          </div>
+
         </div>
 
         {/* ================= 오른쪽: 내 신청 내역 (StuSub List) ================= */}
