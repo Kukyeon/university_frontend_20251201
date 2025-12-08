@@ -134,7 +134,7 @@ function App() {
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
 
         {/* 📚 학사일정 및 공지사항 통합 페이지 */}
-        <Route path="/academic" element={<AcademicPage role={role} />} />
+        <Route path="/academicPage" element={<AcademicPage role={role} />} />
 
         {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
         <Route path="/admin/schedule/write" element={<ScheduleForm />} />
@@ -157,6 +157,18 @@ function App() {
 
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage user={user} />} />
+        <Route
+          path="/admin/dashboard/risk-list"
+          element={<AdminDashboard user={user} />}
+        />
+
+        {/* 수강신청 관련부분 */}
+        <Route path="/enroll" element={<EnrollmentPage user={user} />} />
+        <Route
+          path="/admin/subject"
+          element={<AdminSubjectPage user={user} />}
+        />
+        <Route path="/grade" element={<GradePage user={user} />} />
         <Route path="/admin/dashboard/risk-list" element={<AdminDashboard user={user} />} />
 
         {/* 수강신청 관련부분 */} 
