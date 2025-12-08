@@ -26,6 +26,7 @@ import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import Academic from "./pages/Academic";
+import AcademicRegistration from "./pages/AcademicRegistration";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -93,6 +94,18 @@ function App() {
                 <div>로딩중...</div>
               ) : (
                 <Academic user={user} role={role} />
+              )}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/registration"
+          element={
+            <ProtectedRoute user={user} role={role} roleRequired="staff">
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <AcademicRegistration user={user} role={role} />
               )}
             </ProtectedRoute>
           }
