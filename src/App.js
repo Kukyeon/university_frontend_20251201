@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import ScheduleForm from "./components/Schedule/ScheduleForm";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -87,7 +88,11 @@ function App() {
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
         <Route path="/academic" element={<AcademicPage />} />
 
-        {/* 학생 상담 예약 */}
+        {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
+        <Route path="/admin/schedule/write" element={<ScheduleForm />} />
+        <Route path="/admin/schedule/edit/:id" element={<ScheduleForm />} />
+
+        {/* 강의 평가 */}
         <Route path="/evaluation" element={<EvaluationPage />} />
         {/* 화상 회의 */}
         <Route path="/records" element={<CounselingRecordPage />} />
