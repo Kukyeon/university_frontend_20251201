@@ -125,7 +125,7 @@ const CourseListPage = () => {
           <tr>
             <th>단과대학</th><th>개설학과</th><th>학수번호</th><th>강의구분</th>
             <th>강의명</th><th>담당교수</th><th>학점</th><th>요일/시간 (강의실)</th>
-            <th>인원</th><th>강의계획서</th>
+            <th>인원</th><th>신청</th>
           </tr>
         </thead>
         <tbody>
