@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { getStudentSchedules, cancelAppointment } from "../../api/scheduleApi";
 
+const formatDateTime = (dateTimeStr) => {
+  if (!dateTimeStr) return "";
+  const date = new Date(dateTimeStr);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${month}-${day} ${hours}:${minutes}`;
+};
+
 const StudentScheduleList = ({ studentId, onSelect }) => {
   const [schedules, setSchedules] = useState([]);
 
@@ -11,6 +21,7 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
       try {
         const data = await getStudentSchedules();
         setSchedules(data);
+        console.log("API 응답 데이터 구조 (첫 번째 항목):", data[0]);
       } catch (error) {
         console.error("학생 상담 일정 조회 실패:", error.message);
       }
@@ -27,7 +38,7 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
 
         setSchedules((prev) =>
           prev.map((s) =>
-            s.id === scheduleId ? { ...s, status: "CANCELED" } : s
+            s.id === scheduleId ? { ...s, status: "취소됨" } : s
           )
         );
       } catch (error) {
@@ -47,17 +58,18 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
       <h3>나의 상담 일정</h3>
       <ul>
         {schedules.map((s) => (
-          <li key={s.id} style={{ marginBottom: "5px" }}>
+          <li key={s.id || s.scheduleId} style={{ marginBottom: "5px" }}>
             <span
-              onClick={() => onSelect(s.id)}
+              onClick={() => onSelect(s.scheduleId || s.id)}
               style={{ cursor: "pointer", fontWeight: "bold" }}
             >
-              {s.startTime} ~ {s.endTime} | {s.status}
+              {formatDateTime(s.startTime)} ~ {formatDateTime(s.endTime)} |
+              {s.status}
             </span>
             <button
-              onClick={() => handleCancel(s.id)}
+              onClick={() => handleCancel(s.scheduleId || s.id)}
               style={{ marginLeft: "10px" }}
-              disabled={s.status !== "CONFIRMED"} // ⭐️ 예약 상태가 CONFIRMED일 때만 버튼 활성화
+              disabled={s.status !== "확인됨"}
             >
               취소
             </button>

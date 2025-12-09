@@ -3,6 +3,7 @@ import {
   getProfessorRequests,
   updateScheduleStatus,
 } from "../../api/scheduleApi";
+import { useNavigate } from "react-router-dom";
 
 // 날짜/시간 포맷팅 함수 (유지)
 const formatDateTime = (dateTimeStr) => {
@@ -19,6 +20,7 @@ const ProfessorScheduleRequests = ({ professorId }) => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const fetchRequests = async () => {
     if (!professorId) {
@@ -76,13 +78,49 @@ const ProfessorScheduleRequests = ({ professorId }) => {
             <li
               key={req.id}
               style={{ borderBottom: "1px solid #eee", padding: "10px 0" }}
+              onClick={() =>
+                navigate(
+                  `/professor/counseling/detail/${req.id}?studentId=${req.studentId}`
+                )
+              }
             >
               <div style={{ fontWeight: "bold" }}>
-                학생 ID: {req.studentId} | {formatDateTime(req.startTime)}
+                학생 ID: {req.studentName} | {formatDateTime(req.startTime)}
               </div>
               <div>
                 현재 상태: **{req.status}**
-                {req.status === "CONFIRMED" && ( // CONFIRMED 상태일 때만 버튼 표시
+                {req.status === "PENDING" && ( // CONFIRMED 상태일 때만 버튼 표시
+                  <>
+                    <button
+                      style={{
+                        marginLeft: "10px",
+                        background: "#007bff",
+                        color: "white",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // li 클릭 방지
+                        handleStatusChange(req.id, "CONFIRMED");
+                      }}
+                    >
+                      예약 승인
+                    </button>
+                    <button
+                      style={{
+                        marginLeft: "5px",
+                        background: "#f44336",
+                        color: "white",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // li 클릭 방지
+                        handleStatusChange(req.id, "CANCELED");
+                      }}
+                    >
+                      예약 거절
+                    </button>
+                  </>
+                )}
+                {/* 기타 상태 처리 로직 추가 가능 */}
+                {req.status === "CONFIRMED" && ( // DTO에서 "확인됨"으로 변환했으므로 한글 사용
                   <>
                     <button
                       style={{
@@ -90,7 +128,11 @@ const ProfessorScheduleRequests = ({ professorId }) => {
                         background: "#4CAF50",
                         color: "white",
                       }}
-                      onClick={() => handleStatusChange(req.id, "COMPLETED")}
+                      onClick={(e) => {
+                        // ⭐ 이벤트 버블링 방지 추가
+                        e.stopPropagation();
+                        handleStatusChange(req.id, "COMPLETED");
+                      }}
                     >
                       완료 처리
                     </button>
@@ -100,13 +142,16 @@ const ProfessorScheduleRequests = ({ professorId }) => {
                         background: "#f44336",
                         color: "white",
                       }}
-                      onClick={() => handleStatusChange(req.id, "CANCELED")}
+                      onClick={(e) => {
+                        // ⭐ 이벤트 버블링 방지 추가
+                        e.stopPropagation();
+                        handleStatusChange(req.id, "CANCELED");
+                      }}
                     >
                       거절/취소
                     </button>
                   </>
                 )}
-                {/* 기타 상태 처리 로직 추가 가능 */}
               </div>
             </li>
           ))}
