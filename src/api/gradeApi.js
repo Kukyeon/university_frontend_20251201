@@ -24,8 +24,7 @@ export const courseApi = {
 
   // 4. 수강신청
   // POST /api/course/register
-  register: (subjectId) => api.post("/course/register", { subjectId }),
-
+  register: (subjectId) => api.post(`/course/register?subjectId=${subjectId}`),
   // 5. 수강취소
   // DELETE /api/course/cancel?subjectId=101
   cancel: (subjectId) => api.delete("/course/cancel", { params: { subjectId } }),
@@ -36,6 +35,13 @@ export const courseApi = {
   //  강의계획서 상세 조회
   // GET /api/course/syllabus/101
   getSyllabus: (subjectId) => api.get(`/course/syllabus/${subjectId}`),
+
+  // 현재 수강신청 기간 상태 조회 (0:예비, 1:본수강, 2:종료)
+  // 백엔드: /api/sugang/period (SugangController)
+  getSugangPeriod: () => api.get("/sugang/period"),
+
+  // 장바구니 전용 조회
+  getMyBasket: () => api.get("/course/basket"),
 };
 
 // 관리자 강의 관리 API
