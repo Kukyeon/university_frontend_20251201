@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import ProfCourse from "../components/Course/ProfCourse";
-import ProfEvaluation from "../components/Course/ProfEvalution";
-import AllCourse from "../components/Course/AllCourse";
-import CourseListPage from "./CourseListPage";
-import EnrollmentPage from "./EnrollmentPage";
-import EnrollmentHistoryPage from "./EnrollmentHistoryPage";
+import React, { useEffect, useState } from "react";
+import CourseListPage from "../components/Sugang/CourseListPage";
+import EnrollmentPage from "../components/Sugang/EnrollmentPage";
+import EnrollmentHistoryPage from "../components/Sugang/EnrollmentHistoryPage";
+import "./Sugang.css";
 
 const Sugang = ({ role }) => {
   const [activeTab, setActiveTab] = useState("강의 시간표 조회");
-
+  const [pageHeader, setPageHeader] = useState(activeTab);
   const menuItems = ["강의 시간표 조회", "수강 신청", "수강 신청 내역 조회"];
   console.log(role);
+  useEffect(() => {
+    setPageHeader(activeTab);
+  }, [activeTab]);
   return (
     <div className="academic-page-container">
       {/* 사이드바 */}
@@ -32,11 +33,18 @@ const Sugang = ({ role }) => {
       {/* 메인 콘텐츠 */}
       <main className="academic-content">
         <div className="mypage-card">
-          <h2>{activeTab}</h2>
+          <h2>{pageHeader}</h2>
           {/* 여기에 activeTab에 따라 다른 내용 렌더링 */}
           {activeTab === "강의 시간표 조회" && <CourseListPage />}
-          {activeTab === "수강 신청" && <EnrollmentPage />}
-          {activeTab === "수강 신청 내역 조회" && <EnrollmentHistoryPage />}
+          {activeTab === "수강 신청" && (
+            <EnrollmentPage setPageHeader={setPageHeader} />
+          )}
+          {activeTab === "수강 신청 내역 조회" && (
+            <EnrollmentHistoryPage
+              setPageHeader={setPageHeader}
+              setActiveTab={setActiveTab}
+            />
+          )}
         </div>
       </main>
     </div>

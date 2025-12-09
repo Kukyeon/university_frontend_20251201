@@ -47,6 +47,9 @@ const Header = ({ user, logout, role }) => {
                 <li>
                   <Link to="/sugang">수강</Link>
                 </li>
+                <li>
+                  <Link to="/grade">성적</Link>
+                </li>
               </>
             )}
             {/* <li className="dropdown">

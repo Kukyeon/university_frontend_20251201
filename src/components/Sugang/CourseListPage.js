@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { courseApi } from "../api/gradeApi"; // api 파일 경로 확인
+import { courseApi } from "../../api/gradeApi";
 
 const CourseListPage = () => {
   const [subjects, setSubjects] = useState([]);
