@@ -91,7 +91,7 @@ const CoursePeriod = () => {
                     <div style={{ padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
                         <p>현재 <strong>예비 수강 신청 기간</strong>입니다.</p>
                         <button onClick={handleStart} className="btn-primary" style={btnStyle}>
-                            수강 신청 시작 (데이터 이관)
+                            수강 신청 시작
                         </button>
                     </div>
                 )}
