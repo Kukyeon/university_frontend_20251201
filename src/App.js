@@ -6,6 +6,7 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import "react-datepicker/dist/react-datepicker.css";
 import NoticePage from "./pages/NoticePage";
 import NoticeDetail from "./components/Notice/NoticeDetail";
 import NoticeForm from "./components/Notice/NoticeForm";
@@ -31,12 +32,12 @@ import AcademicRegistration from "./pages/AcademicRegistration";
 import ScheduleForm from "./components/Schedule/ScheduleForm";
 import AdminSubjectPage from "./pages/AdminSubjectPage";
 import GradePage from "./pages/GradePage";
-import EnrollmentPage from "./pages/EnrollmentPage";
 import StudentSchedulePage from "./pages/StudentSchedulePage";
 import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
-import CourseListPage from "./pages/CourseListPage";
-import EnrollmentHistoryPage from "./pages/EnrollmentHistoryPage";
 import CoursePlanPage from "./pages/CoursePlanPage";
+import StudentCounselingDetail from "./components/Schedule/StudentCounselingDetail";
+import ProfessorCounselingDetail from "./components/Counseling/ProfessorCounselingDetail";
+import CounselingRecordForm from "./components/Counseling/CounselingRecordForm";
 import CoursePage from "./pages/CoursePage";
 import Sugang from "./pages/Sugang";
 
@@ -160,17 +161,14 @@ function App() {
         <Route path="/notice/:id" element={<NoticeDetail role={role} />} />
         <Route path="/notice/write" element={<NoticeForm />} />
         <Route path="/notice/edit/:id" element={<NoticeForm />} />
-
         {/* 📚 학사일정 및 공지사항 통합 페이지 */}
         <Route path="/academicPage" element={<AcademicPage role={role} />} />
-
         {/* 일정 등록 및 수정 폼 (ScheduleForm) */}
         <Route path="/admin/schedule/write" element={<ScheduleForm />} />
         <Route path="/admin/schedule/edit/:id" element={<ScheduleForm />} />
-
         {/* 강의 평가 */}
         <Route path="/evaluation" element={<EvaluationPage user={user} />} />
-        {/* 화상 회의 */}
+        {/* 상담 / 화상 회의 */}
         <Route path="/records" element={<CounselingRecordPage user={user} />} />
         <Route
           path="/student-schedule"
@@ -180,7 +178,21 @@ function App() {
             // </ProtectedRoute>
           }
         />
-
+        {/* 학생용 상세 보기 */}
+        <Route
+          path="/student/counseling/detail/:scheduleId"
+          element={<StudentCounselingDetail />}
+        />
+        {/* 교수용 상세 보기 (권한 설정 필요) */}
+        <Route
+          path="/professor/counseling/detail/:scheduleId"
+          element={<ProfessorCounselingDetail />}
+        />
+        {/* 2. 교수용 상담 기록 작성/수정 폼 (새로 추가) */}
+        <Route
+          path="/professor/counseling/write/:scheduleId"
+          element={<CounselingRecordForm />}
+        />
         <Route
           path="/professor-schedule"
           element={
@@ -189,17 +201,13 @@ function App() {
             // </ProtectedRoute>
           }
         />
-
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
-
         {/* 챗봇 및 중도 이탈방지 관련부분 */}
         {/* 학생이 로그인하면 들어가는 메인 화면 */}
         <Route path="/student" element={<StudentMain user={user} />} />
-
         {/* === [3] 교수용 (위험군 대시보드) === */}
         <Route path="/professor" element={<ProfDashboard user={user} />} />
-
         {/* === [4] 관리자용 (분석 실행) === */}
         <Route path="/admin" element={<AdminPage user={user} />} />
         <Route
@@ -207,8 +215,6 @@ function App() {
           element={<AdminDashboard user={user} />}
         />
 
-        {/* 수강신청 관련부분 */}
-        <Route path="/enroll" element={<EnrollmentPage user={user} />} />
         <Route
           path="/admin/subject"
           element={<AdminSubjectPage user={user} />}
@@ -218,19 +224,7 @@ function App() {
           path="/admin/dashboard/risk-list"
           element={<AdminDashboard user={user} />}
         />
-
         {/* 수강신청 관련부분 */}
-        {/* 1. 전체 강좌 조회 */}
-        <Route path="/student/course-list" element={<CourseListPage />} />
-
-        {/* 2. 수강신청 (예비수강신청도 이 컴포넌트 재사용 가능) */}
-        <Route path="/student/enrollment" element={<EnrollmentPage />} />
-
-        {/* 3. 수강신청 내역 조회 (별도 페이지) */}
-        <Route
-          path="/student/enrollment-history"
-          element={<EnrollmentHistoryPage />}
-        />
 
         {/* 4. 강의계획서 (별도 페이지) */}
         <Route

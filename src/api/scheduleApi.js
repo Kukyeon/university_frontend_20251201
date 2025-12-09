@@ -58,8 +58,10 @@ export const getProfessorAvailability = () =>
 
 // 학생 상담 예약
 export const bookAppointment = (availabilityId, studentId) =>
-  // BookingRequestDto: { availabilityId, studentId } 구조로 전송
-  requestCounseling("post", "/book", { availabilityId, studentId });
+  requestCounseling("post", "/book", {
+    availabilityId,
+    studentId,
+  });
 
 // 모든 교수님의 예약 가능한 시간 조회 (학생 예약용)
 export const getAllAvailableTimes = () =>
@@ -86,3 +88,13 @@ export const getProfessorRequests = () => requestCounseling("get", "/requests");
 // 상담 일정 상태 변경 (승인/거절/완료)
 export const updateScheduleStatus = (scheduleId, newStatus) =>
   requestCounseling("put", `/status/${scheduleId}`, { status: newStatus });
+
+// 특정 상담 기록 상세 조회 / 교수용
+export const getCounselingRecord = (scheduleId, studentId) => {
+  return requestCounseling("get", `/records/${scheduleId}`, {}, { studentId });
+};
+
+//특정 상담 기록 상세 조회 / 학생용
+export const getStudentCounselingRecord = (scheduleId) => {
+  return requestCounseling("get", `/records/student/${scheduleId}`);
+};

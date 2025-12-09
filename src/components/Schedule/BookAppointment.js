@@ -1,45 +1,37 @@
-// src/components/Schedule/BookAppointment.js
-
 import React, { useState, useEffect } from "react";
 import { getAllAvailableTimes, bookAppointment } from "../../api/scheduleApi";
 
-// 날짜/시간 포맷팅 함수 (MM-DD HH:mm)
 const formatDateTime = (dateTimeStr) => {
   if (!dateTimeStr) return "";
   const date = new Date(dateTimeStr);
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${month}-${day} ${hours}:${minutes}`;
+  return date.toLocaleString("ko-KR", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 };
 
 const BookAppointment = ({ studentId }) => {
-  const [slots, setSlots] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [availableSlots, setAvailableSlots] = useState([]);
 
   useEffect(() => {
     if (!studentId) {
       setLoading(false);
-      setError("상담 예약 정보를 가져올 수 없습니다. (학생 ID 부재)");
+      setError("학생 로그인 후 이용 가능합니다.");
       return;
     }
 
     const fetchSlots = async () => {
-      setLoading(true);
-      setError(null);
       try {
         const data = await getAllAvailableTimes();
-        const available = data.filter((slot) => !slot.isBooked);
-        setAvailableSlots(available);
+        const filtered = data.filter((slot) => !slot.isBooked);
+        setAvailableSlots(filtered);
       } catch (err) {
-        console.error(
-          "교수 예약 조회 실패:",
-          err.response?.data?.message || err.message
-        );
-        setError("가능 시간을 불러오는 데 실패했습니다.");
+        setError("예약 가능한 시간을 가져오는 데 실패했습니다.");
       } finally {
         setLoading(false);
       }
@@ -49,45 +41,44 @@ const BookAppointment = ({ studentId }) => {
   }, [studentId]);
 
   const handleBook = async (availabilityId) => {
-    if (!studentId) return alert("예약은 학생만 가능합니다..");
+    if (!studentId) return alert("학생만 예약할 수 있습니다.");
+
     try {
       await bookAppointment(availabilityId, studentId);
-      alert("예약 완료");
-      // 예약이 성공하면 목록을 갱신합니다.
-      setAvailableSlots((prev) => prev.filter((s) => s.id !== availabilityId));
+      alert("📌 예약이 완료되었습니다!");
+
+      setAvailableSlots((prev) =>
+        prev.filter((slot) => slot.id !== availabilityId)
+      );
     } catch (error) {
-      console.error("예약 실패:", error.message);
       alert("예약 실패: " + error.message);
     }
   };
 
-  if (loading) return <div>가능 시간을 불러오는 중...</div>;
-  if (error) return <div style={{ color: "red" }}>에러: {error}</div>;
+  if (loading) return <div>⏳ 예약 가능한 시간 불러오는 중...</div>;
+  if (error) return <div style={{ color: "red" }}>⚠ {error}</div>;
 
-  if (!studentId) {
-    return (
-      <div style={{ marginTop: "20px", color: "gray" }}>
-        상담 예약 기능은 학생만 이용 가능합니다.
-      </div>
-    );
-  }
   return (
     <div style={{ marginTop: "20px" }}>
-      <h3>상담 예약</h3>
-      <ul>
-        {availableSlots.map((slot) => (
-          <li key={slot.id} style={{ marginBottom: "5px" }}>
-            **{formatDateTime(slot.startTime)} ~ {formatDateTime(slot.endTime)}
-            ** (교수 ID: {slot.professorId}) {/* 교수 확인용 */}
-            <button
-              onClick={() => handleBook(slot.id)}
-              style={{ marginLeft: "10px" }}
-            >
-              {slot.booked ? "예약됨" : "예약"}
-            </button>
-          </li>
-        ))}
-      </ul>
+      <h3>📅 상담 예약 가능한 시간</h3>
+      {availableSlots.length === 0 ? (
+        <p style={{ color: "gray" }}>현재 예약 가능한 시간이 없습니다.</p>
+      ) : (
+        <ul>
+          {availableSlots.map((slot) => (
+            <li key={slot.id} style={{ marginBottom: "8px" }}>
+              🕒 {formatDateTime(slot.startTime)} ~{" "}
+              {formatDateTime(slot.endTime)}
+              <button
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                onClick={() => handleBook(slot.id)}
+              >
+                예약하기
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
