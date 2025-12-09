@@ -68,7 +68,9 @@ const AcademicPage = ({ role }) => {
       <div style={{ flexGrow: 1, paddingLeft: "20px" }}>
         {selectedTab === "notice" && <NoticePage role={role} />}
         {selectedTab === "calendar" && <AcademicCalendar />}
-        {selectedTab === "schedule-manager" && <ScheduleManagerPage />}
+        {selectedTab === "schedule-manager" && role === "staff" && (
+          <ScheduleManagerPage />
+        )}
         {/* && role === "STAFF" 나중에 넣기 */}
       </div>
     </div>
