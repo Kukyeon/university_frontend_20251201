@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import ProfessorAvailability from "../components/Schedule/ProfessorAvailability";
-import ProfessorAvailabilityList from "../components/Schedule/ProfessorAvailabilityList"; // ⭐️ 새로 추가
-import StudentScheduleList from "../components/Schedule/StudentScheduleList";
+import ProfessorAvailabilityList from "../components/Schedule/ProfessorAvailabilityList";
+
 import ProfessorScheduleRequests from "../components/Schedule/ProfessorScheduleRequests";
-// import StudentScheduleList from "../components/Schedule/StudentScheduleList"; // (주: 예약 현황 대신 가능 시간 목록을 우선 확인)
 
 const ProfessorSchedulePage = ({ user, role }) => {
   // 등록 후 목록을 갱신하기 위한 상태
