@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import ProfCourse from "../components/Course/ProfCourse";
 import ProfEvaluation from "../components/Course/ProfEvalution";
 import AllCourse from "../components/Course/AllCourse";
+import CourseListPage from "./CourseListPage";
+import EnrollmentPage from "./EnrollmentPage";
+import EnrollmentHistoryPage from "./EnrollmentHistoryPage";
 
-const CoursePage = ({ role }) => {
-  const [activeTab, setActiveTab] = useState("전체 강의 조회");
+const Sugang = ({ role }) => {
+  const [activeTab, setActiveTab] = useState("강의 시간표 조회");
 
-  const menuItems =
-    role === "professor"
-      ? ["전체 강의 조회", "내 강의 조회", "내 강의 평가"]
-      : ["전체 강의 조회"];
-
+  const menuItems = ["강의 시간표 조회", "수강 신청", "수강 신청 내역 조회"];
   console.log(role);
   return (
     <div className="academic-page-container">
@@ -35,17 +34,13 @@ const CoursePage = ({ role }) => {
         <div className="mypage-card">
           <h2>{activeTab}</h2>
           {/* 여기에 activeTab에 따라 다른 내용 렌더링 */}
-          {activeTab === "전체 강의 조회" && <AllCourse />}
-          {role === "professor" && (
-            <>
-              {activeTab === "내 강의 조회" && <ProfCourse />}
-              {activeTab === "내 강의 평가" && <ProfEvaluation />}
-            </>
-          )}
+          {activeTab === "강의 시간표 조회" && <CourseListPage />}
+          {activeTab === "수강 신청" && <EnrollmentPage />}
+          {activeTab === "수강 신청 내역 조회" && <EnrollmentHistoryPage />}
         </div>
       </main>
     </div>
   );
 };
 
-export default CoursePage;
+export default Sugang;
