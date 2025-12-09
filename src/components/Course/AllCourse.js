@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
+import { courseApi } from "../../api/gradeApi";
 
 const AllCourse = () => {
-  const [year, setYear] = useState("2023");
-  const [semester, setSemester] = useState("1학기");
+  const [year, setYear] = useState(""); // 초기값 빈 문자열 → 전체 조회
+  const [semester, setSemester] = useState("");
   const [department, setDepartment] = useState("");
   const [name, setName] = useState("");
   const [courses, setCourses] = useState([]);
@@ -11,42 +12,48 @@ const AllCourse = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [departments, setDepartments] = useState([]);
 
+  // 학과 목록 로딩
   useEffect(() => {
+    const loadDepartments = async () => {
+      try {
+        const res = await courseApi.getDeptList();
+        setDepartments(res.data || []);
+      } catch (err) {
+        console.error("학과 목록 로딩 실패", err);
+      }
+    };
     loadDepartments();
   }, []);
+
+  // 강좌 목록 로딩
   useEffect(() => {
     loadCourses();
-  }, [page, year, semester, department, name]);
+  }, [page]);
 
-  const loadDepartments = async () => {
+  const loadCourses = async (filter = {}) => {
     try {
-      const res = await api.get();
-      setDepartments(res.data || []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+      const params = { page };
 
-  const loadCourses = async () => {
-    try {
-      const res = await api.get({
-        page,
-        year,
-        semester,
-        deptId: department,
-        name,
-      });
+      // filter 객체 또는 상태 값에 따라 조건부로 params 추가
+      if (filter.year || year) params.year = parseInt(filter.year || year);
+      if (filter.semester || semester)
+        params.semester = (filter.semester || semester) === "1학기" ? 1 : 2;
+      if (filter.department || department)
+        params.deptId = filter.department || department;
+      if (filter.name || name) params.name = filter.name || name;
+
+      const res = await api.get("/course", { params });
       setCourses(res.data.content || []);
       setTotalPages(res.data.totalPages || 0);
     } catch (err) {
-      console.error(err);
+      console.error("강좌 목록 로딩 실패", err);
       setCourses([]);
     }
   };
 
   const handleSearch = () => {
-    setPage(0);
-    loadCourses();
+    setPage(0); // 페이지 초기화
+    loadCourses({ year, semester, department, name });
   };
 
   const openSyllabus = (courseId) => {
@@ -64,17 +71,22 @@ const AllCourse = () => {
         <div className="department-form" style={{ marginBottom: "15px" }}>
           <label>연도</label>
           <select value={year} onChange={(e) => setYear(e.target.value)}>
-            <option value="2023">2023</option>
+            <option value="">전체</option>
+            <option value="2025">2025</option>
             <option value="2024">2024</option>
+            <option value="2023">2023</option>
           </select>
+
           <label>학기</label>
           <select
             value={semester}
             onChange={(e) => setSemester(e.target.value)}
           >
+            <option value="">전체</option>
             <option value="1학기">1학기</option>
             <option value="2학기">2학기</option>
           </select>
+
           <label>개설학과</label>
           <select
             value={department}
@@ -87,6 +99,7 @@ const AllCourse = () => {
               </option>
             ))}
           </select>
+
           <label>강의명</label>
           <input
             value={name}
@@ -94,6 +107,7 @@ const AllCourse = () => {
             placeholder="강의명을 입력하세요"
             onKeyPress={(e) => e.key === "Enter" && handleSearch()}
           />
+
           <button className="search-btn" onClick={handleSearch}>
             조회
           </button>
@@ -130,7 +144,7 @@ const AllCourse = () => {
             courses.map((c) => (
               <tr key={c.id}>
                 <td>
-                  {year}-{semester}
+                  {c.subYear}-{c.semester}학기
                 </td>
                 <td>{c.department?.college?.name || "-"}</td>
                 <td>{c.department?.name || "-"}</td>

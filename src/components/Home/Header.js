@@ -42,6 +42,13 @@ const Header = ({ user, logout, role }) => {
                 </li>
               </>
             )}
+            {role === "student" && (
+              <>
+                <li>
+                  <Link to="/sugang">수강</Link>
+                </li>
+              </>
+            )}
             {/* <li className="dropdown">
               <Link to="/departments">학과소개</Link>
               <ul className="dropdown-menu">
