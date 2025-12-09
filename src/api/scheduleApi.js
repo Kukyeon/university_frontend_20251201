@@ -61,6 +61,10 @@ export const bookAppointment = (availabilityId, studentId) =>
   // BookingRequestDto: { availabilityId, studentId } 구조로 전송
   requestCounseling("post", "/book", { availabilityId, studentId });
 
+// 모든 교수님의 예약 가능한 시간 조회 (학생 예약용)
+export const getAllAvailableTimes = () =>
+  requestCounseling("get", "/available-list");
+
 // 학생 예약 일정 조회
 export const getStudentSchedules = () => requestCounseling("get", "/student");
 

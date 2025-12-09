@@ -1,10 +1,7 @@
 // src/components/Schedule/BookAppointment.js
 
 import React, { useState, useEffect } from "react";
-import {
-  getProfessorAvailability,
-  bookAppointment,
-} from "../../api/scheduleApi";
+import { getAllAvailableTimes, bookAppointment } from "../../api/scheduleApi";
 
 // 날짜/시간 포맷팅 함수 (MM-DD HH:mm)
 const formatDateTime = (dateTimeStr) => {
@@ -21,6 +18,7 @@ const BookAppointment = ({ studentId }) => {
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [availableSlots, setAvailableSlots] = useState([]);
 
   useEffect(() => {
     if (!studentId) {
@@ -33,8 +31,9 @@ const BookAppointment = ({ studentId }) => {
       setLoading(true);
       setError(null);
       try {
-        const data = await getProfessorAvailability();
-        setSlots(data);
+        const data = await getAllAvailableTimes();
+        const available = data.filter((slot) => !slot.isBooked);
+        setAvailableSlots(available);
       } catch (err) {
         console.error(
           "교수 예약 조회 실패:",
@@ -55,14 +54,16 @@ const BookAppointment = ({ studentId }) => {
       await bookAppointment(availabilityId, studentId);
       alert("예약 완료");
       // 예약이 성공하면 목록을 갱신합니다.
-      setSlots((prev) =>
-        prev.map((s) => (s.id === availabilityId ? { ...s, booked: true } : s))
-      );
+      setAvailableSlots((prev) => prev.filter((s) => s.id !== availabilityId));
     } catch (error) {
       console.error("예약 실패:", error.message);
       alert("예약 실패: " + error.message);
     }
   };
+
+  if (loading) return <div>가능 시간을 불러오는 중...</div>;
+  if (error) return <div style={{ color: "red" }}>에러: {error}</div>;
+
   if (!studentId) {
     return (
       <div style={{ marginTop: "20px", color: "gray" }}>
@@ -74,12 +75,11 @@ const BookAppointment = ({ studentId }) => {
     <div style={{ marginTop: "20px" }}>
       <h3>상담 예약</h3>
       <ul>
-        {slots.map((slot) => (
+        {availableSlots.map((slot) => (
           <li key={slot.id} style={{ marginBottom: "5px" }}>
             **{formatDateTime(slot.startTime)} ~ {formatDateTime(slot.endTime)}
-            **{" "}
+            ** (교수 ID: {slot.professorId}) {/* 교수 확인용 */}
             <button
-              disabled={slot.booked}
               onClick={() => handleBook(slot.id)}
               style={{ marginLeft: "10px" }}
             >
