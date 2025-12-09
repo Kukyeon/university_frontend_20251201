@@ -19,7 +19,7 @@ const StudentMain = ({user}) => {
     } 
     
      setStudentId(user.id);
-     setStudentName(user.name);
+     setStudentName(user?.name);
     }, [user,navigate]);
 
   // AI 강의 추천 요청 함수
@@ -40,7 +40,7 @@ const StudentMain = ({user}) => {
   return (
     <div style={{ padding: "30px", maxWidth: "800px", margin: "0 auto" }}>
       <h1>🎓 학생용 학사지원 시스템</h1>
-      <p>안녕하세요, {user.name} 학생님! 무엇을 도와드릴까요?</p>
+      <p>안녕하세요, {user?.name} 학생님! 무엇을 도와드릴까요?</p>
       
       <hr style={{ margin: "30px 0" }} />
 
