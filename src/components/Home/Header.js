@@ -35,7 +35,24 @@ const Header = ({ user, logout, role }) => {
                 </li>
               </>
             )}
-            <li className="dropdown">
+            {role !== "staff" && (
+              <>
+                <li>
+                  <Link to="/course">수업</Link>
+                </li>
+              </>
+            )}
+            {role === "student" && (
+              <>
+                <li>
+                  <Link to="/sugang">수강</Link>
+                </li>
+                <li>
+                  <Link to="/grade">성적</Link>
+                </li>
+              </>
+            )}
+            {/* <li className="dropdown">
               <Link to="/departments">학과소개</Link>
               <ul className="dropdown-menu">
                 <li>
@@ -45,13 +62,9 @@ const Header = ({ user, logout, role }) => {
                   <Link to="/departments/ee">전기공학과</Link>
                 </li>
               </ul>
-            </li>
-
+            </li> */}
             <li>
-              <Link to="/admission">입학안내</Link>
-            </li>
-            <li>
-              <Link to="/academicPage">공지사항</Link>
+              <Link to="/academicPage">학사정보</Link>
             </li>
             <li>
               <Link to="/videoroom">회의</Link>

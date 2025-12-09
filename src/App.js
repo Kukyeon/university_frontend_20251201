@@ -32,15 +32,14 @@ import AcademicRegistration from "./pages/AcademicRegistration";
 import ScheduleForm from "./components/Schedule/ScheduleForm";
 import AdminSubjectPage from "./pages/AdminSubjectPage";
 import GradePage from "./pages/GradePage";
-import EnrollmentPage from "./pages/EnrollmentPage";
 import StudentSchedulePage from "./pages/StudentSchedulePage";
 import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
-import CourseListPage from "./pages/CourseListPage";
-import EnrollmentHistoryPage from "./pages/EnrollmentHistoryPage";
 import CoursePlanPage from "./pages/CoursePlanPage";
 import StudentCounselingDetail from "./components/Schedule/StudentCounselingDetail";
 import ProfessorCounselingDetail from "./components/Counseling/ProfessorCounselingDetail";
 import CounselingRecordForm from "./components/Counseling/CounselingRecordForm";
+import CoursePage from "./pages/CoursePage";
+import Sugang from "./pages/Sugang";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -108,6 +107,30 @@ function App() {
                 <div>로딩중...</div>
               ) : (
                 <Academic user={user} role={role} />
+              )}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/course"
+          element={
+            <ProtectedRoute user={user} role={role}>
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <CoursePage user={user} role={role} />
+              )}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sugang"
+          element={
+            <ProtectedRoute user={user} role={role}>
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <Sugang user={user} role={role} />
               )}
             </ProtectedRoute>
           }
@@ -191,8 +214,7 @@ function App() {
           path="/admin/dashboard/risk-list"
           element={<AdminDashboard user={user} />}
         />
-        {/* 수강신청 관련부분 */}
-        <Route path="/enroll" element={<EnrollmentPage user={user} />} />
+
         <Route
           path="/admin/subject"
           element={<AdminSubjectPage user={user} />}
@@ -203,15 +225,7 @@ function App() {
           element={<AdminDashboard user={user} />}
         />
         {/* 수강신청 관련부분 */}
-        {/* 1. 전체 강좌 조회 */}
-        <Route path="/student/course-list" element={<CourseListPage />} />
-        {/* 2. 수강신청 (예비수강신청도 이 컴포넌트 재사용 가능) */}
-        <Route path="/student/enrollment" element={<EnrollmentPage />} />
-        {/* 3. 수강신청 내역 조회 (별도 페이지) */}
-        <Route
-          path="/student/enrollment-history"
-          element={<EnrollmentHistoryPage />}
-        />
+
         {/* 4. 강의계획서 (별도 페이지) */}
         <Route
           path="/course/syllabus/:subjectId"

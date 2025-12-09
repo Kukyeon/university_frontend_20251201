@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 //import './Chatbot.css'; // 스타일은 나중에
 import { chatApi } from "../../api/aiApi"; // [핵심] api.js에서 가져옴
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 const Chatbot = ({ studentId }) => {
   const [isOpen, setIsOpen] = useState(false); // 채팅창 열림/닫힘 상태
@@ -62,31 +63,41 @@ const Chatbot = ({ studentId }) => {
       setMessages(prev => [...prev, { sender: 'ai', text: "오류가 발생했습니다." }]);
     }
   };
-
-   const renderMessage = (text, sender) => {
-    // 1. 태그 문자열 제거 (화면에는 안 보이게)
-    let cleanText = text;
-    // 정규식으로 [[ACTION: ... ]] 패턴을 찾아서 지움
-    cleanText = cleanText.replace(/\[\[ACTION:[a-zA-Z_]+\]\]/g, "");
-    let actionButton = null;
-    if (text.includes("[[ACTION:LEAVE_APP]]")) {
-      actionButton = <button className="action-btn" onClick={() => navigate("/student/leave")}>📄 휴학 신청 바로가기</button>;
-    } else if (text.includes("[[ACTION:RETURN_APP]]")) {
-      actionButton = <button className="action-btn" onClick={() => navigate("/student/course-reg")}>📄 복학신청 페이지로 이동</button>;
-    } else if (text.includes("[[ACTION:COURSE_REG]]")) {
-      actionButton = <button className="action-btn" onClick={() => navigate("/student/course-reg")}>📅 수강신청 페이지로 이동</button>;
-    } else if (text.includes("[[ACTION:GRADE_VIEW]]")) {
-      actionButton = <button className="action-btn" onClick={() => navigate("/student/course-reg")}>📅 수강신청 페이지로 이동</button>;
-  }
-  return (
-      <div className={`message ${sender}`}>
-        {cleanText}
-        {sender === 'ai' && actionButton && <div style={{marginTop: '5px'}}>{actionButton}</div>}
-      </div>
-    );
+// ★ 마크다운 링크를 React Router의 Link로 변환해주는 설정
+  const MarkdownComponents = {
+    a: ({ href, children }) => {
+        // 내부 링크인 경우 (http로 시작하지 않음) React Router Link 사용 -> 새로고침 없음
+        if (href && !href.startsWith('http')) {
+            return <Link to={href} style={{ color: '#007bff', textDecoration: 'underline', fontWeight: 'bold' }}>{children}</Link>;
+        }
+        // 외부 링크는 새 탭으로 열기
+        return <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff' }}>{children}</a>;
+    }
   };
+  //  const renderMessage = (text, sender) => {
+  //   // 1. 태그 문자열 제거 (화면에는 안 보이게)
+  //   let cleanText = text;
+  //   // 정규식으로 [[ACTION: ... ]] 패턴을 찾아서 지움
+  //   cleanText = cleanText.replace(/\[\[ACTION:[a-zA-Z_]+\]\]/g, "");
+  //   let actionButton = null;
+  //   if (text.includes("[[ACTION:LEAVE_APP]]")) {
+  //     actionButton = <button className="action-btn" onClick={() => navigate("/student/leave")}>📄 휴학 신청 바로가기</button>;
+  //   } else if (text.includes("[[ACTION:RETURN_APP]]")) {
+  //     actionButton = <button className="action-btn" onClick={() => navigate("/student/course-reg")}>📄 복학신청 페이지로 이동</button>;
+  //   } else if (text.includes("[[ACTION:COURSE_REG]]")) {
+  //     actionButton = <button className="action-btn" onClick={() => navigate("/student/course-reg")}>📅 수강신청 페이지로 이동</button>;
+  //   } else if (text.includes("[[ACTION:GRADE_VIEW]]")) {
+  //     actionButton = <button className="action-btn" onClick={() => navigate("/student/course-reg")}>📅 수강신청 페이지로 이동</button>;
+  // }
+  // return (
+  //     <div className={`message ${sender}`}>
+  //       {cleanText}
+  //       {sender === 'ai' && actionButton && <div style={{marginTop: '5px'}}>{actionButton}</div>}
+  //     </div>
+  //   );
+  // };
 
-  return (
+ return (
     <div className="chatbot-wrapper">
       {!isOpen && (
         <button className="chat-btn" onClick={() => setIsOpen(true)}>챗봇🤖</button>
@@ -103,15 +114,24 @@ const Chatbot = ({ studentId }) => {
               >
                 🗑️ 종료
               </button>
-              {/* 닫기 버튼 (기존) */}
               <button onClick={() => setIsOpen(false)}>X</button>
           </div>
            </div>
           <div className="chat-body">
             {messages.map((msg, idx) => (
-              // [수정] 그냥 msg.text를 출력하는 게 아니라, renderMessage 함수를 통과시킴
-              <div key={idx}>
-                {renderMessage(msg.text, msg.sender)}
+              <div key={idx} className={`message ${msg.sender}`}>
+                {/* [핵심] ReactMarkdown을 사용하여 텍스트를 렌더링 
+                    - 줄바꿈(newline)을 <br>로 인식시키려면 'white-space: pre-wrap' 스타일 필요
+                */}
+                <div style={{ whiteSpace: 'pre-wrap' }}>
+                    {msg.sender === 'ai' ? (
+                        <ReactMarkdown components={MarkdownComponents}>
+                            {msg.text}
+                        </ReactMarkdown>
+                    ) : (
+                        msg.text
+                    )}
+                </div>
               </div>
             ))}
           </div>
