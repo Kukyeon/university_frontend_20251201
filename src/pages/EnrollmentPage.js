@@ -88,7 +88,8 @@ const EnrollmentPage = () => {
       alert(successMsg);
       
       setMyEnrolledIds([...myEnrolledIds, subject.id]);
-      if (period === 1) loadData();
+      loadData();
+      loadMyStatus();
     } catch (err) {
       const msg = err.response?.data || "요청 실패";
       alert("❌ " + msg);
@@ -176,8 +177,7 @@ const EnrollmentPage = () => {
                 subjects.map(sub => {
                   const isApplied = myEnrolledIds.includes(sub.id);
                   const isFull = sub.numOfStudent >= sub.capacity;
-                  const isClosed = period === 1 && isFull;
-
+                  const isClosed = isFull;
                   return (
                     <tr key={sub.id} style={{ backgroundColor: isApplied ? (period === 0 ? '#fff9db' : '#e6fcf5') : 'white' }}>
                       <td>{sub.department?.name}</td>

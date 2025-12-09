@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // ★ 1. 이동을 위한 훅 import
+import { useNavigate } from 'react-router-dom'; 
 import { courseApi } from '../api/gradeApi';
 
 const EnrollmentHistoryPage = () => {
-  const navigate = useNavigate(); // ★ 2. navigate 함수 생성
+  const navigate = useNavigate(); 
 
   // 상태 관리
   const [basketList, setBasketList] = useState([]); 
@@ -63,6 +63,12 @@ const EnrollmentHistoryPage = () => {
   };
 
   const handleCancelSuccess = async (subjectId) => {
+    // ★ [보안 추가] 기간이 종료(2)되었으면 함수 실행 즉시 중단
+    if (period === 2) {
+        alert("수강신청 기간이 종료되어 취소할 수 없습니다.");
+        return;
+    }
+
     if (!window.confirm("정말 수강을 취소하시겠습니까?")) return;
     try {
       await courseApi.cancel(subjectId);
@@ -82,12 +88,12 @@ const EnrollmentHistoryPage = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom:'20px' }}>
         <div>
             <h1 style={{ margin: 0 }}>
-                {period === 0 ? "🛒 예비 수강신청 (장바구니)" : "🎓 수강신청 현황"}
+                {period === 0 ? "🛒 예비 수강신청 (장바구니)" : (period === 2 ? "🔒 수강신청 종료 (내역 확인)" : "🎓 수강신청 현황")}
             </h1>
-            {/* ★ 3. 강의 목록으로 이동하는 버튼 추가 */}
+            {/* ★ 3. 강의 목록으로 이동하는 버튼 (종료 시 숨김) */}
             {period !== 2 && (
             <button 
-                onClick={() => navigate('/student/enrollment')} // ※ App.js에 설정한 경로로 수정해주세요! (예: /course-list 등)
+                onClick={() => navigate('/student/enrollment')} 
                 style={goListBtnStyle}
             >
                 {period === 0 ? "➕ 강의 담으러 가기" : "➕ 강의 신청목록으로"}
@@ -102,7 +108,7 @@ const EnrollmentHistoryPage = () => {
         )}
       </div>
 
-      {/* 2. 장바구니 목록 */}
+      {/* 2. 장바구니 목록 (기간 2일 때는 자동으로 안 보임: 조건이 period 0 or 1 이라서) */}
       {(period === 0 || period === 1) && (
         <div style={{ marginBottom: '40px' }}>
           <h3 style={{ borderBottom:'2px solid #fcc419', paddingBottom:'10px' }}>
@@ -159,7 +165,7 @@ const EnrollmentHistoryPage = () => {
         </div>
       )}
 
-      {/* 3. 실제 수강 확정 목록 */}
+      {/* 3. 실제 수강 확정 목록 (기간 1, 2일 때 표시) */}
       {period >= 1 && (
         <div>
           <h3 style={{ borderBottom:'2px solid #4dabf7', paddingBottom:'10px' }}>✅ 수강 확정 목록</h3>
@@ -167,7 +173,7 @@ const EnrollmentHistoryPage = () => {
             <thead style={{ background: '#e7f5ff' }}>
               <tr>
                 <th>학수번호</th><th>강의명</th><th>담당교수</th><th>학점</th>
-                <th>요일시간 (강의실)</th><th>현재인원</th><th>정원</th><th>수강신청</th>
+                <th>요일시간 (강의실)</th><th>현재인원</th><th>정원</th><th>관리</th>
               </tr>
             </thead>
             <tbody>
@@ -186,7 +192,12 @@ const EnrollmentHistoryPage = () => {
                       <td>{sub.numOfStudent}</td>
                       <td>{sub.capacity}</td>
                       <td>
-                        <button onClick={() => handleCancelSuccess(sub.id)} style={delBtnStyle}>취소</button>
+                        {/* ★ [핵심 수정] 기간이 2(종료)이면 취소 버튼 숨기고 '마감됨' 텍스트 표시 */}
+                        {period === 2 ? (
+                            <span style={{color: '#adb5bd', fontSize: '13px', fontWeight: 'bold'}}>취소불가</span>
+                        ) : (
+                            <button onClick={() => handleCancelSuccess(sub.id)} style={delBtnStyle}>취소</button>
+                        )}
                       </td>
                     </tr>
                   );
