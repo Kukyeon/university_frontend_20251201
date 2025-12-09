@@ -132,3 +132,42 @@
 .department-form button {
   flex-shrink: 0;
 }
+.course-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* 행 간격 넉넉하게 */
+  padding: 15px;
+}
+
+.course-form .form-row {
+  display: flex;
+  flex-wrap: wrap; /* 화면 좁으면 자동 줄바꿈 */
+  align-items: center;
+  gap: 12px; /* 입력창 간 간격 */
+}
+
+.course-form .form-row label {
+  width: 100px;
+  font-weight: 500;
+}
+
+.course-form input,
+.course-form select {
+  margin: 7px;
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  flex: 1;
+  max-width: 180px; /* 너무 길어지지 않도록 제한 */
+}
+
+.course-form select {
+  width: auto; /* 필요 이상으로 길지 않게 */
+}
+
+.course-form .time-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
