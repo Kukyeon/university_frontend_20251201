@@ -39,6 +39,9 @@ export const courseApi = {
   // 현재 수강신청 기간 상태 조회 (0:예비, 1:본수강, 2:종료)
   // 백엔드: /api/sugang/period (SugangController)
   getSugangPeriod: () => api.get("/sugang/period"),
+
+  // 장바구니 전용 조회
+  getMyBasket: () => api.get("/course/basket"),
 };
 
 // 관리자 강의 관리 API
