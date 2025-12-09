@@ -4,11 +4,15 @@ import ProfCourse from "../components/Course/ProfCourse";
 import ProfEvaluation from "../components/Course/ProfEvalution";
 import AllCourse from "../components/Course/AllCourse";
 
-const CoursePage = () => {
+const CoursePage = ({ role }) => {
   const [activeTab, setActiveTab] = useState("전체 강의 조회");
 
-  const menuItems = ["전체 강의 조회", "내 강의 조회", "내 강의 평가"];
+  const menuItems =
+    role === "professor"
+      ? ["전체 강의 조회", "내 강의 조회", "내 강의 평가"]
+      : ["전체 강의 조회"];
 
+  console.log(role);
   return (
     <div className="academic-page-container">
       {/* 사이드바 */}
@@ -33,8 +37,12 @@ const CoursePage = () => {
           <h2>{activeTab}</h2>
           {/* 여기에 activeTab에 따라 다른 내용 렌더링 */}
           {activeTab === "전체 강의 조회" && <AllCourse />}
-          {activeTab === "내 강의 조회" && <ProfCourse />}
-          {activeTab === "내 강의 평가" && <ProfEvaluation />}
+          {role === "professor" && (
+            <>
+              {activeTab === "내 강의 조회" && <ProfCourse />}
+              {activeTab === "내 강의 평가" && <ProfEvaluation />}
+            </>
+          )}
         </div>
       </main>
     </div>
