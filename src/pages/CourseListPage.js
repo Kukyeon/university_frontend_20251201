@@ -152,7 +152,7 @@ const openSyllabus = (subjectId) => {
                 <td style={{textAlign:'left', paddingLeft:'15px', fontWeight:'bold'}}>{sub.name}</td>
                 <td>{sub.professor?.name || "미정"}</td>
                 <td>{sub.grades}</td>
-                <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.roomId})</td>
+                <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.room.id})</td>
                 <td>{sub.numOfStudent} / {sub.capacity}</td>
                 <td><button style={smallBtnStyle} onClick={() => openSyllabus(sub.id)}>조회</button></td>
               </tr>
