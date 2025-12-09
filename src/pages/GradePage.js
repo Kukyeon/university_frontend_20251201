@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { gradeApi } from '../api/gradeApi';
+import React, { useState, useEffect } from "react";
+import { gradeApi } from "../api/gradeApi";
 
 const GradePage = () => {
-  const [activeTab, setActiveTab] = useState('this'); // this, semester, total
-  const [data, setData] = useState(null); // API 결과 데이터
+  const [activeTab, setActiveTab] = useState("this"); // this, semester, total
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 탭 변경 시 데이터 로딩
+  const menuItems = [
+    { key: "this", label: "금학기 성적 조회" },
+    { key: "semester", label: "학기별 성적 조회" },
+    { key: "total", label: "누계 성적" },
+  ];
+
   useEffect(() => {
     loadData();
   }, [activeTab]);
@@ -15,115 +20,141 @@ const GradePage = () => {
     setLoading(true);
     try {
       let res;
-      if (activeTab === 'this') res = await gradeApi.getThisSemester();
-      else if (activeTab === 'semester') res = await gradeApi.getSemester();
-      else if (activeTab === 'total') res = await gradeApi.getTotal();
-      
+      if (activeTab === "this") res = await gradeApi.getThisSemester();
+      else if (activeTab === "semester") res = await gradeApi.getSemester();
+      else if (activeTab === "total") res = await gradeApi.getTotal();
+
       setData(res.data);
-    } catch (err) {
+    } catch {
       alert("데이터 로딩 실패");
     } finally {
       setLoading(false);
     }
   };
 
+  const table = (thead, tbody) => (
+    <table className="styled-table">
+      <thead>
+        <tr>
+          {thead.map((h, i) => (
+            <th key={i}>{h}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>{tbody}</tbody>
+    </table>
+  );
+
   return (
-    <div style={{ padding: '30px' }}>
-      <h1>🎓 성적 조회</h1>
-      
-      {/* 탭 메뉴 */}
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <button onClick={() => setActiveTab('this')} style={activeTab === 'this' ? activeStyle : btnStyle}>금학기 성적</button>
-        <button onClick={() => setActiveTab('semester')} style={activeTab === 'semester' ? activeStyle : btnStyle}>학기별 성적</button>
-        <button onClick={() => setActiveTab('total')} style={activeTab === 'total' ? activeStyle : btnStyle}>전체 누계 성적</button>
-      </div>
+    <div className="academic-page-container">
+      {/* 사이드바 */}
+      <aside className="academic-sidebar">
+        <h2>성적</h2>
+        <ul>
+          {menuItems.map((item) => (
+            <li
+              key={item.key}
+              className={activeTab === item.key ? "active" : ""}
+              onClick={() => setActiveTab(item.key)}
+            >
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </aside>
 
-      {loading && <div>로딩중...</div>}
+      {/* 메인 콘텐츠 */}
+      <main className="academic-content">
+        <div className="mypage-card">
+          <h2>{menuItems.find((m) => m.key === activeTab).label}</h2>
 
-      {!loading && data && (
-        <>
-          {/* 1. 금학기 성적 뷰 */}
-          {activeTab === 'this' && (
-            <div>
-              <h3>이번 학기 수강 과목</h3>
-              <table border="1" style={tableStyle}>
-                <thead>
-                  <tr style={{background: '#f8f9fa'}}>
-                    <th>과목명</th><th>이수학점</th><th>성적</th><th>등급</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.gradeList?.map((grade, idx) => (
-                    <tr key={idx}>
-                      <td>{grade.name}</td>
-                      <td>{grade.grades}</td>
-                      <td>{grade.grade || '-'}</td>
-                      <td>{grade.gradeValue || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          {loading && <div className="loading-text">로딩중...</div>}
+
+          {!loading && data && (
+            <>
+              {/* 금학기 성적 */}
+              {activeTab === "this" && (
+                <div>
+                  {table(
+                    ["과목명", "이수학점", "성적", "등급"],
+                    data.gradeList?.length ? (
+                      data.gradeList.map((g, idx) => (
+                        <tr key={idx}>
+                          <td>{g.name}</td>
+                          <td>{g.grades}</td>
+                          <td>{g.grade || "-"}</td>
+                          <td>{g.gradeValue || "-"}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="empty-row">
+                          이번 학기 성적이 없습니다.
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </div>
+              )}
+
+              {/* 학기별 성적 */}
+              {activeTab === "semester" && (
+                <div>
+                  {table(
+                    ["연도", "학기", "과목명", "구분", "학점", "성적"],
+                    data.gradeList?.length ? (
+                      data.gradeList.map((g, idx) => (
+                        <tr key={idx}>
+                          <td>{g.subYear}</td>
+                          <td>{g.semester}</td>
+                          <td>{g.name}</td>
+                          <td>{g.type}</td>
+                          <td>{g.grades}</td>
+                          <td>{g.grade}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6" className="empty-row">
+                          성적 데이터가 없습니다.
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </div>
+              )}
+
+              {/* 누계 성적 */}
+              {activeTab === "total" && (
+                <div>
+                  {table(
+                    ["연도", "학기", "신청학점", "취득학점", "평점평균"],
+                    data.mygradeList?.length ? (
+                      data.mygradeList.map((mg, idx) => (
+                        <tr key={idx}>
+                          <td>{mg.subYear}</td>
+                          <td>{mg.semester}</td>
+                          <td>{mg.sumGrades}</td>
+                          <td>{mg.myGrades}</td>
+                          <td>{mg.averageScore}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="empty-row">
+                          누계 성적 정보가 없습니다.
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </div>
+              )}
+            </>
           )}
-
-          {/* 2. 학기별 성적 뷰 */}
-          {activeTab === 'semester' && (
-            <div>
-               {/* 여기에 연도/학기 필터 추가 가능 */}
-               <table border="1" style={tableStyle}>
-                <thead>
-                  <tr style={{background: '#f8f9fa'}}>
-                    <th>연도</th><th>학기</th><th>과목명</th><th>구분</th><th>학점</th><th>성적</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.gradeList?.map((grade, idx) => (
-                    <tr key={idx}>
-                      <td>{grade.subYear}</td>
-                      <td>{grade.semester}</td>
-                      <td>{grade.name}</td>
-                      <td>{grade.type}</td>
-                      <td>{grade.grades}</td>
-                      <td>{grade.grade}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {/* 3. 누계 성적 뷰 */}
-          {activeTab === 'total' && (
-            <div>
-               <table border="1" style={tableStyle}>
-                <thead>
-                  <tr style={{background: '#f8f9fa'}}>
-                    <th>연도</th><th>학기</th><th>신청학점</th><th>취득학점</th><th>평점평균</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.mygradeList?.map((mg, idx) => (
-                    <tr key={idx}>
-                      <td>{mg.subYear}</td>
-                      <td>{mg.semester}</td>
-                      <td>{mg.sumGrades}</td>
-                      <td>{mg.myGrades}</td>
-                      <td>{mg.averageScore}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </>
-      )}
+        </div>
+      </main>
     </div>
   );
 };
-
-// 스타일 정의
-const tableStyle = { width: '100%', borderCollapse: 'collapse', textAlign: 'center', marginTop: '10px' };
-const btnStyle = { padding: '10px 20px', cursor: 'pointer', background: '#eee', border: 'none' };
-const activeStyle = { ...btnStyle, background: '#007bff', color: 'white' };
 
 export default GradePage;
