@@ -1,5 +1,5 @@
 import React from "react";
-import CounselingRecordView from "../components/CounselingRecord/CounselingRecordView";
+import CounselingRecordView from "../components/Counseling/CounselingRecordView";
 
 const CounselingRecordPage = () => {
   return (
