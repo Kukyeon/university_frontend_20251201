@@ -13,7 +13,17 @@ const TuitionNotice = ({ user }) => {
         console.log(res.data);
       } catch (err) {
         console.error(err);
-        alert("등록금 고지서를 불러오는 중 오류가 발생했습니다.");
+        if (err.response?.data?.message?.includes("휴학")) {
+          setTuitionNotice({
+            status: null,
+            error: "현재 학기 휴학 중이므로 등록금 납부가 불가합니다.",
+          });
+        } else {
+          setTuitionNotice({
+            status: null,
+            error: "등록금 고지서를 불러오는 중 오류가 발생했습니다.",
+          });
+        }
       } finally {
         setLoading(false);
       }
@@ -41,7 +51,9 @@ const TuitionNotice = ({ user }) => {
   return (
     <section className="mypage-card">
       <h3>등록금 납부 고지서</h3>
-      {tuitionNotice ? (
+      {tuitionNotice?.error ? (
+        <p style={{ color: "red" }}>{tuitionNotice.error}</p>
+      ) : tuitionNotice ? (
         <>
           <p>
             {tuitionNotice.tuiYear}년도 {tuitionNotice.semester}학기

@@ -37,6 +37,8 @@ import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
 import CourseListPage from "./pages/CourseListPage";
 import EnrollmentHistoryPage from "./pages/EnrollmentHistoryPage";
 import CoursePlanPage from "./pages/CoursePlanPage";
+import CoursePage from "./pages/CoursePage";
+import Sugang from "./pages/Sugang";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -104,6 +106,30 @@ function App() {
                 <div>로딩중...</div>
               ) : (
                 <Academic user={user} role={role} />
+              )}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/course"
+          element={
+            <ProtectedRoute user={user} role={role}>
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <CoursePage user={user} role={role} />
+              )}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sugang"
+          element={
+            <ProtectedRoute user={user} role={role}>
+              {loading ? (
+                <div>로딩중...</div>
+              ) : (
+                <Sugang user={user} role={role} />
               )}
             </ProtectedRoute>
           }
