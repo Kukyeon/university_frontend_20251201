@@ -7,55 +7,20 @@ const CourseStudentList = ({ courseId, goBack }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
-    loadDummyStudents();
+    loadStudents();
   }, []);
 
-  //   const loadStudents = async () => {
-  //     try {
-  //       const res = await api.get(`/course/${courseId}/students`);
-  //       setStudents(res.data);
-  //     } catch (err) {
-  //       console.error("학생 불러오기 실패", err);
-  //       setStudents([]);
-  //     }
-  //   };
-  const loadDummyStudents = () => {
-    const dummy = [
-      {
-        studentId: "2023000011",
-        name: "차은우",
-        major: "전자공학과",
-        absent: "",
-        late: "",
-        assignment: "",
-        midterm: "",
-        final: "",
-        total: "",
-      },
-      {
-        studentId: "2023000012",
-        name: "박서준",
-        major: "전자공학과",
-      },
-      {
-        studentId: "2023000013",
-        name: "이도윤",
-        major: "전자공학과",
-      },
-      {
-        studentId: "2023000014",
-        name: "강민지",
-        major: "전자공학과",
-      },
-      {
-        studentId: "2023000015",
-        name: "윤진희",
-        major: "전자공학과",
-      },
-    ];
-
-    setStudents(dummy);
+  const loadStudents = async () => {
+    try {
+      const res = await api.get(`/prof/student/${courseId}`);
+      console.log(res);
+      setStudents(res.data);
+    } catch (err) {
+      console.error("학생 불러오기 실패", err);
+      setStudents([]);
+    }
   };
+
   // 🔥 기입 버튼 클릭 시
   const handleInputClick = (stu) => {
     setSelectedStudent(stu);
@@ -103,14 +68,14 @@ const CourseStudentList = ({ courseId, goBack }) => {
               {students.map((stu) => (
                 <tr key={stu.studentId}>
                   <td>{stu.studentId}</td>
-                  <td>{stu.name}</td>
-                  <td>{stu.major}</td>
+                  <td>{stu.studentName}</td>
+                  <td>{stu.deptName}</td>
                   <td>{stu.absent ?? ""}</td>
-                  <td>{stu.late ?? ""}</td>
-                  <td>{stu.assignment ?? ""}</td>
-                  <td>{stu.midterm ?? ""}</td>
-                  <td>{stu.final ?? ""}</td>
-                  <td>{stu.total ?? ""}</td>
+                  <td>{stu.lateness ?? ""}</td>
+                  <td>{stu.homework ?? ""}</td>
+                  <td>{stu.midExam ?? ""}</td>
+                  <td>{stu.finalExam ?? ""}</td>
+                  <td>{stu.convertedMark ?? ""}</td>
                   <td>
                     <button onClick={() => handleInputClick(stu)}>기입</button>
                   </td>
