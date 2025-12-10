@@ -76,17 +76,28 @@ const NotificationBell = ({ user }) => {
   
   // 3. 알림 클릭 처리
   const handleClick = async (noti) => {
+    // [디버깅] 클릭된 데이터 확인
+    console.log("👉 클릭된 알림 데이터:", noti);
+    console.log("👉 이동하려는 URL:", noti.url);
+
     try {
+      // 읽음 처리 (API 호출)
       if (!noti.isRead) {
         await notiApi.markAsRead(noti.id);
         setNotifications(prev => prev.map(n => n.id === noti.id ? { ...n, isRead: true } : n));
       }
+
+      // [핵심] URL이 있을 때만 이동
       if (noti.url) {
+        console.log("🚀 페이지 이동 시도:", noti.url);
         navigate(noti.url);
-        setIsOpen(false);
+        setIsOpen(false); // 창 닫기
+      } else {
+        console.warn("⚠️ 이동할 URL이 없습니다. (DB에 url 컬럼이 비어있음)");
+        alert("이동할 링크가 없는 알림입니다.");
       }
     } catch (err) {
-      console.error(err);
+      console.error("클릭 처리 중 에러:", err);
     }
   };
 
@@ -123,6 +134,7 @@ const NotificationBell = ({ user }) => {
                   key={noti.id} 
                   className={`noti-item ${noti.isRead ? 'read' : 'unread'}`}
                   onClick={() => handleClick(noti)}
+                   style={{ cursor: 'pointer' }}
                 >
                   <p className="noti-content">{noti.content}</p>
                   <button onClick={(e) => handleDelete(e, noti.id)} className="delete-btn">
