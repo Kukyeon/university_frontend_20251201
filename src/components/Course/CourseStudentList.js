@@ -13,8 +13,18 @@ const CourseStudentList = ({ courseId, goBack }) => {
   const loadStudents = async () => {
     try {
       const res = await api.get(`/prof/student/${courseId}`);
-      console.log(res);
-      setStudents(res.data);
+      const dataWithIds = res.data.map((stu) => ({
+        ...stu,
+        stuSubId: stu.stuSubId, // 서버에서 꼭 stuSubId 받아오기
+        absent: stu.absent ?? 0,
+        lateness: stu.lateness ?? 0,
+        homework: stu.homework ?? 0,
+        midExam: stu.midExam ?? 0,
+        finalExam: stu.finalExam ?? 0,
+        convertedMark: stu.convertedMark ?? 0,
+        grade: stu.grade ?? "A+",
+      }));
+      setStudents(dataWithIds);
     } catch (err) {
       console.error("학생 불러오기 실패", err);
       setStudents([]);
@@ -29,6 +39,7 @@ const CourseStudentList = ({ courseId, goBack }) => {
   // 🔙 성적 입력 → 학생 리스트로 돌아가기
   const handleBackToList = () => {
     setSelectedStudent(null);
+    loadStudents(); // 저장 후 최신 데이터 불러오기
   };
 
   return (
@@ -77,7 +88,9 @@ const CourseStudentList = ({ courseId, goBack }) => {
                   <td>{stu.finalExam ?? ""}</td>
                   <td>{stu.convertedMark ?? ""}</td>
                   <td>
-                    <button onClick={() => handleInputClick(stu)}>기입</button>
+                    <button onClick={() => handleInputClick(stu)}>
+                      {stu.stuSubId ? "수정" : "기입"}
+                    </button>
                   </td>
                 </tr>
               ))}
