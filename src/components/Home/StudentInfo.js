@@ -1,10 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import NotificationBell from "../Chatbot/NotificationBell";
 const StudentInfo = ({ student, logout }) => {
   return (
     <section className="student-info">
-      <h2>학생 정보</h2>
+     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2>학생 정보</h2>
+        {/* ★ 여기에 알림벨 추가 (user prop으로 student 정보 전달) */}
+        <NotificationBell user={student} />
+      </div>
       <div className="student-profile">
         <span className="material-symbols-outlined profile-icon">
           account_circle
@@ -42,6 +46,8 @@ const StudentInfo = ({ student, logout }) => {
         <button className="btn logout" onClick={logout}>
           로그아웃
         </button>
+
+
       </div>
     </section>
   );
