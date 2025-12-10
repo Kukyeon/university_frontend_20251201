@@ -40,6 +40,7 @@ import ProfessorCounselingDetail from "./components/Counseling/ProfessorCounseli
 import CounselingRecordForm from "./components/Counseling/CounselingRecordForm";
 import CoursePage from "./pages/CoursePage";
 import Sugang from "./pages/Sugang";
+import CourseStudentList from "./components/Course/CourseStudentList";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -123,6 +124,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/course/:courseId" element={<CourseStudentList />} />
         <Route
           path="/sugang"
           element={
