@@ -114,7 +114,7 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
                 <th>강의명</th>
                 <th>담당교수</th>
                 <th>학점</th>
-                <th>요일시간</th>
+                <th>요일/시간 (강의실)</th>
                 <th>현재인원</th>
                 <th>정원</th>
                 <th>처리</th>
@@ -194,10 +194,10 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
                 <th>강의명</th>
                 <th>담당교수</th>
                 <th>학점</th>
-                <th>요일시간</th>
+                <th>요일/시간 (강의실)</th>
                 <th>현재인원</th>
                 <th>정원</th>
-                <th>처리</th>
+                {/* <th>처리</th> */}
               </tr>
             </thead>
 
@@ -223,14 +223,14 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
                       </td>
                       <td>{sub.numOfStudent}</td>
                       <td>{sub.capacity}</td>
-                      <td>
+                      {/* <td>
                         <button
                           className="btn-danger"
                           onClick={() => handleCancelSuccess(sub.id)}
                         >
                           취소
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   );
                 })
