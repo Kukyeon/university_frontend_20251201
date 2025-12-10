@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { gradeApi } from "../api/gradeApi";
+import GradeThisSemester from "../components/Grade/GradeThisSemester";
+import GradeBySemester from "../components/Grade/GradeBySemester";
+import GradeTotal from "../components/Grade/GradeTotal";
+import EvaluationPage from "./EvaluationPage";
+import EvaluationForm from "../components/Evaluation/EvaluationForm";
+import Modal from "../components/Modal";
 
 const GradePage = () => {
   const [activeTab, setActiveTab] = useState("this"); // this, semester, total
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedEval, setSelectedEval] = useState(null);
 
+  const openEvalModal = (g) => {
+    setSelectedEval(g); // grade 정보 저장
+  };
+
+  const closeEvalModal = () => {
+    setSelectedEval(null);
+  };
   const menuItems = [
     { key: "this", label: "금학기 성적 조회" },
     { key: "semester", label: "학기별 성적 조회" },
@@ -15,7 +29,6 @@ const GradePage = () => {
   useEffect(() => {
     loadData();
   }, [activeTab]);
-
   const loadData = async () => {
     setLoading(true);
     try {
@@ -24,30 +37,31 @@ const GradePage = () => {
       else if (activeTab === "semester") res = await gradeApi.getSemester();
       else if (activeTab === "total") res = await gradeApi.getTotal();
 
-      setData(res.data);
-    } catch {
-      alert("데이터 로딩 실패");
+      // 🔥 HTTP 실패일 때만 alert
+      if (!res || res.status !== 200) {
+        alert("데이터 불러오기에 실패했습니다");
+        setData({ gradeList: [], mygradeList: [] });
+        return;
+      }
+
+      const d = res.data;
+
+      // 🔥 빈 배열도 정상 → 오류 아님
+      setData({
+        gradeList: d?.gradeList ?? [],
+        mygradeList: d?.mygradeList ?? [],
+      });
+    } catch (e) {
+      // 🔥 네트워크 장애 같은 진짜 오류일 때만 alert
+      alert("서버 연결 오류가 발생했습니다.");
+      setData({ gradeList: [], mygradeList: [] });
     } finally {
       setLoading(false);
     }
   };
 
-  const table = (thead, tbody) => (
-    <table className="styled-table">
-      <thead>
-        <tr>
-          {thead.map((h, i) => (
-            <th key={i}>{h}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>{tbody}</tbody>
-    </table>
-  );
-
   return (
     <div className="academic-page-container">
-      {/* 사이드바 */}
       <aside className="academic-sidebar">
         <h2>성적</h2>
         <ul>
@@ -69,86 +83,23 @@ const GradePage = () => {
           <h2>{menuItems.find((m) => m.key === activeTab).label}</h2>
 
           {loading && <div className="loading-text">로딩중...</div>}
+          {selectedEval && (
+            <Modal onClose={closeEvalModal}>
+              <EvaluationForm
+                evaluationId={0} // 항상 신규 평가
+                subjectId={selectedEval.subjectId} // g.subjectId 사용
+                onSubmit={closeEvalModal}
+              />
+            </Modal>
+          )}
 
           {!loading && data && (
             <>
-              {/* 금학기 성적 */}
               {activeTab === "this" && (
-                <div>
-                  {table(
-                    ["과목명", "이수학점", "성적", "등급"],
-                    data.gradeList?.length ? (
-                      data.gradeList.map((g, idx) => (
-                        <tr key={idx}>
-                          <td>{g.name}</td>
-                          <td>{g.grades}</td>
-                          <td>{g.grade || "-"}</td>
-                          <td>{g.gradeValue || "-"}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="4" className="empty-row">
-                          이번 학기 성적이 없습니다.
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </div>
+                <GradeThisSemester data={data} onEvaluate={openEvalModal} />
               )}
-
-              {/* 학기별 성적 */}
-              {activeTab === "semester" && (
-                <div>
-                  {table(
-                    ["연도", "학기", "과목명", "구분", "학점", "성적"],
-                    data.gradeList?.length ? (
-                      data.gradeList.map((g, idx) => (
-                        <tr key={idx}>
-                          <td>{g.subYear}</td>
-                          <td>{g.semester}</td>
-                          <td>{g.name}</td>
-                          <td>{g.type}</td>
-                          <td>{g.grades}</td>
-                          <td>{g.grade}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="6" className="empty-row">
-                          성적 데이터가 없습니다.
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </div>
-              )}
-
-              {/* 누계 성적 */}
-              {activeTab === "total" && (
-                <div>
-                  {table(
-                    ["연도", "학기", "신청학점", "취득학점", "평점평균"],
-                    data.mygradeList?.length ? (
-                      data.mygradeList.map((mg, idx) => (
-                        <tr key={idx}>
-                          <td>{mg.subYear}</td>
-                          <td>{mg.semester}</td>
-                          <td>{mg.sumGrades}</td>
-                          <td>{mg.myGrades}</td>
-                          <td>{mg.averageScore}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="5" className="empty-row">
-                          누계 성적 정보가 없습니다.
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </div>
-              )}
+              {activeTab === "semester" && <GradeBySemester data={data} />}
+              {activeTab === "total" && <GradeTotal data={data} />}
             </>
           )}
         </div>
