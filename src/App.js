@@ -207,8 +207,8 @@ function App() {
         {/* 없는 경로는 home으로 redirect */}
         <Route path="/" element={<Navigate to="/" />} />
         {/* 챗봇 및 중도 이탈방지 관련부분 */}
-        {/* 학생이 로그인하면 들어가는 메인 화면 */}
-        <Route path="/student" element={<StudentMain user={user} />} />
+        {/* 챗봇페이지 */}
+        <Route path="/student/chatbot" element={<StudentMain user={user} />} />
         {/* === [3] 교수용 (위험군 대시보드) === */}
         <Route path="/professor" element={<ProfDashboard user={user} />} />
         {/* === [4] 관리자용 (분석 실행) === */}

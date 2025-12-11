@@ -1,0 +1,102 @@
+.noti-container {
+  position: relative;
+  display: inline-block;
+}
+
+.noti-icon-wrapper {
+  position: relative;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.noti-icon {
+  font-size: 28px;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.noti-icon:hover {
+  color: #007bff;
+}
+
+.noti-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #ff4d4f;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 5px;
+  font-size: 10px;
+  font-weight: bold;
+  border: 1px solid white;
+}
+
+/* 드롭다운 스타일 */
+.noti-dropdown {
+  position: absolute;
+  top: 40px;
+  right: -10px; /* 오른쪽 정렬 */
+  width: 320px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.noti-header {
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.noti-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.noti-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.noti-item:hover {
+  background-color: #f1f3f5;
+}
+
+/* 안 읽은 알림 (배경색 강조) */
+.noti-item.unread {
+  background-color: #e6f7ff;
+}
+
+.noti-item.read {
+  background-color: white;
+  color: #999;
+}
+
+.noti-content {
+  margin: 0 0 5px 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.noti-date {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.noti-empty {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+}

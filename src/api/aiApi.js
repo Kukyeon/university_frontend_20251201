@@ -44,3 +44,14 @@ export const adminApi = {
   clearLogs: () => api.delete("/system/logs")
 };
 
+export const notiApi = {
+  // 내 알림 가져오기
+  getMyNotifications: () => api.get("/notification/my"),
+  
+  // 알림 읽음 처리
+  markAsRead: (id) => api.put(`/notification/${id}/read`),
+
+  // [추가] 알림 삭제
+  deleteNotification: (id) => api.delete(`/notification/${id}`),
+};
+
