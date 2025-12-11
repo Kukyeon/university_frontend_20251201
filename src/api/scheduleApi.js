@@ -98,3 +98,23 @@ export const getCounselingRecord = (scheduleId, studentId) => {
 export const getStudentCounselingRecord = (scheduleId) => {
   return requestCounseling("get", `/records/student/${scheduleId}`);
 };
+
+// 상담 음성 파일 업로드 및 시작요청
+export const startTranscription = async (scheduleId, audioFile) => {
+  const formData = new FormData();
+  formData.append("audioFile", audioFile);
+
+  const res = await api.post(`/counseling/${scheduleId}/start-stt`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
+export const getTranscriptionStatus = (jobName) => {
+  // 백엔드 경로: /api/counseling/status?jobName={jobName}
+  return api
+    .get(`/counseling/status`, { params: { jobName } })
+    .then((res) => res.data);
+};

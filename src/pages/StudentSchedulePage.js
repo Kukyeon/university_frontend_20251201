@@ -65,6 +65,7 @@ const StudentSchedulePage = ({ user, role }) => {
       {inRoom && selectedScheduleId && (
         <CounselingRoomWrapper
           scheduleId={selectedScheduleId}
+          studentId={studentId}
           onFinish={() => {
             setInRoom(false);
             setViewDetail(false);

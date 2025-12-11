@@ -43,3 +43,9 @@ export const deleteNotice = async (id) => {
   const res = await api.delete(`/notice/delete/${id}`);
   return res.data;
 };
+
+// 공지사항 조회수
+export const incrementNoticeViews = async (id) => {
+  const res = await api.post(`/notice/views/${id}`);
+  return res.data;
+};
