@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getNoticeList } from "../api/noticeApi";
-import { useNavigate } from "react-router-dom";
+import NoticeForm from "../components/Notice/NoticeForm";
+import NoticeDetail from "../components/Notice/NoticeDetail";
+import "./NoticePage.css";
 
 const NoticePage = ({ role }) => {
   const [pageData, setPageData] = useState(null);
@@ -8,25 +10,54 @@ const NoticePage = ({ role }) => {
   const [keyword, setKeyword] = useState("");
   const [searchType, setSearchType] = useState("title");
 
-  const navigate = useNavigate();
+  const [view, setView] = useState("list"); // list / write / detail
+  const [selectedNoticeId, setSelectedNoticeId] = useState(null);
 
   const fetchList = async () => {
     const data = await getNoticeList(page, keyword, searchType);
     setPageData(data);
   };
   console.log();
+
   useEffect(() => {
-    fetchList();
-  }, [page]);
+    if (view === "list") fetchList();
+  }, [view]);
+
+  // 🔹 화면 분기
+  if (view === "edit" || view === "write") {
+    return (
+      <NoticeForm
+        role={role}
+        noticeId={selectedNoticeId}
+        onBack={() => setView("list")}
+      />
+    );
+  }
+
+  if (view === "detail") {
+    return (
+      <NoticeDetail
+        noticeId={selectedNoticeId}
+        onBack={() => setView("list")}
+        onEdit={(id) => {
+          setSelectedNoticeId(id); // 어떤 글을 수정할지 저장
+          setView("edit"); // edit 모드로 전환
+        }}
+        role={role}
+      />
+    );
+  }
 
   if (!pageData) return <>로딩중...</>;
 
   return (
-    <div>
-      <h2>공지사항</h2>
+    <div className="notice-page">
+      <h3 className="notice-page__title">공지사항</h3>
+
       {/* 검색 */}
-      <div>
+      <div className="department-form" style={{ marginBottom: "15px" }}>
         <select
+          className="notice-page__select"
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
         >
@@ -35,11 +66,13 @@ const NoticePage = ({ role }) => {
         </select>
 
         <input
+          className="notice-page__input"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           placeholder="검색어 입력"
         />
         <button
+          className="notice-page__btn"
           onClick={() => {
             setPage(0);
             fetchList();
@@ -50,10 +83,16 @@ const NoticePage = ({ role }) => {
       </div>
 
       {role === "staff" && (
-        <button onClick={() => navigate("/notice/write")}>새 글 등록</button>
+        <button
+          className="notice-page__btn notice-page__btn--write"
+          onClick={() => setView("write")}
+        >
+          새 글 등록
+        </button>
       )}
+
       {/* 목록 */}
-      <table border="1" width="100%">
+      <table className="notice-page__table">
         <thead>
           <tr>
             <th>번호</th>
@@ -69,8 +108,11 @@ const NoticePage = ({ role }) => {
               <td>{n.id}</td>
               <td>{n.category}</td>
               <td
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate(`/notice/${n.id}`)}
+                className="notice-page__title-cell"
+                onClick={() => {
+                  setSelectedNoticeId(n.id);
+                  setView("detail");
+                }}
               >
                 {n.title}
               </td>
@@ -80,14 +122,21 @@ const NoticePage = ({ role }) => {
           ))}
         </tbody>
       </table>
-      <div style={{ marginTop: "15px" }}>
-        <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+
+      {/* 페이지네이션 */}
+      <div className="notice-page__pagination">
+        <button
+          className="notice-page__btn"
+          disabled={page === 0}
+          onClick={() => setPage(page - 1)}
+        >
           이전
         </button>
-        <span style={{ margin: "0 10px" }}>
+        <span className="notice-page__page-info">
           {page + 1} / {pageData.totalPages}
         </span>
         <button
+          className="notice-page__btn"
           disabled={page === pageData.totalPages - 1}
           onClick={() => setPage(page + 1)}
         >

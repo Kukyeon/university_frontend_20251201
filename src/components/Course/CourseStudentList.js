@@ -16,15 +16,16 @@ const CourseStudentList = ({ courseId, goBack }) => {
       const dataWithIds = res.data.map((stu) => ({
         ...stu,
         stuSubId: stu.stuSubId, // 서버에서 꼭 stuSubId 받아오기
-        absent: stu.absent ?? 0,
-        lateness: stu.lateness ?? 0,
-        homework: stu.homework ?? 0,
-        midExam: stu.midExam ?? 0,
-        finalExam: stu.finalExam ?? 0,
-        convertedMark: stu.convertedMark ?? 0,
+        absent: stu.absent ?? null,
+        lateness: stu.lateness ?? null,
+        homework: stu.homework ?? null,
+        midExam: stu.midExam ?? null,
+        finalExam: stu.finalExam ?? null,
+        convertedMark: stu.convertedMark ?? null,
         grade: stu.grade ?? "A+",
       }));
       setStudents(dataWithIds);
+      console.log(res);
     } catch (err) {
       console.error("학생 불러오기 실패", err);
       setStudents([]);
@@ -89,7 +90,7 @@ const CourseStudentList = ({ courseId, goBack }) => {
                   <td>{stu.convertedMark ?? ""}</td>
                   <td>
                     <button onClick={() => handleInputClick(stu)}>
-                      {stu.stuSubId ? "수정" : "기입"}
+                      {stu.grade == null ? "수정" : "기입"}
                     </button>
                   </td>
                 </tr>

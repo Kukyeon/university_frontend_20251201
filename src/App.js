@@ -41,6 +41,7 @@ import CounselingRecordForm from "./components/Counseling/CounselingRecordForm";
 import CoursePage from "./pages/CoursePage";
 import Sugang from "./pages/Sugang";
 import CourseStudentList from "./components/Course/CourseStudentList";
+import { ro } from "date-fns/locale";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -154,7 +155,7 @@ function App() {
           path="/"
           element={
             <ProtectedRoute user={user}>
-              <Home user={user} logout={logout} />
+              <Home user={user} logout={logout} role={role} />
             </ProtectedRoute>
           }
         />
