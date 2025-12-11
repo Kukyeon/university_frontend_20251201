@@ -18,24 +18,16 @@ const GradeBySemester = ({ data }) => {
       </thead>
 
       <tbody>
-        {data.gradeList?.length ? (
-          list.map((g, idx) => (
-            <tr key={idx}>
-              <td>{g.subYear}</td>
-              <td>{g.semester}</td>
-              <td>{g.subjectName}</td>
-              <td>{g.majorType}</td>
-              <td>{g.credit}</td>
-              <td>{g.grade}</td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="6" className="empty-row">
-              성적 데이터가 없습니다.
-            </td>
+        {list.map((g, idx) => (
+          <tr key={idx}>
+            <td>{g.subYear}</td>
+            <td>{g.semester}</td>
+            <td>{g.subjectName}</td>
+            <td>{g.majorType}</td>
+            <td>{g.credit}</td>
+            <td>{g.grade}</td>
           </tr>
-        )}
+        ))}
       </tbody>
     </table>
   );
