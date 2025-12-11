@@ -16,15 +16,21 @@ const StudentInfo = ({ user, role, logout }) => {
   };
   return (
     <section className="student-info">
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      {role === "student" && (
-        <h2>
-          {user?.name}({user.id})
-        </h2>
-      )}
-      {role !== "student" && <h2>환영합니다</h2>}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        {role === "student" && (
+          <h2>
+            {user?.name}({user.id})
+          </h2>
+        )}
+        {role !== "student" && <h2>환영합니다</h2>}
         {/* ★ 여기에 알림벨 추가 (user prop으로 student 정보 전달) */}
-        <NotificationBell user={student} />
+        <NotificationBell user={user} />
       </div>
       <div className="student-profile">
         <span className="material-symbols-outlined profile-icon">
@@ -67,8 +73,6 @@ const StudentInfo = ({ user, role, logout }) => {
         <button className="btn logout" onClick={logout}>
           로그아웃
         </button>
-
-
       </div>
     </section>
   );
