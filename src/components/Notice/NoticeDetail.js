@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getNoticeDetail, deleteNotice,incrementNoticeViews, } from "../../api/noticeApi";
+import {
+  getNoticeDetail,
+  deleteNotice,
+  incrementNoticeViews,
+} from "../../api/noticeApi";
 
 const NoticeDetail = ({ noticeId, role, onBack, onEdit }) => {
   const [notice, setNotice] = useState(null);
@@ -7,8 +11,8 @@ const NoticeDetail = ({ noticeId, role, onBack, onEdit }) => {
   useEffect(() => {
     const fetchAndIncrement = async () => {
       try {
-        await incrementNoticeViews(id);
-        const data = await getNoticeDetail(id);
+        await incrementNoticeViews(noticeId);
+        const data = await getNoticeDetail(noticeId);
         setNotice(data);
       } catch (error) {
         console.error("데이터 로드 또는 조회수 증가 실패", error);
