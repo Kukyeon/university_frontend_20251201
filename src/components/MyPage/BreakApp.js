@@ -93,9 +93,9 @@ const BreakApp = ({ user }) => {
             <td colSpan="3">
               <input
                 type="text"
-                value={startSemester}
+                value={startSemester.replace("-", "년도 ") + "학기"}
                 readOnly
-                style={{ width: "80px", marginRight: "10px" }}
+                style={{ width: "130px", marginRight: "10px" }}
               />
               <select
                 value={endSemester}
