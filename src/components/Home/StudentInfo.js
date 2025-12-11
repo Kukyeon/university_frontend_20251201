@@ -1,11 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import NotificationBell from "../Chatbot/NotificationBell";
-const StudentInfo = ({ student, logout }) => {
+
+const StudentInfo = ({ user, role, logout }) => {
+  console.log(user);
+  const renderAffiliation = () => {
+    if (role === "student") {
+      return user.department?.name;
+    } else if (role === "professor") {
+      return `${user.department?.college.name} ${user.department?.name} 교수`;
+    } else if (role === "staff") {
+      return "교직원";
+    }
+    return "";
+  };
   return (
     <section className="student-info">
-     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>학생 정보</h2>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      {role === "student" && (
+        <h2>
+          {user?.name}({user.id})
+        </h2>
+      )}
+      {role !== "student" && <h2>환영합니다</h2>}
         {/* ★ 여기에 알림벨 추가 (user prop으로 student 정보 전달) */}
         <NotificationBell user={student} />
       </div>
@@ -15,28 +32,32 @@ const StudentInfo = ({ student, logout }) => {
         </span>
         <div className="student-details">
           <p>
-            <strong>{student?.name}</strong> ({student?.id})
+            <strong>{user?.name}</strong>님, 환영합니다.
           </p>
         </div>
         <ul>
           <li>
             <span>이메일</span>
-            <span>{student?.email}</span>
+            <span>{user?.email}</span>
           </li>
           <li>
             <span>소속</span>
-            <span>{student?.department?.name}</span>
+            <span>{renderAffiliation()}</span>
           </li>
-          <li>
-            <span>학기</span>
-            <span>
-              {student?.grade}학년 {student?.semester}학기
-            </span>
-          </li>
-          <li>
-            <span>학적상태</span>
-            <span>{student?.status}</span>
-          </li>
+          {role === "student" && (
+            <li>
+              <span>학기</span>
+              <span>
+                {user?.grade}학년 {user?.semester}학기
+              </span>
+            </li>
+          )}
+          {role === "student" && (
+            <li>
+              <span>학적상태</span>
+              <span>{user?.currentStatus?.status}</span>
+            </li>
+          )}
         </ul>
       </div>
       <div className="student-actions">

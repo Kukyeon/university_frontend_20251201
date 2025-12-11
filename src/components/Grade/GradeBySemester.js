@@ -1,4 +1,9 @@
 const GradeBySemester = ({ data }) => {
+  const list = data?.gradeList ?? [];
+  console.log(list);
+  if (!list.length) {
+    return <div className="empty-row">이번 학기 성적이 없습니다.</div>;
+  }
   return (
     <table className="styled-table">
       <thead>
@@ -14,13 +19,13 @@ const GradeBySemester = ({ data }) => {
 
       <tbody>
         {data.gradeList?.length ? (
-          data.gradeList.map((g, idx) => (
+          list.map((g, idx) => (
             <tr key={idx}>
               <td>{g.subYear}</td>
               <td>{g.semester}</td>
-              <td>{g.name}</td>
-              <td>{g.type}</td>
-              <td>{g.grades}</td>
+              <td>{g.subjectName}</td>
+              <td>{g.majorType}</td>
+              <td>{g.credit}</td>
               <td>{g.grade}</td>
             </tr>
           ))
