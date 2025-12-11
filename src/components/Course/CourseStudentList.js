@@ -25,6 +25,7 @@ const CourseStudentList = ({ courseId, goBack }) => {
         grade: stu.grade ?? "A+",
       }));
       setStudents(dataWithIds);
+      console.log(res);
     } catch (err) {
       console.error("학생 불러오기 실패", err);
       setStudents([]);

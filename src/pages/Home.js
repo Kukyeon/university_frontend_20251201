@@ -5,13 +5,13 @@ import Schedule from "../components/Home/Schedule";
 import StudentInfo from "../components/Home/StudentInfo";
 import "../components/Home/Home.css";
 
-const Home = ({ user, logout }) => {
+const Home = ({ user, logout, role }) => {
   return (
     <div className="home">
       <Hero />
 
       <div className="home-cards">
-        {user && <StudentInfo student={user} logout={logout} />}
+        {user && <StudentInfo user={user} role={role} logout={logout} />}
         <Notice />
         <Schedule />
       </div>

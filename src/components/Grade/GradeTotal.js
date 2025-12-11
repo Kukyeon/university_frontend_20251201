@@ -1,4 +1,5 @@
 const GradeTotal = ({ data }) => {
+  console.log(data);
   return (
     <table className="styled-table">
       <thead>
@@ -12,13 +13,13 @@ const GradeTotal = ({ data }) => {
       </thead>
 
       <tbody>
-        {data.mygradeList?.length ? (
-          data.mygradeList.map((mg, idx) => (
+        {data.gradeList?.length ? (
+          data.gradeList.map((mg, idx) => (
             <tr key={idx}>
               <td>{mg.subYear}</td>
               <td>{mg.semester}</td>
-              <td>{mg.sumGrades}</td>
-              <td>{mg.myGrades}</td>
+              <td>{mg.totalCredit}</td>
+              <td>{mg.earnedCredit}</td>
               <td>{mg.averageScore}</td>
             </tr>
           ))
