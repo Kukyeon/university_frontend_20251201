@@ -1,0 +1,318 @@
+.notice-detail {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.notice-detail__title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.notice-detail__meta {
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.notice-detail__image {
+  max-width: 100%;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.notice-detail__content {
+  line-height: 1.6;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.notice-detail__created {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.notice-detail__buttons {
+  margin-top: 20px;
+}
+
+.notice-detail__btn {
+  padding: 6px 14px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.notice-detail__btn--edit {
+  background-color: #ffa500;
+  color: #fff;
+}
+
+.notice-detail__btn--delete {
+  background-color: #ff4d4f;
+  color: #fff;
+}
+
+.notice-detail__btn--back {
+  background-color: #1890ff;
+  color: #fff;
+}
+.notice-form {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 25px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Noto Sans KR", sans-serif;
+  gap: 15px;
+}
+
+.notice-form__title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.notice-form__group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.notice-form__label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.notice-form__input,
+.notice-form__textarea,
+.notice-form__select,
+.notice-form__file {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+}
+.notice-form textarea {
+  width: 100%;
+  min-height: 400px; /* 높이 증가 */
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical; /* 위아래로만 조절 가능 */
+}
+
+.notice-form__buttons {
+  margin-top: 20px;
+}
+
+.notice-form__btn {
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.notice-form__btn--submit {
+  background-color: #ff6f61;
+  color: #fff;
+}
+
+.notice-form__btn--cancel {
+  background-color: #aaa;
+  color: #fff;
+}
+.notice-page {
+  max-width: 900px;
+  margin: 30px auto;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.notice-page__title {
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.notice-page__search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.notice-page__input,
+.notice-page__select {
+  padding: 6px 10px;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.notice-page__btn {
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  background-color: #ff6f61;
+  color: #fff;
+}
+
+.notice-page__btn--write {
+  margin-bottom: 15px;
+}
+.notice-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  min-width: 700px; /* 최소 넓이 */
+}
+.notice-page__table th,
+.notice-page__table td {
+  border: 1px solid #ccc;
+  padding: 12px 10px; /* 패딩 키움 */
+  text-align: center;
+  font-size: 1rem; /* 글자 크기 증가 */
+}
+.notice-page__title-cell {
+  cursor: pointer;
+  color: #1890ff;
+  font-weight: 500;
+  text-align: left; /* 제목은 왼쪽 정렬 */
+  padding-left: 15px;
+}
+
+.notice-page__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.notice-page__page-info {
+  font-weight: 500;
+}
+/*============================================================= */
+.academic-calendar {
+  max-width: 1000px; /* 조금 더 넓게 */
+  margin: 30px auto;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.academic-calendar h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.academic-calendar p {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.academic-calendar table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.academic-calendar th,
+.academic-calendar td {
+  border: 1px solid #ccc;
+  padding: 12px 10px; /* padding 증가 */
+}
+
+.academic-calendar th {
+  background-color: #eaf4ff;
+  font-weight: 700;
+  text-align: left;
+}
+
+.academic-calendar td {
+  background-color: #fff;
+  vertical-align: top;
+}
+/* 수정 */
+.academic-calendar td[rowspan] {
+  text-align: center;
+  font-weight: bold;
+  background-color: #f9f9f9; /* rowSpan이 있는 td만 배경 적용 */
+}
+
+.academic-calendar tr:hover td {
+  background-color: #f0f8ff;
+}
+/* 전체 컨테이너 */
+.schedule-manager-container {
+  padding: 20px 25px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.schedule-manager-container h1 {
+  margin-bottom: 10px;
+}
+
+.schedule-manager-container p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.schedule-manager-container hr {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+/* 공용 버튼 스타일 */
+.schedule-button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 15px;
+  transition: 0.2s;
+}
+
+.schedule-button:hover {
+  opacity: 0.9;
+}
+
+.schedule-button.green {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.schedule-button.gray {
+  background-color: #ccc;
+  color: #333;
+}
+
+/* 모드별 컨테이너 */
+.schedule-form-container,
+.schedule-detail-container,
+.schedule-list-container {
+  margin-top: 15px;
+}
+
+/* h2 스타일 */
+.schedule-form-container h2,
+.schedule-detail-container h2,
+.schedule-list-container h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #333;
+}

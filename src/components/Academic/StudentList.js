@@ -5,6 +5,8 @@ const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [searchDept, setSearchDept] = useState("");
   const [searchId, setSearchId] = useState("");
+  const [loading, setLoading] = useState(false); // 추가
+  const [updateMessage, setUpdateMessage] = useState(""); // 추가
 
   useEffect(() => {
     getList();
@@ -38,9 +40,31 @@ const StudentList = () => {
       alert("학생 목록 조회 실패");
     }
   };
+  const handleUpdateGrades = async () => {
+    setLoading(true);
+    setUpdateMessage("");
+    try {
+      await api.get("/staff/list/student/update"); // 스프링 컨트롤러 매핑
+      setUpdateMessage("전체 학생 학년/학기 업데이트 완료!");
+      getList(); // 갱신 후 리스트 새로 조회
+    } catch (err) {
+      console.error(err);
+      setUpdateMessage("업데이트 실패!");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="mypage-card">
       <h3>학생 명단 조회</h3>
+      <div style={{ marginBottom: "1rem" }}>
+        <button onClick={handleUpdateGrades} disabled={loading}>
+          {loading ? "업데이트 중..." : "새학기 적용"}
+        </button>
+        {updateMessage && (
+          <span style={{ marginLeft: "1rem" }}>{updateMessage}</span>
+        )}
+      </div>
       <div className="academic-search-wrapper">
         <label className="academic-search-label">
           학과 번호:

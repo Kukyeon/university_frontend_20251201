@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { getNoticeDetail, deleteNotice } from "../../api/noticeApi";
-import { useParams, useNavigate } from "react-router-dom";
 
-const NoticeDetail = ({ role }) => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+const NoticeDetail = ({ noticeId, role, onBack, onEdit }) => {
   const [notice, setNotice] = useState(null);
 
   useEffect(() => {
-    getNoticeDetail(id).then(setNotice);
-  }, [id]);
+    if (!noticeId) return; // 안전 체크
+    getNoticeDetail(noticeId)
+      .then(setNotice)
+      .catch((err) => {
+        console.error("공지사항 조회 실패:", err);
+        alert("공지사항 조회 실패");
+        onBack();
+      });
+  }, [noticeId]);
 
   if (!notice) return <div>로딩중...</div>;
 
   const handleDelete = async () => {
     if (window.confirm("정말로 이 공지사항을 삭제하시겠습니까?")) {
       try {
-        await deleteNotice(id);
+        await deleteNotice(noticeId);
         alert("삭제되었습니다.");
-        navigate("/notice"); // 삭제 후 목록으로 이동
+        onBack(); // 삭제 후 목록으로
       } catch (error) {
         console.error("삭제 실패:", error);
         alert("삭제에 실패했습니다.");
@@ -27,31 +31,60 @@ const NoticeDetail = ({ role }) => {
   };
 
   return (
-    <div>
-      <h2>{notice.title}</h2>
-      <p>
-        <strong>말머리:</strong> {notice.category} |<strong> 조회수:</strong>{" "}
-        {notice.views || 0}
+    <div className="notice-detail">
+      <h2 className="notice-detail__title">
+        {" "}
+        <span className="notice-detail__category">{notice.category}</span>
+        {notice.title}
+      </h2>
+
+      <p className="notice-detail__meta">
+        <span className="notice-detail__views">
+          조회수: {notice.views || 0}
+        </span>
       </p>
+
       {notice.imageUrl && (
         <img
+          className="notice-detail__image"
           src={`http://localhost:8888${notice.imageUrl}`}
           alt="첨부 이미지"
-          style={{ maxWidth: "500px", marginBottom: "10px" }}
         />
       )}
-      <p>{notice.content}</p>
-      <small>작성일: {new Date(notice.createdTime).toLocaleString()}</small>
 
-      <br />
-      <br />
-      {role === "staff" && (
-        <>
-          <button onClick={() => navigate(`/notice/edit/${id}`)}>수정</button>
-          <button onClick={handleDelete}>삭제</button>
-        </>
-      )}
-      <button onClick={() => navigate("/notice")}>목록</button>
+      <p
+        className="notice-detail__content"
+        dangerouslySetInnerHTML={{ __html: notice.content }}
+      />
+
+      <small className="notice-detail__created">
+        작성일: {new Date(notice.createdTime).toLocaleString()}
+      </small>
+
+      <div className="notice-detail__buttons">
+        {role === "staff" && (
+          <>
+            <button
+              className="notice-detail__btn notice-detail__btn--edit"
+              onClick={() => onEdit(notice.id)}
+            >
+              수정
+            </button>
+            <button
+              className="notice-detail__btn notice-detail__btn--delete"
+              onClick={handleDelete}
+            >
+              삭제
+            </button>
+          </>
+        )}
+        <button
+          className="notice-detail__btn notice-detail__btn--back"
+          onClick={onBack}
+        >
+          목록
+        </button>
+      </div>
     </div>
   );
 };

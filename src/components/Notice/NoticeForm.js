@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import {
   createNotice,
   updateNotice,
   getNoticeDetail,
 } from "../../api/noticeApi";
 
-const NoticeForm = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
+const NoticeForm = ({ noticeId, onBack }) => {
   const [form, setForm] = useState({
     title: "",
     content: "",
@@ -28,17 +24,16 @@ const NoticeForm = () => {
     setFile(e.target.files[0]);
   };
   useEffect(() => {
-    if (id) {
-      getNoticeDetail(id).then((data) =>
-        setForm({
-          title: data.title,
-          content: data.content,
-          category: data.category,
-          imageUrl: data.imageUrl || "",
-        })
-      );
-    }
-  }, [id]);
+    if (!noticeId) return;
+    getNoticeDetail(noticeId).then((data) => {
+      setForm({
+        title: data.title,
+        content: data.content,
+        category: data.category,
+        imageUrl: data.imageUrl || "",
+      });
+    });
+  }, [noticeId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,55 +47,100 @@ const NoticeForm = () => {
     formData.append("category", form.category);
 
     // 3. 파일 데이터 추가 (백엔드 NoticeFormDto의 필드 이름인 'file'로 매핑)
-    if (file) {
-      formData.append("file", file);
+    try {
+      if (noticeId) {
+        await updateNotice(noticeId, formData);
+      } else {
+        await createNotice(formData);
+      }
+      onBack(); // 등록/수정 후 목록으로
+    } catch (err) {
+      console.error("공지 저장 실패:", err);
+      alert("공지 저장에 실패했습니다.");
     }
-
-    // 4. API 호출 (FormData를 직접 전송)
-    if (id) {
-      // 수정 시에도 파일이 있다면 FormData로 전송해야 합니다.
-      await updateNotice(id, formData);
-    } else {
-      await createNotice(formData);
-    }
-
-    navigate("/notice");
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{id ? "공지 수정" : "공지 등록"}</h2>
+    <form className="notice-form" onSubmit={handleSubmit}>
+      <h2 className="notice-form__title">
+        {noticeId ? "공지 수정" : "공지 등록"}
+      </h2>
 
-      <select name="category" value={form.category} onChange={handleChange}>
-        <option value="[일반]">[일반]</option>
-        <option value="[학사]">[학사]</option>
-        <option value="[장학]">[장학]</option>
-      </select>
+      <div className="notice-form__group">
+        <label className="notice-form__label" htmlFor="category">
+          말머리
+        </label>
+        <select
+          id="category"
+          name="category"
+          value={form.category}
+          onChange={handleChange}
+          className="notice-form__select"
+        >
+          <option value="[일반]">[일반]</option>
+          <option value="[학사]">[학사]</option>
+          <option value="[장학]">[장학]</option>
+        </select>
+      </div>
 
-      <input
-        type="text"
-        name="title"
-        value={form.title}
-        onChange={handleChange}
-        placeholder="제목"
-      />
+      <div className="notice-form__group">
+        <label className="notice-form__label" htmlFor="title">
+          제목
+        </label>
+        <input
+          id="title"
+          type="text"
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          placeholder="제목"
+          className="notice-form__input"
+        />
+      </div>
 
-      <textarea
-        name="content"
-        value={form.content}
-        onChange={handleChange}
-        placeholder="내용"
-      />
+      <div className="notice-form__group">
+        <label className="notice-form__label" htmlFor="content">
+          내용
+        </label>
+        <textarea
+          id="content"
+          name="content"
+          value={form.content}
+          onChange={handleChange}
+          placeholder="내용"
+          className="notice-form__textarea"
+        />
+      </div>
 
-      <input
-        type="file"
-        name="file"
-        accept="image/*"
-        onChange={handleFileChange}
-      />
+      <div className="notice-form__group">
+        <label className="notice-form__label" htmlFor="file">
+          첨부 이미지
+        </label>
+        <input
+          id="file"
+          type="file"
+          name="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="notice-form__file"
+        />
+      </div>
 
-      <button type="submit">{id ? "수정완료" : "등록"}</button>
-      <button onClick={() => navigate("/notice")}>취소</button>
+      <div className="notice-form__buttons">
+        <button
+          type="submit"
+          className="notice-form__btn notice-form__btn--submit"
+        >
+          {noticeId ? "수정완료" : "등록"}
+        </button>
+        <button
+          type="button"
+          className="notice-form__btn notice-form__btn--cancel"
+          onClick={onBack}
+        >
+          취소
+        </button>
+      </div>
     </form>
   );
 };
