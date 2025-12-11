@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getNoticeDetail, deleteNotice } from "../../api/noticeApi";
+import {
+  getNoticeDetail,
+  deleteNotice,
+  incrementNoticeViews,
+} from "../../api/noticeApi";
 import { useParams, useNavigate } from "react-router-dom";
 
 const NoticeDetail = ({ role }) => {
@@ -8,7 +12,16 @@ const NoticeDetail = ({ role }) => {
   const [notice, setNotice] = useState(null);
 
   useEffect(() => {
-    getNoticeDetail(id).then(setNotice);
+    const fetchAndIncrement = async () => {
+      try {
+        await incrementNoticeViews(id);
+        const data = await getNoticeDetail(id);
+        setNotice(data);
+      } catch (error) {
+        console.error("데이터 로드 또는 조회수 증가 실패", error);
+      }
+    };
+    fetchAndIncrement();
   }, [id]);
 
   if (!notice) return <div>로딩중...</div>;
