@@ -21,7 +21,7 @@ const NoticePage = ({ role }) => {
 
   useEffect(() => {
     if (view === "list") fetchList();
-  }, [view]);
+  }, [view, page]);
 
   // 🔹 화면 분기
   if (view === "edit" || view === "write") {
@@ -85,7 +85,10 @@ const NoticePage = ({ role }) => {
       {role === "staff" && (
         <button
           className="notice-page__btn notice-page__btn--write"
-          onClick={() => setView("write")}
+          onClick={() => {
+            setSelectedNoticeId(null); // ★ 초기화
+            setView("write");
+          }}
         >
           새 글 등록
         </button>
