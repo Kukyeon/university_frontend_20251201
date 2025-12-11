@@ -7,13 +7,13 @@ import {
 
 const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
   const [form, setForm] = useState({
-    answer1: "",
-    answer2: "",
-    answer3: "",
-    answer4: "",
-    answer5: "",
-    answer6: "",
-    answer7: "",
+    answer1: null,
+    answer2: null,
+    answer3: null,
+    answer4: null,
+    answer5: null,
+    answer6: null,
+    answer7: null,
     improvements: "",
   });
   const [questions, setQuestions] = useState(null);
@@ -56,12 +56,11 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
         );
       } else if (subjectId) {
         await createEvaluation(subjectId, form);
+        onSubmit();
       } else {
         alert("평가할 과목 ID를 찾을 수 없습니다.");
         return;
       }
-
-      onSubmit();
     } catch (error) {
       console.error("평가 제출 실패:", error);
       alert(`제출 실패: ${error.response?.data?.message || error.message}`);

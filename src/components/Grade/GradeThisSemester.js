@@ -4,7 +4,7 @@ const GradeThisSemester = ({ data, onEvaluate }) => {
   if (!list.length) {
     return <div className="empty-row">이번 학기 성적이 없습니다.</div>;
   }
-
+  console.log(list);
   return (
     <table className="table">
       <thead>
@@ -25,13 +25,13 @@ const GradeThisSemester = ({ data, onEvaluate }) => {
           <tr key={idx}>
             <td>{g.subYear}</td>
             <td>{g.semester}</td>
-            <td>{g.subjectCode}</td>
+            <td>{g.subjectId}</td>
             <td>{g.subjectName}</td>
             <td>{g.majorType}</td>
             <td>{g.credit}</td>
             <td>{g.grade}</td>
             <td>
-              {g.evaluateYn === "Y" ? (
+              {g.evaluated === true ? (
                 "완료"
               ) : (
                 <button className="eval-btn" onClick={() => onEvaluate(g)}>

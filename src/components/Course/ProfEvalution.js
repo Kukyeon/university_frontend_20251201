@@ -1,24 +1,44 @@
 import React, { useState, useEffect } from "react";
-import api from "../../api/axiosConfig"; // 실제 API 경로
+import api from "../../api/axiosConfig";
 
 const ProfEvaluation = () => {
   const [evaluationData, setEvaluationData] = useState([]);
+  const [subjects, setSubjects] = useState([]); // 셀렉트용 과목 목록
+  const [selectedSubject, setSelectedSubject] = useState("");
   const [loading, setLoading] = useState(true);
+  // 전체 평가 조회
+  const fetchEvaluation = async (subjectName = "") => {
+    try {
+      const res = await api.get(
+        subjectName
+          ? `/evaluation/subject/${subjectName}`
+          : `/evaluation/professor`
+      );
+      setEvaluationData(res.data);
+    } catch (err) {
+      console.error("강의 평가 조회 실패", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // 교수의 강의 목록 조회
+  const fetchSubjects = async () => {
+    try {
+      const res = await api.get(`/evaluation/professor/subjects`);
+      setSubjects(res.data);
+    } catch (err) {
+      console.error("강의 목록 조회 실패", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvaluation = async () => {
-      try {
-        const res = await api.get("/prof/my-evaluation"); // 내 강의 평가 API
-        setEvaluationData(res.data);
-      } catch (err) {
-        console.error("강의 평가 조회 실패", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvaluation();
+    fetchEvaluation(); // 전체 평가
+    fetchSubjects(); // 과목 목록
   }, []);
+
+  const handleSearch = () => {
+    fetchEvaluation(selectedSubject);
+  };
 
   if (loading) return <p>로딩중...</p>;
 
@@ -27,6 +47,20 @@ const ProfEvaluation = () => {
 
   return (
     <div className="my-evaluation-container">
+      <div style={{ marginBottom: "20px" }}>
+        <select
+          value={selectedSubject}
+          onChange={(e) => setSelectedSubject(e.target.value)}
+        >
+          <option value="">전체 과목</option>
+          {subjects.map((sub, idx) => (
+            <option key={idx} value={sub}>
+              {sub}
+            </option>
+          ))}
+        </select>
+        <button onClick={handleSearch}>조회</button>
+      </div>
       <table className="evaluation-table">
         <thead>
           <tr>
@@ -37,9 +71,9 @@ const ProfEvaluation = () => {
         </thead>
         <tbody>
           {evaluationData.map((e) => (
-            <tr key={e.subjectId}>
+            <tr key={`${e.subjectId}-${e.studentId}`}>
               <td>{e.subjectName}</td>
-              <td>{e.avgScore.toFixed(2)}</td>
+              <td>{e.avgScore ? Number(e.avgScore).toFixed(2) : "-"}</td>
               <td>{e.improvements}</td>
             </tr>
           ))}
