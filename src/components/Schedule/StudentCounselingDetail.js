@@ -77,24 +77,7 @@ const StudentCounselingDetail = ({
       <p>
         <strong>학생 이름:</strong> {schedule.studentName || "조회 필요"}
       </p>
-      <p>
-        <strong>상담 내용:</strong>
-      </p>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "10px",
-          whiteSpace: "pre-wrap",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        {record.notes || "저장된 상담 내용이 없습니다."}
-      </div>
-      {record.keywords && (
-        <p>
-          <strong>키워드:</strong> {record.keywords}
-        </p>
-      )}
+
       {(schedule.status === "확인됨" || schedule.status === "CONFIRMED") && (
         <button onClick={onStartCounseling} style={{ marginTop: "10px" }}>
           🎥 상담 시작
