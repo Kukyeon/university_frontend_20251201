@@ -1,9 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import NotificationBell from "../Chatbot/NotificationBell";
-
+import "./StudentInfo.css";
 const StudentInfo = ({ user, role, logout }) => {
-  console.log(user);
   const renderAffiliation = () => {
     if (role === "student") {
       return user.department?.name;
@@ -14,44 +13,41 @@ const StudentInfo = ({ user, role, logout }) => {
     }
     return "";
   };
+
   return (
     <section className="student-info">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className="student-info__header">
         {role === "student" && (
-          <h2>
+          <h2 className="student-info__title">
             {user?.name}({user.id})
           </h2>
         )}
-        {role !== "student" && <h2>환영합니다</h2>}
-        {/* ★ 여기에 알림벨 추가 (user prop으로 student 정보 전달) */}
+        {role !== "student" && (
+          <h2 className="student-info__title">환영합니다</h2>
+        )}
         <NotificationBell user={user} />
       </div>
-      <div className="student-profile">
-        <span className="material-symbols-outlined profile-icon">
+
+      <div className="student-info__profile">
+        <span className="material-symbols-outlined student-info__icon">
           account_circle
         </span>
-        <div className="student-details">
+        <div className="student-info__details">
           <p>
             <strong>{user?.name}</strong>님, 환영합니다.
           </p>
         </div>
-        <ul>
-          <li>
+        <ul className="student-info__list">
+          <li className="student-info__list-item">
             <span>이메일</span>
             <span>{user?.email}</span>
           </li>
-          <li>
+          <li className="student-info__list-item">
             <span>소속</span>
             <span>{renderAffiliation()}</span>
           </li>
           {role === "student" && (
-            <li>
+            <li className="student-info__list-item">
               <span>학기</span>
               <span>
                 {user?.grade}학년 {user?.semester}학기
@@ -59,18 +55,22 @@ const StudentInfo = ({ user, role, logout }) => {
             </li>
           )}
           {role === "student" && (
-            <li>
+            <li className="student-info__list-item">
               <span>학적상태</span>
               <span>{user?.currentStatus?.status}</span>
             </li>
           )}
         </ul>
       </div>
-      <div className="student-actions">
-        <button className="btn">
-          <Link to={"/my"}> 마이페이지</Link>
-        </button>
-        <button className="btn logout" onClick={logout}>
+
+      <div className="student-info__actions">
+        <Link to="/my" className="student-info__btn">
+          마이페이지
+        </Link>
+        <button
+          className="student-info__btn student-info__btn--logout"
+          onClick={logout}
+        >
           로그아웃
         </button>
       </div>

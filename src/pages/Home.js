@@ -10,7 +10,7 @@ const Home = ({ user, logout, role }) => {
     <div className="home">
       <Hero />
 
-      <div className="home-cards">
+      <div className="home__cards">
         {user && <StudentInfo user={user} role={role} logout={logout} />}
         <Notice />
         <Schedule />
