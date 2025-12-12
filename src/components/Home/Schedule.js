@@ -1,26 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import api from "../../api/axiosConfig";
+import { useNavigate } from "react-router-dom";
+import "./Schedule.css";
 
-const schedules = [
-  { id: 1, title: "개강", date: "2026-03-02" },
-  { id: 2, title: "중간고사", date: "2026-05-10" },
-  { id: 3, title: "기말고사", date: "2026-06-20" },
-];
+const Schedule = () => {
+  const [schedules, setSchedules] = useState([]);
+  const navigate = useNavigate();
 
-const Schedule = () => (
-  <section className="schedule">
-    <h2>학사 일정</h2>
-    <ul>
-      {schedules.map((s) => (
-        <li key={s.id}>
-          <span className="calendar-icon material-symbols-outlined">
-            calendar_month
-          </span>
-          <span className="schedule-title">{s.title}</span>
-          <span className="schedule-date">{s.date}</span>
-        </li>
-      ))}
-    </ul>
-  </section>
-);
+  const getSchedules = async () => {
+    try {
+      const res = await api.get("/schedule/latest"); // 최신 5개
+      setSchedules(res.data);
+    } catch (err) {
+      console.error("학사일정 조회 실패", err);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const d = new Date(dateString);
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    return `${month}/${day}`;
+  };
+
+  const handleClickSchedule = (scheduleId) => {
+    navigate("/academicPage", {
+      state: { view: "detail", scheduleId: scheduleId },
+    });
+  };
+
+  useEffect(() => {
+    getSchedules();
+  }, []);
+
+  return (
+    <section className="schedule">
+      <h2 className="schedule__title">학사 일정</h2>
+      <ul className="schedule__list">
+        {schedules.map((s) => (
+          <li
+            key={s.id}
+            className="schedule__item"
+            onClick={() => handleClickSchedule(s.id)}
+          >
+            <span className="schedule__icon material-symbols-outlined">
+              calendar_month
+            </span>
+            <span className="schedule__item-title">{s.information}</span>
+            <span className="schedule__item-date">
+              {formatDate(s.startDay)} - {formatDate(s.endDay)}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+};
 
 export default Schedule;

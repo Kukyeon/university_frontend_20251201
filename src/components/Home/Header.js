@@ -1,76 +1,75 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import HeaderTop from "./HeaderTop";
 import "./Header.css";
 
 const Header = ({ user, logout, role }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => setMobileMenuOpen((prev) => !prev);
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  const menuItems = [
+    { label: "홈", path: "/" },
+    ...(user ? [{ label: "MY", path: "/my" }] : []),
+    ...(role === "staff"
+      ? [
+          { label: "학사관리", path: "/academic" },
+          { label: "등록", path: "/registration" },
+        ]
+      : [{ label: "수업", path: "/course" }]),
+    ...(role === "student"
+      ? [
+          { label: "수강", path: "/sugang" },
+          { label: "성적", path: "/grade" },
+        ]
+      : []),
+    { label: "학사정보", path: "/academicPage" },
+    { label: "회의", path: "/videoroom" },
+  ];
+
   return (
     <header>
-      {/* 상단 헤더 */}
+      {/* 상단 HeaderTop */}
       {user && <HeaderTop user={user} logout={logout} />}
 
-      {/* 메인 네비게이션 */}
       <div className="main-header">
         <div className="logo">
           <Link to="/">학교 로고</Link>
         </div>
 
+        {/* 데스크탑 메뉴 */}
         <nav className="nav-menu">
           <ul>
-            <li>
-              <Link to="/">홈</Link>
-            </li>
-            {user && (
-              <li>
-                <Link to="/my">MY</Link>
+            {menuItems.map((item) => (
+              <li key={item.path}>
+                <Link to={item.path}>{item.label}</Link>
               </li>
-            )}
-            {role === "staff" && (
-              <>
-                <li>
-                  <Link to="/academic">학사관리</Link>
-                </li>
-                <li>
-                  <Link to="/registration">등록</Link>
-                </li>
-              </>
-            )}
-            {role !== "staff" && (
-              <>
-                <li>
-                  <Link to="/course">수업</Link>
-                </li>
-              </>
-            )}
-            {role === "student" && (
-              <>
-                <li>
-                  <Link to="/sugang">수강</Link>
-                </li>
-                <li>
-                  <Link to="/grade">성적</Link>
-                </li>
-              </>
-            )}
-            {/* <li className="dropdown">
-              <Link to="/departments">학과소개</Link>
-              <ul className="dropdown-menu">
-                <li>
-                  <Link to="/departments/cs">컴퓨터공학과</Link>
-                </li>
-                <li>
-                  <Link to="/departments/ee">전기공학과</Link>
-                </li>
-              </ul>
-            </li> */}
-            <li>
-              <Link to="/academicPage">학사정보</Link>
-            </li>
-            <li>
-              <Link to="/videoroom">회의</Link>
-            </li>
+            ))}
           </ul>
         </nav>
+
+        {/* 모바일 햄버거 버튼 */}
+        <div className="mobile-menu-icon" onClick={toggleMobileMenu}>
+          <span className="material-symbols-outlined">menu</span>
+        </div>
+
+        {/* 모바일 슬라이드 메뉴 */}
+        <div className={`mobile-slide-menu ${mobileMenuOpen ? "open" : ""}`}>
+          <button className="close-btn" onClick={closeMobileMenu}>
+            <span className="material-symbols-outlined">close</span>
+          </button>
+          <ul>
+            {menuItems.map((item) => (
+              <li key={item.path}>
+                <Link to={item.path} onClick={closeMobileMenu}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </header>
   );

@@ -3,26 +3,28 @@ import { getNoticeList } from "../api/noticeApi";
 import NoticeForm from "../components/Notice/NoticeForm";
 import NoticeDetail from "../components/Notice/NoticeDetail";
 import "./NoticePage.css";
+import { useLocation, useParams } from "react-router-dom";
 
 const NoticePage = ({ role }) => {
+  const location = useLocation();
   const [pageData, setPageData] = useState(null);
+  const state = location.state || {};
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [searchType, setSearchType] = useState("title");
-
-  const [view, setView] = useState("list"); // list / write / detail
-  const [selectedNoticeId, setSelectedNoticeId] = useState(null);
-
+  const [view, setView] = useState(state.view ? "detail" : "list"); // list / write / detail
+  const [selectedNoticeId, setSelectedNoticeId] = useState(
+    state.noticeId || null
+  );
   const fetchList = async () => {
     const data = await getNoticeList(page, keyword, searchType);
     setPageData(data);
   };
-  console.log();
-
   useEffect(() => {
     if (view === "list") fetchList();
-  }, [view, page]);
+  }, [page, view]);
 
+  console.log(pageData);
   // 🔹 화면 분기
   if (view === "edit" || view === "write") {
     return (

@@ -2,10 +2,18 @@ import React, { useState } from "react";
 import NoticePage from "./NoticePage";
 import AcademicCalendar from "../components/Schedule/AcademicCalendar";
 import ScheduleManagerPage from "./ScheduleManagerPage";
+import { useLocation } from "react-router-dom";
 
 const AcademicPage = ({ role }) => {
-  const [activeTab, setActiveTab] = useState("notice");
-
+  const location = useLocation();
+  const { state } = location;
+  const [activeTab, setActiveTab] = useState(
+    state?.view === "detail" && state?.noticeId
+      ? "notice"
+      : state?.view === "detail" && state?.scheduleId
+      ? "calendar"
+      : "notice"
+  );
   return (
     <div className="academic-page-container">
       {/* 사이드바 */}

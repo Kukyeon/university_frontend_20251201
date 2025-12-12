@@ -1,112 +1,4 @@
-/* 메인 헤더 */
-.main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-/* 로고 */
-.logo a {
-  font-size: 28px; /* 로고 크게 */
-  font-weight: bold;
-  color: #333;
-  text-decoration: none;
-}
-
-/* 네비게이션 메뉴 */
-.nav-menu {
-  flex: 1;
-}
-
-.nav-menu ul {
-  display: flex;
-  justify-content: center; /* 중앙 정렬 */
-  gap: 50px; /* 메뉴 간격 넓게 */
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-menu a {
-  font-size: 22px; /* 글자 크게 */
-  font-weight: 600;
-  color: #333;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.nav-menu a:hover {
-  color: #ff6f61; /* 포인트 색상 */
-}
-
-/* 드롭다운 메뉴 */
-.dropdown {
-  position: relative;
-}
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  list-style: none;
-  padding: 10px 0;
-  min-width: 180px;
-  z-index: 100;
-}
-
-.dropdown-menu li {
-  padding: 8px 20px;
-}
-
-.dropdown-menu li a {
-  color: #333;
-  font-size: 16px;
-}
-
-.dropdown-menu li a:hover {
-  color: #ff6f61;
-}
-.nav-menu .dropdown .dropdown-menu {
-  display: none; /* 기본 숨김 */
-}
-/* 드롭다운 활성화 */
-.nav-menu .dropdown:hover .dropdown-menu {
-  display: block;
-}
-
-/* 반응형 */
-@media (max-width: 900px) {
-  .nav-menu ul {
-    flex-direction: column;
-    gap: 15px;
-  }
-  .nav-menu a {
-    font-size: 18px;
-  }
-}
-
-/* 반응형 */
-@media (max-width: 900px) {
-  .nav-menu ul {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .nav-menu a {
-    font-size: 18px;
-  }
-}
-
-/* 헤더 탑 css */
+/* ================= HeaderTop ================= */
 .header-top {
   background-color: #f5f5f5;
   color: #333;
@@ -115,6 +7,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  position: relative;
 }
 
 .header-top ul {
@@ -139,17 +32,132 @@
   display: flex;
   align-items: center;
 }
+
 .logout-icon {
-  color: #ff6f61; /* 기존 #9bd2ec → 포인트 색상 */
+  color: #ff6f61;
   margin-right: 4px;
 }
 
-.logout-link {
+/* ================= Main Header ================= */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* 로고 */
+.logo a {
+  font-size: 28px;
+  font-weight: bold;
   color: #333;
   text-decoration: none;
 }
 
-.logout-link:hover {
+/* 데스크탑 메뉴 */
+.nav-menu ul {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu a {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-menu a:hover {
   color: #ff6f61;
-  text-decoration: underline;
+}
+
+/* ================= 모바일 슬라이드 메뉴 ================= */
+.mobile-menu-icon {
+  display: none;
+  cursor: pointer;
+}
+
+.mobile-menu-icon .material-symbols-outlined {
+  font-size: 32px;
+  color: #333;
+}
+.mobile-slide-menu {
+  display: none; /* 기본 숨김 */
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: -250px;
+  width: 250px;
+  height: 100vh;
+  background-color: #fff;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: right 0.3s ease-in-out;
+  z-index: 2000;
+}
+
+@media (max-width: 900px) {
+  /* 데스크탑 메뉴 숨김 */
+  .nav-menu {
+    display: none;
+  }
+
+  /* 햄버거 버튼 보이기 */
+  .mobile-menu-icon {
+    display: block;
+  }
+
+  .mobile-slide-menu {
+    display: flex; /* 미디어쿼리 안에서만 flex */
+  }
+
+  .mobile-slide-menu:not(.open) {
+    right: -250px; /* 화면 밖으로 숨김 */
+    pointer-events: none; /* 클릭 방지 */
+    opacity: 0; /* 완전히 숨김 */
+  }
+
+  .mobile-slide-menu.open {
+    right: 0;
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .mobile-slide-menu .close-btn {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  .mobile-slide-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .mobile-slide-menu ul li a {
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .mobile-slide-menu ul li a:hover {
+    color: #ff6f61;
+  }
 }
