@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { saveRecord, getCounselingRecord } from "../../api/scheduleApi";
 
@@ -12,7 +12,6 @@ const CounselingRecordForm = () => {
   const [keywords, setKeywords] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 기존 기록 불러오기 (수정 모드 대비)
   useEffect(() => {
     if (scheduleId && studentId) {
       const fetchExistingRecord = async () => {
@@ -25,7 +24,6 @@ const CounselingRecordForm = () => {
           setKeywords(existingRecord.keywords || "");
         } catch (error) {
           console.error("기존 기록 불러오기 실패:", error);
-          // 기록이 없는 경우 (새로 작성하는 경우)는 정상 처리
         }
       };
       fetchExistingRecord();
@@ -39,8 +37,6 @@ const CounselingRecordForm = () => {
     try {
       await saveRecord(scheduleId, notes, keywords);
       alert("상담 기록이 성공적으로 저장되었습니다.");
-
-      // 기록 후 상세 페이지로 돌아가기
       navigate(
         `/professor/counseling/detail/${scheduleId}?studentId=${studentId}`
       );

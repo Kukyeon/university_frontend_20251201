@@ -1,24 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { saveRecord, getStudentCounselingRecord } from "../../api/scheduleApi";
+import React, { useEffect, useState } from "react";
+import { getStudentCounselingRecord } from "../../api/scheduleApi";
 
-const StudentCounselingDetail = ({ scheduleId, studentId, onStatusLoaded }) => {
+const StudentCounselingDetail = ({
+  scheduleId,
+  studentId,
+  onStatusLoaded,
+  onStartCounseling,
+  onProfessorIdLoaded,
+}) => {
   const [record, setRecord] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!scheduleId) return;
+    if (!scheduleId || !studentId) return;
 
     const fetchRecord = async () => {
       setLoading(true);
       setError(null);
       try {
-        // API 호출: /api/schedules/records/{scheduleId}
-        const data = await getStudentCounselingRecord(scheduleId, studentId);
+        const data = await getStudentCounselingRecord(scheduleId);
+        console.log("🔥 상세 기록 API 응답 데이터:", data);
+        console.log("🔥 schedule 객체 확인:", data.schedule);
         setRecord(data);
-
         if (onStatusLoaded && data.schedule) {
           onStatusLoaded(data.schedule.status);
+        }
+        if (onProfessorIdLoaded && data.schedule?.professorId) {
+          onProfessorIdLoaded(data.schedule.professorId);
+          console.log("✅ Professor ID 보충 성공:", data.schedule.professorId);
+        } else {
+          // 🚨 professorId가 없으면 로그 출력
+          console.log(
+            "❌ Professor ID 누락: data.schedule.professorId 값 없음"
+          );
         }
       } catch (err) {
         console.error("상담 기록 조회 실패:", err);
@@ -29,19 +44,23 @@ const StudentCounselingDetail = ({ scheduleId, studentId, onStatusLoaded }) => {
     };
 
     fetchRecord();
-  }, [scheduleId, studentId, onStatusLoaded]);
+  }, [scheduleId, studentId, onStatusLoaded, onProfessorIdLoaded]);
 
   if (loading) return <div>상담 기록 상세 로딩 중...</div>;
-  if (error) return <div style={{ color: "red" }}>에러: {error}</div>;
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
   if (!record || !record.schedule)
     return <div>상담 상세 정보가 존재하지 않습니다.</div>;
 
-  // 백엔드에서 DTO를 통해 정보를 전달받는다고 가정
   const schedule = record.schedule;
 
   return (
     <div
-      style={{ border: "1px solid #ddd", padding: "20px", borderRadius: "5px" }}
+      style={{
+        border: "1px solid #ddd",
+        padding: "20px",
+        borderRadius: "5px",
+        backgroundColor: "#fff",
+      }}
     >
       <h3>상담 상세 내용</h3>
       <p>
@@ -52,13 +71,11 @@ const StudentCounselingDetail = ({ scheduleId, studentId, onStatusLoaded }) => {
         {new Date(schedule.startTime).toLocaleString()} ~{" "}
         {new Date(schedule.endTime).toLocaleString()}
       </p>
-      {/* 교수 이름과 학생 이름은 CounselingSchedule DTO나 Record DTO에 포함되어야 함 */}
       <p>
-        <strong>상담 교수:</strong>{" "}
-        {record.schedule.professorName || "조회 필요"}
+        <strong>상담 교수:</strong> {schedule.professorName || "조회 필요"}
       </p>
       <p>
-        <strong>학생 이름:</strong> {record.schedule.studentName || "조회 필요"}
+        <strong>학생 이름:</strong> {schedule.studentName || "조회 필요"}
       </p>
       <p>
         <strong>상담 내용:</strong>
@@ -77,6 +94,11 @@ const StudentCounselingDetail = ({ scheduleId, studentId, onStatusLoaded }) => {
         <p>
           <strong>키워드:</strong> {record.keywords}
         </p>
+      )}
+      {(schedule.status === "확인됨" || schedule.status === "CONFIRMED") && (
+        <button onClick={onStartCounseling} style={{ marginTop: "10px" }}>
+          🎥 상담 시작
+        </button>
       )}
     </div>
   );

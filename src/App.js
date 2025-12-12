@@ -11,7 +11,6 @@ import NoticePage from "./pages/NoticePage";
 import NoticeDetail from "./components/Notice/NoticeDetail";
 import NoticeForm from "./components/Notice/NoticeForm";
 import EvaluationPage from "./pages/EvaluationPage";
-import VideoRoomApp from "./VideoRoomApp";
 import AcademicPage from "./pages/AcademicPage";
 import Academic from "./pages/Academic";
 import CounselingRecordPage from "./pages/CounselingRecordPage";
@@ -42,6 +41,8 @@ import CoursePage from "./pages/CoursePage";
 import Sugang from "./pages/Sugang";
 import CourseStudentList from "./components/Course/CourseStudentList";
 import { ro } from "date-fns/locale";
+import VideoRoom from "./components/Schedule/VideoRoom";
+import VideoRoomApp from "./VideoRoomApp";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -150,7 +151,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/videoroom" element={<VideoRoomApp />} />
+
         <Route
           path="/"
           element={
@@ -159,6 +160,22 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/professor/videoroom/:scheduleId"
+          element={
+            <ProtectedRoute user={user} role={role} roleRequired="professor">
+              <VideoRoom
+                professorId={user?.id}
+                userRole={role}
+                userName={user?.name}
+                onFinish={() => {
+                  navigate(-1);
+                }}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/videoroom" element={<VideoRoomApp />} />
         {/* 공지사항, 학사일정 상세/등록/수정  */}
         <Route path="/notice" element={<NoticePage role={role} />} />
         <Route path="/notice/:id" element={<NoticeDetail role={role} />} />
@@ -184,7 +201,7 @@ function App() {
         {/* 학생용 상세 보기 */}
         <Route
           path="/student/counseling/detail/:scheduleId"
-          element={<StudentCounselingDetail />}
+          element={<StudentCounselingDetail user={user} />}
         />
         {/* 교수용 상세 보기 (권한 설정 필요) */}
         <Route

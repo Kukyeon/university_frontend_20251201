@@ -80,7 +80,7 @@ const ProfessorScheduleRequests = ({ professorId }) => {
               style={{ borderBottom: "1px solid #eee", padding: "10px 0" }}
               onClick={() =>
                 navigate(
-                  `/professor/counseling/detail/${req.id}?studentId=${req.studentId}`
+                  `/professor/counseling/detail/${req.id}?studentId=${req.studentId}&professorId=${professorId}`
                 )
               }
             >
