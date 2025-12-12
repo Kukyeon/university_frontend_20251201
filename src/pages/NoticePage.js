@@ -16,13 +16,15 @@ const NoticePage = ({ role }) => {
   const [selectedNoticeId, setSelectedNoticeId] = useState(
     state.noticeId || null
   );
-  console.log(state);
   const fetchList = async () => {
     const data = await getNoticeList(page, keyword, searchType);
     setPageData(data);
   };
-  console.log();
+  useEffect(() => {
+    if (view === "list") fetchList();
+  }, [page, view]);
 
+  console.log(pageData);
   // 🔹 화면 분기
   if (view === "edit" || view === "write") {
     return (
