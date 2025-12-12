@@ -3,11 +3,12 @@ import "./Login.css";
 import Modal from "../components/Modal"; // 모달 컴포넌트
 import api from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import FeedbackModal from "../components/FeedBackModal";
 
 const LoginPage = ({ setUser, setRole }) => {
   const [openModal, setOpenModal] = useState(null);
   const [loginData, setLoginData] = useState({
-    id: "",
+    id: localStorage.getItem("savedLoginId") || "",
     password: "",
     rememberId: false,
   });
@@ -21,6 +22,11 @@ const LoginPage = ({ setUser, setRole }) => {
   const [foundId, setFoundId] = useState(""); // 새 상태
   const navigate = useNavigate();
   // 입력값 변경 핸들러
+  const [feedback, setFeedback] = useState(null);
+  const [saveId, setSaveId] = useState(() => {
+    return localStorage.getItem("savedLoginId") ? true : false;
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setModalData((prev) => ({ ...prev, [name]: value }));
@@ -79,14 +85,39 @@ const LoginPage = ({ setUser, setRole }) => {
       localStorage.setItem("token", token);
       setUser(response.data.user);
       setRole(response.data.role);
+      if (saveId) {
+        localStorage.setItem("savedLoginId", loginData.id);
+      } else {
+        localStorage.removeItem("savedLoginId");
+      }
+
+      setFeedback({
+        type: "success",
+        message: "로그인 성공",
+      });
 
       console.log(response.data);
       navigate("/");
       // 로그인 성공 후 처리
     } catch (err) {
-      console.error("로그인 실패:", err.response?.data || err.message);
+      setFeedback({
+        type: "error",
+        message: "아이디 또는 비밀번호 오류입니다.",
+      });
     }
   };
+  const closeModal = () => {
+    setOpenModal(null);
+    setModalData({
+      name: "",
+      email: "",
+      userId: "",
+      role: "student",
+    });
+    setFoundId("");
+    setTempPassword("");
+  };
+
   return (
     <div className="login-container">
       <div className="login-card">
@@ -116,8 +147,14 @@ const LoginPage = ({ setUser, setRole }) => {
           </div>
 
           <div className="checkbox-group">
-            <input type="checkbox" id="saveId" />
-            <label htmlFor="saveId">아이디 저장</label>
+            <label className="saveId">
+              <input
+                type="checkbox"
+                checked={saveId}
+                onChange={(e) => setSaveId(e.target.checked)}
+              />
+              아이디 저장
+            </label>
           </div>
 
           <button type="submit" className="login-btn">
@@ -239,6 +276,14 @@ const LoginPage = ({ setUser, setRole }) => {
             </div>
           )}
         </Modal>
+      )}
+      {feedback && (
+        <FeedbackModal
+          type={feedback.type}
+          message={feedback.message}
+          onClose={() => setFeedback(null)}
+          autoClose={1500}
+        />
       )}
     </div>
   );
