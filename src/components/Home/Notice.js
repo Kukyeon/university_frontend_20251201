@@ -1,36 +1,46 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import "./Notice.css";
+
 const Notice = () => {
   const navigate = useNavigate();
   const [notices, setNotices] = useState([]);
 
   const handleClickNotice = (noticeId) => {
-    // 공지 클릭 시, noticeId 전달
     navigate("/academicPage", {
-      state: { view: "detail", noticeId: noticeId },
+      state: { view: "detail", noticeId },
     });
   };
 
   const getNoticeList = async () => {
-    const res = await api.get("/notice/latest");
-    setNotices(res.data);
-    console.log(res.data);
+    try {
+      const res = await api.get("/notice/latest");
+      setNotices(res.data);
+    } catch (err) {
+      console.error("공지사항 조회 실패", err);
+    }
   };
+
   useEffect(() => {
     getNoticeList();
   }, []);
+
   return (
-    <section className="notices">
-      <h2>공지사항</h2>
-      <ul>
+    <section className="notice">
+      <h2 className="notice__title">공지사항</h2>
+      <ul className="notice__list">
         {notices.map((n) => (
-          <li key={n.id} onClick={() => handleClickNotice(n.id)}>
-            <span className="notice-title">
+          <li
+            key={n.id}
+            className="notice__item"
+            onClick={() => handleClickNotice(n.id)}
+          >
+            <span className="notice__item-title">
               {n.category}
               {n.title}
             </span>
-            <span className="notice-date">
+            <span className="notice__item-date">
               {new Date(n.createdTime).toLocaleDateString()}
             </span>
           </li>
