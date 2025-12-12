@@ -16,7 +16,6 @@ const EnrollmentHistoryPage = () => {
     loadInitData();
   }, []);
 
-  // 데이터 로딩
   const loadInitData = async () => {
     try {
       const pRes = await courseApi.getSugangPeriod();
@@ -63,7 +62,6 @@ const EnrollmentHistoryPage = () => {
   };
 
   const handleCancelSuccess = async (subjectId) => {
-    // ★ [보안 추가] 기간이 종료(2)되었으면 함수 실행 즉시 중단
     if (period === 2) {
         alert("수강신청 기간이 종료되어 취소할 수 없습니다.");
         return;
@@ -90,7 +88,6 @@ const EnrollmentHistoryPage = () => {
             <h1 style={{ margin: 0 }}>
                 {period === 0 ? "🛒 예비 수강신청 (장바구니)" : (period === 2 ? "🔒 수강신청 종료 (내역 확인)" : "🎓 수강신청 현황")}
             </h1>
-            {/* ★ 3. 강의 목록으로 이동하는 버튼 (종료 시 숨김) */}
             {period !== 2 && (
             <button 
                 onClick={() => navigate('/student/enrollment')} 
@@ -108,17 +105,23 @@ const EnrollmentHistoryPage = () => {
         )}
       </div>
 
-      {/* 2. 장바구니 목록 (기간 2일 때는 자동으로 안 보임: 조건이 period 0 or 1 이라서) */}
+      {/* 2. 장바구니 목록 (기간 0, 1일 때 표시) */}
       {(period === 0 || period === 1) && (
-        <div style={{ marginBottom: '40px' }}>
+        <div style={{ marginBottom: '40px', overflowX: 'auto' }}>
           <h3 style={{ borderBottom:'2px solid #fcc419', paddingBottom:'10px' }}>
             🛒 장바구니 목록 {period === 1 && <span style={{fontSize:'0.8em', color:'red'}}>(클릭하여 바로 신청하세요!)</span>}
           </h3>
           <table border="1" style={tableStyle}>
             <thead style={{ background: '#fff9db' }}>
               <tr>
-                <th>학수번호</th><th>강의명</th><th>담당교수</th><th>학점</th>
-                <th>요일시간 (강의실)</th><th>현재인원</th><th>정원</th><th>수강신청</th>
+                <th style={{width: '8%'}}>학수번호</th>
+                <th style={{width: '15%'}}>강의명</th>
+                <th style={{width: '10%'}}>담당교수</th>
+                <th style={{width: '5%'}}>학점</th>
+                <th style={{width: '20%'}}>요일시간 (강의실)</th>
+                <th style={{width: '8%'}}>현재인원</th>
+                <th style={{width: '8%'}}>정원</th>
+                <th style={{width: '15%'}}>관리</th> {/* ★ 이 컬럼이 있어야 버튼이 보입니다 */}
               </tr>
             </thead>
             <tbody>
@@ -136,7 +139,7 @@ const EnrollmentHistoryPage = () => {
                       <td style={{fontWeight:'bold'}}>{sub.name}</td>
                       <td>{sub.professor?.name}</td>
                       <td>{sub.grades}</td>
-                      <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.roomId})</td>
+                      <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.room.id})</td>
                       <td style={{ color: isFull ? 'red' : 'black', fontWeight:'bold' }}>{sub.numOfStudent}</td>
                       <td>{sub.capacity}</td>
                       <td>
@@ -146,13 +149,18 @@ const EnrollmentHistoryPage = () => {
                            isAlreadySuccess ? (
                              <button disabled style={doneBtnStyle}>신청완료</button>
                            ) : (
-                             <button 
-                                onClick={() => handleRegisterFromBasket(sub)} 
-                                disabled={isFull}
-                                style={isFull ? fullBtnStyle : registerBtnStyle}
-                             >
-                                {isFull ? '마감' : '신청하기'}
-                             </button>
+                             <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+                                 <button 
+                                    onClick={() => handleRegisterFromBasket(sub)} 
+                                    disabled={isFull}
+                                    style={isFull ? fullBtnStyle : registerBtnStyle}
+                                 >
+                                    {isFull ? '마감' : '신청'}
+                                 </button>
+                                 <button onClick={() => handleDeleteBasket(sub.id)} style={delBtnStyle}>
+                                    삭제
+                                 </button>
+                             </div>
                            )
                         )}
                       </td>
@@ -167,13 +175,20 @@ const EnrollmentHistoryPage = () => {
 
       {/* 3. 실제 수강 확정 목록 (기간 1, 2일 때 표시) */}
       {period >= 1 && (
-        <div>
+        <div style={{ overflowX: 'auto' }}>
           <h3 style={{ borderBottom:'2px solid #4dabf7', paddingBottom:'10px' }}>✅ 수강 확정 목록</h3>
           <table border="1" style={tableStyle}>
             <thead style={{ background: '#e7f5ff' }}>
               <tr>
-                <th>학수번호</th><th>강의명</th><th>담당교수</th><th>학점</th>
-                <th>요일시간 (강의실)</th><th>현재인원</th><th>정원</th><th>관리</th>
+                {/* ★ 헤더(th)가 총 8개인지 꼭 확인해주세요 */}
+                <th style={{width: '8%'}}>학수번호</th>
+                <th style={{width: '15%'}}>강의명</th>
+                <th style={{width: '10%'}}>담당교수</th>
+                <th style={{width: '5%'}}>학점</th>
+                <th style={{width: '20%'}}>요일시간 (강의실)</th>
+                <th style={{width: '8%'}}>현재인원</th>
+                <th style={{width: '8%'}}>정원</th>
+                <th style={{width: '15%'}}>관리</th> {/* ★ 여기입니다! */}
               </tr>
             </thead>
             <tbody>
@@ -188,11 +203,11 @@ const EnrollmentHistoryPage = () => {
                       <td style={{fontWeight:'bold', color:'blue'}}>{sub.name}</td>
                       <td>{sub.professor?.name}</td>
                       <td>{sub.grades}</td>
-                      <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.roomId})</td>
+                      <td>{sub.subDay} {sub.startTime}~{sub.endTime} ({sub.room.id})</td>
                       <td>{sub.numOfStudent}</td>
                       <td>{sub.capacity}</td>
                       <td>
-                        {/* ★ [핵심 수정] 기간이 2(종료)이면 취소 버튼 숨기고 '마감됨' 텍스트 표시 */}
+                        {/* ★ period가 2가 아니면(즉 1이면) 취소 버튼 표시 */}
                         {period === 2 ? (
                             <span style={{color: '#adb5bd', fontSize: '13px', fontWeight: 'bold'}}>취소불가</span>
                         ) : (
@@ -213,24 +228,11 @@ const EnrollmentHistoryPage = () => {
 };
 
 // 스타일
-const tableStyle = { width: '100%', textAlign: 'center', borderCollapse: 'collapse', marginBottom:'10px', fontSize:'14px' };
+const tableStyle = { width: '100%', minWidth: '800px', textAlign: 'center', borderCollapse: 'collapse', marginBottom:'10px', fontSize:'14px' };
 const delBtnStyle = { background: '#ff6b6b', color: 'white', border: 'none', padding:'5px 10px', borderRadius:'4px', cursor:'pointer' };
-const registerBtnStyle = { background: '#0d6efd', color: 'white', border: 'none', padding:'5px 15px', borderRadius:'4px', cursor:'pointer', fontWeight:'bold' };
+const registerBtnStyle = { background: '#0d6efd', color: 'white', border: 'none', padding:'5px 10px', borderRadius:'4px', cursor:'pointer', fontWeight:'bold' };
 const doneBtnStyle = { background: '#adb5bd', color: 'white', border: 'none', padding:'5px 10px', borderRadius:'4px', cursor:'default' };
 const fullBtnStyle = { background: '#868e96', color: 'white', border: 'none', padding:'5px 10px', borderRadius:'4px', cursor:'not-allowed' };
-
-// ★ 추가된 버튼 스타일
-const goListBtnStyle = {
-    marginTop: '10px',
-    padding: '8px 16px',
-    backgroundColor: '#343a40', // 짙은 회색
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    fontSize: '14px',
-    display: 'block' // 줄바꿈 효과
-};
+const goListBtnStyle = { marginTop: '10px', padding: '8px 16px', backgroundColor: '#343a40', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', display: 'block' };
 
 export default EnrollmentHistoryPage;

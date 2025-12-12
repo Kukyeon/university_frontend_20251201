@@ -22,7 +22,7 @@ const EnrollmentTable = ({
           <th>강의명</th>
           <th>교수</th>
           <th>학점</th>
-          <th>요일/시간</th>
+          <th>요일/시간 (강의실)</th>
           <th>인원</th>
           <th>관리</th>
         </tr>
@@ -42,7 +42,7 @@ const EnrollmentTable = ({
               <td>{sub.professor?.name}</td>
               <td>{sub.grades}</td>
               <td>
-                {sub.subDay} {sub.startTime}:00 ~ {sub.endTime}:00
+                {sub.subDay} {sub.startTime}:00 ~ {sub.endTime}:00 ({sub.room.id})
               </td>
               <td style={{ color: isClosed ? "red" : "black" }}>
                 {sub.numOfStudent}/{sub.capacity}
