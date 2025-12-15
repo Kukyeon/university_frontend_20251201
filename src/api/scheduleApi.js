@@ -79,8 +79,12 @@ export const searchRecords = (searchParams) =>
   requestCounseling("get", "/records/search", {}, searchParams);
 
 // 상담 기록 저장
-export const saveRecord = (scheduleId, notes, keywords = "") =>
-  requestCounseling("post", `/records/save/${scheduleId}`, { notes, keywords });
+export const saveRecord = (
+  scheduleId,
+  notes,
+  keywords = "" // PUT 메서드와 정확한 경로를 사용하도록 수정합니다.
+) =>
+  requestCounseling("put", `/records/${scheduleId}/memo`, { notes, keywords });
 
 // 교수에게 신청된 상담 일정 목록 조회 (로그인된 교수 ID로 백엔드에서 자동 조회)
 export const getProfessorRequests = () => requestCounseling("get", "/requests");
@@ -97,24 +101,4 @@ export const getCounselingRecord = (scheduleId, studentId) => {
 //특정 상담 기록 상세 조회 / 학생용
 export const getStudentCounselingRecord = (scheduleId) => {
   return requestCounseling("get", `/records/student/${scheduleId}`);
-};
-
-// 상담 음성 파일 업로드 및 시작요청
-export const startTranscription = async (scheduleId, audioFile) => {
-  const formData = new FormData();
-  formData.append("audioFile", audioFile);
-
-  const res = await api.post(`/counseling/${scheduleId}/start-stt`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-  return res.data;
-};
-
-export const getTranscriptionStatus = (jobName) => {
-  // 백엔드 경로: /api/counseling/status?jobName={jobName}
-  return api
-    .get(`/counseling/status`, { params: { jobName } })
-    .then((res) => res.data);
 };

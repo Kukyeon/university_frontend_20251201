@@ -98,7 +98,7 @@ body {
 .label {
   display: inline;
   padding: 0.2em 0.6em 0.3em;
-  font-size: 75%;
+  font-size: 75%; /* 기본 사이즈는 75%로 유지 */
   font-weight: 700;
   line-height: 1;
   color: #fff;
@@ -107,6 +107,12 @@ body {
   vertical-align: baseline;
   border-radius: 0.25em;
   margin-right: 5px;
+}
+
+/* 💡 이름 텍스트 크기 확대 */
+.panel-heading .panel-title .label {
+  font-size: 1.2em; /* 주변 텍스트보다 20% 크게 설정 */
+  margin-left: 10px;
 }
 
 .label-info {
@@ -129,9 +135,16 @@ body {
 }
 
 .video-col {
-  width: 33.333%; /* col-md-4 대체 */
-  padding: 10px;
-  box-sizing: border-box;
+  flex: 1; /* ⭐️ 무조건 1:1 */
+  min-width: 0; /* flex overflow 방지 */
+  display: flex;
+  padding: 5px; /* 비디오 간 간격 추가 */
+}
+
+.video-col .panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .panel {
@@ -159,10 +172,25 @@ body {
   align-items: center;
 }
 
+/* 💡 스크롤 제거 및 16:9 비율 유지 (핵심 수정) */
 .panel-body {
-  padding: 15px;
+  padding: 0;
   position: relative;
-  min-height: 200px; /* 비디오 영역 최소 높이 */
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 비율 (높이 / 너비 = 9/16 = 0.5625) */
+  height: 0; /* padding-bottom 트릭을 위한 설정 */
+  overflow: hidden; /* 내부 스크롤 방지 */
+}
+
+/* 비디오가 .panel-body를 꽉 채우도록 설정 */
+.panel-body > video {
+  position: absolute; /* .panel-body 내부에서 절대 위치 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 비디오가 화면을 꽉 채우도록 (짤릴 수 있음) */
+  border-radius: 8px;
 }
 
 /* 유틸리티 클래스 */
@@ -172,29 +200,6 @@ body {
 
 .relative {
   position: relative;
-}
-
-/* 테이블 스타일 (기존 인라인 스타일 대체) */
-table {
-  width: 100%;
-  border-top: 1px solid #bdbcbc;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-th,
-td {
-  border-bottom: 1px solid #bdbcbc;
-  padding: 10px;
-  text-align: left;
-}
-
-/* 비디오 요소 스타일 */
-video {
-  width: 100%;
-  height: auto;
-  border-radius: 8px; /* rounded 클래스 대체 */
-  display: block;
 }
 
 /* 비디오 없을 때 스타일 */
@@ -212,27 +217,20 @@ video {
   align-items: center;
   border-radius: 4px;
   font-size: 16px;
-  z-index: 1; /* 스피너 위에 보이도록 */
+  z-index: 1;
 }
 
 .no-video-icon {
-  font-size: 40px; /* fa-5 대체 */
+  font-size: 40px;
   margin-bottom: 10px;
 }
-
-/* 비트레이트/해상도 라벨 위치 조정 */
-.panel-body .label {
-  position: absolute;
-  z-index: 10;
-}
-/* videoroom.css 파일 추가 */
 
 /* 방 정보 및 사용자 이름 표시 스타일 */
 #room-display,
 #you-display {
   margin: 10px 0;
   padding: 5px;
-  background-color: #e0f7fa; /* 연한 파란색 배경 */
+  background-color: #e0f7fa;
   border: 1px solid #b2ebf2;
   border-radius: 4px;
   font-size: 16px;
@@ -240,6 +238,6 @@ video {
 
 .room-info {
   font-weight: bold;
-  color: #00796b; /* 진한 청록색 텍스트 */
+  color: #00796b;
   margin-left: 5px;
 }

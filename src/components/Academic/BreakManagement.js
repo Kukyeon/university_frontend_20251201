@@ -26,41 +26,45 @@ const BreakManagement = ({ role }) => {
     setLeaveRequests((prev) => prev.filter((req) => req.id !== updatedId));
   };
   return (
-    <div className="mypage-card">
+    <>
       <h3>휴학 처리</h3>
       {leaveRequests.length === 0 ? (
         <p>대기 중인 신청 내역이 없습니다.</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>신청일자</th>
-              <th>신청자 학번</th>
-              <th>구분</th>
-              <th>시작학기</th>
-              <th>종료학기</th>
-              <th>신청서 확인</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leaveRequests.map((req, index) => (
-              <tr key={req.id}>
-                <td>{req.appDate}</td>
-                <td>{req.student.id}</td>
-                <td>{req.type}</td>
-                <td>
-                  {req.fromYear}년 {req.fromSemester}학기
-                </td>
-                <td>
-                  {req.toYear}년 {req.toSemester}학기
-                </td>
-                <td>
-                  <button onClick={() => setSelectedRequest(req)}>Click</button>
-                </td>
+        <div className="table-wrapper">
+          <table className="course-table">
+            <thead>
+              <tr>
+                <th>신청일자</th>
+                <th>신청자 학번</th>
+                <th>구분</th>
+                <th>시작학기</th>
+                <th>종료학기</th>
+                <th>신청서 확인</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {leaveRequests.map((req, index) => (
+                <tr key={req.id}>
+                  <td>{req.appDate}</td>
+                  <td>{req.student.id}</td>
+                  <td>{req.type}</td>
+                  <td>
+                    {req.fromYear}년 {req.fromSemester}학기
+                  </td>
+                  <td>
+                    {req.toYear}년 {req.toSemester}학기
+                  </td>
+                  <td>
+                    <button onClick={() => setSelectedRequest(req)}>
+                      Click
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       {/* 모달 */}
       <BreakAppModal
@@ -71,7 +75,7 @@ const BreakManagement = ({ role }) => {
         role={role}
         onDeleted={getLeaveList} // 취소 후 리스트 갱신
       />
-    </div>
+    </>
   );
 };
 

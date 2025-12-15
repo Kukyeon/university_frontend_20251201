@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { getAllAvailableTimes, bookAppointment } from "../../api/scheduleApi";
+import {
+  getAllAvailableTimes,
+  bookAppointment,
+  getAllProfessors,
+} from "../../api/scheduleApi";
+import "../../pages/SchedulePage.css";
 
 const formatDateTime = (dateTimeStr) => {
   if (!dateTimeStr) return "";
@@ -17,6 +22,7 @@ const BookAppointment = ({ studentId }) => {
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [professorMap] = useState({}); // 현재 사용되지 않으나 구조 유지를 위해 남김
 
   useEffect(() => {
     if (!studentId) {
@@ -55,22 +61,35 @@ const BookAppointment = ({ studentId }) => {
     }
   };
 
-  if (loading) return <div>⏳ 예약 가능한 시간 불러오는 중...</div>;
-  if (error) return <div style={{ color: "red" }}>⚠ {error}</div>;
+  // 💡 클래스 적용
+  if (loading)
+    return (
+      <div className="loading-text">⏳ 예약 가능한 시간 불러오는 중...</div>
+    );
+  if (error) return <div className="error-message">⚠ {error}</div>;
+
+  console.log("slot 샘플:", availableSlots[0]);
 
   return (
-    <div style={{ marginTop: "20px" }}>
-      <h3>📅 상담 예약 가능한 시간</h3>
+    // 💡 클래스 적용
+    <div className="book-appointment-container">
+      <h3 className="appointment-list-title">📅 상담 예약 가능한 시간</h3>
       {availableSlots.length === 0 ? (
-        <p style={{ color: "gray" }}>현재 예약 가능한 시간이 없습니다.</p>
+        // 💡 클래스 적용
+        <p className="no-slots-message">현재 예약 가능한 시간이 없습니다.</p>
       ) : (
-        <ul>
+        <ul className="available-slot-ul">
           {availableSlots.map((slot) => (
-            <li key={slot.id} style={{ marginBottom: "8px" }}>
-              🕒 {formatDateTime(slot.startTime)} ~{" "}
-              {formatDateTime(slot.endTime)}
+            <li key={slot.id} className="available-slot-item">
+              <span className="professor-info">
+                {slot.professorName} 교수님 |{" "}
+              </span>
+              <span className="time-info">
+                🕒 {formatDateTime(slot.startTime)} ~{" "}
+                {formatDateTime(slot.endTime)}
+              </span>
               <button
-                style={{ marginLeft: "10px", cursor: "pointer" }}
+                className="btn-book" // 💡 클래스 적용
                 onClick={() => handleBook(slot.id)}
               >
                 예약하기

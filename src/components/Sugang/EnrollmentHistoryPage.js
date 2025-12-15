@@ -13,17 +13,6 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
     loadInitData();
   }, []);
 
-  // 상위 컴포넌트(Header) 텍스트 변경
-  useEffect(() => {
-    if (period === 0) {
-      setPageHeader("예비 수강신청 내역 (장바구니)");
-    } else if (period === 1) {
-      setPageHeader("수강신청 현황 (본 수강)");
-    } else if (period === 2) {
-      setPageHeader("수강신청 종료 (내역 확인)");
-    }
-  }, [period, setPageHeader]);
-
   const loadInitData = async () => {
     try {
       const pRes = await courseApi.getSugangPeriod();
@@ -61,7 +50,8 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
 
   // 장바구니 -> 실제 신청 (기간 1일 때만 동작)
   const handleRegisterFromBasket = async (subject) => {
-    if (!window.confirm(`[${subject.name}] 강의를 신청하시겠습니까? (선착순)`)) return;
+    if (!window.confirm(`[${subject.name}] 강의를 신청하시겠습니까? (선착순)`))
+      return;
     try {
       await courseApi.register(subject.id);
       alert("✅ 신청 성공!");
@@ -98,15 +88,27 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
   };
 
   return (
-    <div className="sugang-container">
+    <>
+      <h3>
+        {period === 0 && "예비 수강신청 내역"}
+        {period === 1 && "수강신청 현황"}
+        {period === 2 && "수강 신청내역 확인"}
+      </h3>
       {/* 1. 상단 컨트롤 영역 */}
-      <div className="history-header-controls" style={{display:'flex', justifyContent:'space-between', marginBottom:'15px'}}>
+      <div
+        className="history-header-controls"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "15px",
+        }}
+      >
         {period !== 2 && (
           <button
             className="navigate-btn"
             onClick={() => setActiveTab("수강 신청")}
           >
-            {period === 0 ? "➕ 강의 담으러 가기" : "➕ 강의 목록 보러가기"}
+            {period === 0 ? "강의 담으러 가기" : "강의 목록 보러가기"}
           </button>
         )}
 
@@ -120,178 +122,188 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
       {/* 2. 장바구니 목록 (기간 0, 1일 때 표시) */}
       {(period === 0 || period === 1) && (
         <section className="section">
-          <h3 className="section-title">
-            🛒 장바구니 목록{" "}
+          <h3>
+            장바구니 목록{" "}
             {period === 1 && (
-              <span className="section-note text-red" style={{fontSize: '0.8em'}}>
+              <span
+                className="section-note text-red"
+                style={{ fontSize: "0.8em" }}
+              >
                 (클릭하여 바로 신청하세요!)
               </span>
             )}
           </h3>
-
-          <table className="styled-table">
-            <thead>
-              <tr>
-                <th>학수번호</th>
-                <th>강의명</th>
-                <th>담당교수</th>
-                <th>학점</th>
-                <th>요일/시간 (강의실)</th>
-                
-                {/* ★ 핵심 변경 1: 기간에 따라 헤더 텍스트 변경 */}
-                <th>{period === 0 ? "담은인원" : "현재/정원"}</th>
-                
-                <th>관리</th>
-              </tr>
-            </thead>
-            <tbody>
-              {basketList.length === 0 ? (
+          <div className="table-wrapper">
+            <table className="course-table">
+              <thead>
                 <tr>
-                  <td colSpan="7" className="empty-row">
-                    장바구니가 비었습니다.
-                  </td>
+                  <th>학수번호</th>
+                  <th>강의명</th>
+                  <th>담당교수</th>
+                  <th>학점</th>
+                  <th>요일/시간 (강의실)</th>
+
+                  {/* ★ 핵심 변경 1: 기간에 따라 헤더 텍스트 변경 */}
+                  <th>{period === 0 ? "담은인원" : "현재/정원"}</th>
+
+                  <th>관리</th>
                 </tr>
-              ) : (
-                basketList.map((item) => {
-                  const sub = item.subject || item;
-                  
-                  // 이미 성공 목록에 있는지 확인
-                  const isAlreadySuccess = successList.some(
-                    (s) => s.subject.id === sub.id
-                  );
-                  // 정원 마감 여부 (기간 1일 때만 유효)
-                  const isFull = period === 1 && (sub.numOfStudent >= sub.capacity);
+              </thead>
+              <tbody>
+                {basketList.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="empty-row">
+                      장바구니가 비었습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  basketList.map((item) => {
+                    const sub = item.subject || item;
 
-                  return (
-                    <tr
-                      key={sub.id}
-                      className={isAlreadySuccess ? "disabled-row" : ""}
-                      style={{ opacity: isAlreadySuccess ? 0.5 : 1 }}
-                    >
-                      <td>{sub.id}</td>
-                      <td className="text-bold">{sub.name}</td>
-                      <td>{sub.professor?.name}</td>
-                      <td>{sub.grades}</td>
-                      <td>
-                        {sub.subDay} {sub.startTime}~{sub.endTime} ({sub.room.id})
-                      </td>
-                      
-                      {/* ★ 핵심 변경 2: 데이터 표시 로직 */}
-                      <td style={{ fontWeight: "bold" }}>
-                        {period === 0 ? (
+                    // 이미 성공 목록에 있는지 확인
+                    const isAlreadySuccess = successList.some(
+                      (s) => s.subject.id === sub.id
+                    );
+                    // 정원 마감 여부 (기간 1일 때만 유효)
+                    const isFull =
+                      period === 1 && sub.numOfStudent >= sub.capacity;
+
+                    return (
+                      <tr
+                        key={sub.id}
+                        className={isAlreadySuccess ? "disabled-row" : ""}
+                        style={{ opacity: isAlreadySuccess ? 0.5 : 1 }}
+                      >
+                        <td>{sub.id}</td>
+                        <td className="text-bold">{sub.name}</td>
+                        <td>{sub.professor?.name}</td>
+                        <td>{sub.grades}</td>
+                        <td>
+                          {sub.subDay} {sub.startTime}~{sub.endTime} (
+                          {sub.room.id})
+                        </td>
+
+                        {/* ★ 핵심 변경 2: 데이터 표시 로직 */}
+                        <td style={{ fontWeight: "bold" }}>
+                          {period === 0 ? (
                             // [기간 0] 찜한 인원수 표시 (basketCount)
-                            <span style={{color: '#f08c00'}}>❤️ {sub.basketCount || 0}</span>
-                        ) : (
-                            // [기간 1] 실제 경쟁률 표시
-                            <span style={{color: isFull ? 'red' : 'black'}}>
-                                {sub.numOfStudent} / {sub.capacity}
+                            <span style={{ color: "#f08c00" }}>
+                              ❤️ {sub.basketCount || 0}
                             </span>
-                        )}
-                      </td>
+                          ) : (
+                            // [기간 1] 실제 경쟁률 표시
+                            <span style={{ color: isFull ? "red" : "black" }}>
+                              {sub.numOfStudent} / {sub.capacity}
+                            </span>
+                          )}
+                        </td>
 
-                      <td>
-                        {/* ★ 핵심 변경 3: 버튼 표시 로직 */}
-                        {period === 0 ? (
-                          // [기간 0] 삭제 버튼만 존재
-                          <button
-                            className="btn-danger"
-                            onClick={() => handleDeleteBasket(sub.id)}
-                          >
-                            삭제
-                          </button>
-                        ) : isAlreadySuccess ? (
-                          // [기간 1] 이미 신청된 경우
-                          <button className="btn-disabled" disabled>
-                            신청완료
-                          </button>
-                        ) : (
-                          // [기간 1] 신청 가능 상태
-                          <div className="btn-group">
+                        <td>
+                          {/* ★ 핵심 변경 3: 버튼 표시 로직 */}
+                          {period === 0 ? (
+                            // [기간 0] 삭제 버튼만 존재
                             <button
-                              className={isFull ? "btn-full" : "btn-primary"}
-                              disabled={isFull}
-                              onClick={() => handleRegisterFromBasket(sub)}
+                              className="btn-danger"
+                              onClick={() => handleDeleteBasket(sub.id)}
                             >
-                              {isFull ? "마감" : "신청"}
+                              삭제
                             </button>
-                            {/* <button
+                          ) : isAlreadySuccess ? (
+                            // [기간 1] 이미 신청된 경우
+                            <button className="btn-disabled" disabled>
+                              신청완료
+                            </button>
+                          ) : (
+                            // [기간 1] 신청 가능 상태
+                            <div className="btn-group">
+                              <button
+                                className={isFull ? "btn-full" : "btn-primary"}
+                                disabled={isFull}
+                                onClick={() => handleRegisterFromBasket(sub)}
+                              >
+                                {isFull ? "마감" : "신청"}
+                              </button>
+                              {/* <button
                               className="btn-danger small"
                               onClick={() => handleDeleteBasket(sub.id)}
                             >
                               삭제
                             </button> */}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
 
       {/* 3. 확정 목록 (기간 1 이상일 때 표시) */}
       {period >= 1 && (
         <section className="section">
-          <h3 className="section-title blue">✅ 수강 확정 목록</h3>
-
-          <table className="styled-table">
-            <thead>
-              <tr>
-                <th>학수번호</th>
-                <th>강의명</th>
-                <th>담당교수</th>
-                <th>학점</th>
-                <th>요일/시간 (강의실)</th>
-                <th>현재인원</th>
-                <th>정원</th>
-                <th>관리</th>
-              </tr>
-            </thead>
-            <tbody>
-              {successList.length === 0 ? (
+          <h3>수강 확정 목록</h3>
+          <div className="table-wrapper">
+            <table className="course-table">
+              <thead>
                 <tr>
-                  <td colSpan="8" className="empty-row">
-                    신청된 내역이 없습니다.
-                  </td>
+                  <th>학수번호</th>
+                  <th>강의명</th>
+                  <th>담당교수</th>
+                  <th>학점</th>
+                  <th>요일/시간 (강의실)</th>
+                  <th>현재인원</th>
+                  <th>정원</th>
+                  <th>관리</th>
                 </tr>
-              ) : (
-                successList.map((item) => {
-                  const sub = item.subject;
-                  return (
-                    <tr key={sub.id}>
-                      <td>{sub.id}</td>
-                      <td className="text-blue bold">{sub.name}</td>
-                      <td>{sub.professor?.name}</td>
-                      <td>{sub.grades}</td>
-                      <td>
-                        {sub.subDay} {sub.startTime}~{sub.endTime} ({sub.room.id})
-                      </td>
-                      <td>{sub.numOfStudent}</td>
-                      <td>{sub.capacity}</td>
-                      <td>
-                        {period === 2 ? (
-                          <span className="text-gray bold">취소불가</span>
-                        ) : (
-                          <button
-                            className="btn-danger"
-                            onClick={() => handleCancelSuccess(sub.id)}
-                          >
-                            취소
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {successList.length === 0 ? (
+                  <tr>
+                    <td colSpan="8" className="empty-row">
+                      신청된 내역이 없습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  successList.map((item) => {
+                    const sub = item.subject;
+                    return (
+                      <tr key={sub.id}>
+                        <td>{sub.id}</td>
+                        <td className="text-blue bold">{sub.name}</td>
+                        <td>{sub.professor?.name}</td>
+                        <td>{sub.grades}</td>
+                        <td>
+                          {sub.subDay} {sub.startTime}~{sub.endTime} (
+                          {sub.room.id})
+                        </td>
+                        <td>{sub.numOfStudent}</td>
+                        <td>{sub.capacity}</td>
+                        <td>
+                          {period === 2 ? (
+                            <span className="text-gray bold">취소불가</span>
+                          ) : (
+                            <button
+                              className="btn-danger"
+                              onClick={() => handleCancelSuccess(sub.id)}
+                            >
+                              취소
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
-    </div>
+    </>
   );
 };
 

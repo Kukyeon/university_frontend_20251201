@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { setAvailability } from "../../api/scheduleApi";
 import DatePicker from "react-datepicker";
+import "../../pages/SchedulePage.css";
 
 const ProfessorAvailability = ({ professorId, onSaved }) => {
   const [form, setForm] = useState({
@@ -52,20 +53,13 @@ const ProfessorAvailability = ({ professorId, onSaved }) => {
   };
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "15px",
-        marginBottom: "20px",
-        backgroundColor: "#f9f9f9",
-      }}
-    >
-      <h3>🗓️ 상담 가능 시간 설정</h3>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label style={{ display: "block", marginBottom: "5px" }}>
-            시작 시간:
-          </label>
+    // 💡 클래스 적용: 컨테이너
+    <div className="availability-form-container">
+      <h3 className="form-title">🗓️ 상담 가능 시간 설정</h3>
+      <form onSubmit={handleSubmit} className="availability-form">
+        {/* 💡 클래스 적용: 시작 시간 그룹 */}
+        <div className="form-group">
+          <label className="form-label">시작 시간:</label>
 
           <DatePicker
             selected={form.startTime} // ⭐️ Date 객체를 바인딩
@@ -77,14 +71,13 @@ const ProfessorAvailability = ({ professorId, onSaved }) => {
             placeholderText="날짜와 시간 선택"
             required
             disabled={loading}
-            className="custom-datepicker-input" // 필요 시 커스텀 스타일링을 위한 클래스
+            className="custom-datepicker-input" // DatePicker에 전달할 클래스
           />
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label style={{ display: "block", marginBottom: "5px" }}>
-            종료 시간:
-          </label>
+        {/* 💡 클래스 적용: 종료 시간 그룹 */}
+        <div className="form-group">
+          <label className="form-label">종료 시간:</label>
 
           <DatePicker
             selected={form.endTime}
@@ -96,20 +89,15 @@ const ProfessorAvailability = ({ professorId, onSaved }) => {
             placeholderText="날짜와 시간 선택"
             required
             disabled={loading}
-            className="custom-datepicker-input"
+            className="custom-datepicker-input" // DatePicker에 전달할 클래스
           />
         </div>
 
+        {/* 💡 클래스 적용: 버튼 */}
         <button
           type="submit"
           disabled={loading}
-          style={{
-            padding: "8px 15px",
-            background: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-          }}
+          className="btn-submit-availability"
         >
           {loading ? "저장 중..." : "가능 시간 등록"}
         </button>

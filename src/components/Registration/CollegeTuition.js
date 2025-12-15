@@ -80,8 +80,8 @@ const CollegeTuition = () => {
   };
 
   return (
-    <div className="mypage-card course-form">
-      <h2>단대별 등록금 관리</h2>
+    <>
+      <h3>단대별 등록금 관리</h3>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
         <button
@@ -182,7 +182,7 @@ const CollegeTuition = () => {
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 };
 
