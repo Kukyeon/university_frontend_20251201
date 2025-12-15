@@ -3,7 +3,7 @@ import "./Login.css";
 import Modal from "../components/Modal"; // 모달 컴포넌트
 import api from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
-import FeedbackModal from "../components/FeedBackModal";
+import { useModal } from "../components/ModalContext";
 
 const LoginPage = ({ setUser, setRole }) => {
   const [openModal, setOpenModal] = useState(null);
@@ -18,14 +18,20 @@ const LoginPage = ({ setUser, setRole }) => {
     userId: "",
     role: "student",
   });
+  const [errors, setErrors] = useState({
+    id: "",
+    password: "",
+  });
+
   const [tempPassword, setTempPassword] = useState("");
   const [foundId, setFoundId] = useState(""); // 새 상태
   const navigate = useNavigate();
   // 입력값 변경 핸들러
-  const [feedback, setFeedback] = useState(null);
   const [saveId, setSaveId] = useState(() => {
     return localStorage.getItem("savedLoginId") ? true : false;
   });
+  // useModal() 훅
+  const { showModal } = useModal();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +55,10 @@ const LoginPage = ({ setUser, setRole }) => {
       });
       setFoundId(response.data.id); // 모달 안에서 바로 보여주기
     } catch (err) {
-      alert(err.response?.data?.message || err.message);
+      showModal({
+        type: "alert",
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
 
@@ -68,54 +77,55 @@ const LoginPage = ({ setUser, setRole }) => {
         "임시 비밀번호 발급 실패:",
         err.response?.data || err.message
       );
-      alert(
-        err.response?.data?.message ||
-          "임시 비밀번호 발급 중 오류가 발생했습니다."
-      );
+      showModal({
+        type: "alert",
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
   const handleLoginSubmit = async (e) => {
     e.preventDefault(); // 새로고침 방지
+    let valid = true;
+    const newErrors = { id: "", password: "" };
+    if (!loginData.id) {
+      newErrors.id = "아이디를 입력해주세요.";
+      valid = false;
+    }
+
+    if (!loginData.password) {
+      newErrors.password = "비밀번호를 입력해주세요.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (!valid) return; // 입력 오류 있으면 서버 요청 막기
     try {
       const response = await api.post("/user/login", {
         id: parseInt(loginData.id, 10),
         password: loginData.password,
       });
-      const token = response.data.token;
+      const { token, user, role } = response.data;
       localStorage.setItem("token", token);
-      setUser(response.data.user);
-      setRole(response.data.role);
+      setUser(user);
+      setRole(role);
       if (saveId) {
         localStorage.setItem("savedLoginId", loginData.id);
       } else {
         localStorage.removeItem("savedLoginId");
       }
-
-      setFeedback({
-        type: "success",
-        message: "로그인 성공",
+      showModal({
+        type: "alert",
+        message: "로그인 성공!",
       });
-
-      console.log(response.data);
       navigate("/");
       // 로그인 성공 후 처리
     } catch (err) {
-      setFeedback({
-        type: "error",
-        message: "아이디 또는 비밀번호 오류입니다.",
-      });
+      const message =
+        err.response?.data?.message ||
+        "아이디 또는 비밀번호가 올바르지 않습니다.";
+      setErrors((prev) => ({ ...prev, password: message }));
     }
-  };
-  const closeModal = () => {
-    setOpenModal(null);
-    setModalData({
-      name: "",
-      email: "",
-      userId: "",
-      role: "student",
-    });
-    setFoundId("");
-    setTempPassword("");
   };
 
   return (
@@ -133,8 +143,8 @@ const LoginPage = ({ setUser, setRole }) => {
               value={loginData.id}
               onChange={handleLoginChange}
             />
+            {errors.id && <div className="error-message">{errors.id}</div>}
           </div>
-
           <div className="input-group">
             <label>비밀번호</label>
             <input
@@ -144,6 +154,9 @@ const LoginPage = ({ setUser, setRole }) => {
               value={loginData.password}
               onChange={handleLoginChange}
             />
+            {errors.password && (
+              <div className="error-message">{errors.password}</div>
+            )}
           </div>
 
           <div className="checkbox-group">
@@ -276,14 +289,6 @@ const LoginPage = ({ setUser, setRole }) => {
             </div>
           )}
         </Modal>
-      )}
-      {feedback && (
-        <FeedbackModal
-          type={feedback.type}
-          message={feedback.message}
-          onClose={() => setFeedback(null)}
-          autoClose={1500}
-        />
       )}
     </div>
   );
