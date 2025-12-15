@@ -1,0 +1,85 @@
+/* ===== Card 스타일 (공용) ===== */
+.section-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+/* 제목 */
+.section-card h3,
+.section-card h4 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* 테이블 기본 */
+.section-card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.section-card table td,
+.section-card table th {
+  padding: 8px 12px;
+  border: 1px solid #eee;
+  font-size: 14px;
+  text-align: left;
+}
+
+.section-card table th {
+  background-color: #f9f9f9;
+  font-weight: 500;
+}
+
+/* 입력폼 */
+.section-card input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* 버튼 */
+.section-card button {
+  padding: 8px 16px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff6f61;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.section-card button:hover {
+  background-color: #e65a4f;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .section-card {
+    padding: 16px;
+  }
+
+  .section-card table td,
+  .section-card table th {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  .section-card input {
+    padding: 4px 8px;
+    font-size: 13px;
+  }
+
+  .section-card button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}

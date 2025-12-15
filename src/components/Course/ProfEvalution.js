@@ -46,8 +46,9 @@ const ProfEvaluation = () => {
     return <p className="no-data">조회할 강의 평가가 존재하지 않습니다.</p>;
 
   return (
-    <div className="my-evaluation-container">
-      <div style={{ marginBottom: "20px" }}>
+    <>
+      <h3>내 강의 평가</h3>
+      <div className="department-form" style={{ marginBottom: "15px" }}>
         <select
           value={selectedSubject}
           onChange={(e) => setSelectedSubject(e.target.value)}
@@ -61,25 +62,27 @@ const ProfEvaluation = () => {
         </select>
         <button onClick={handleSearch}>조회</button>
       </div>
-      <table className="evaluation-table">
-        <thead>
-          <tr>
-            <th>과목 이름</th>
-            <th>총 평가 점수</th>
-            <th>건의 사항</th>
-          </tr>
-        </thead>
-        <tbody>
-          {evaluationData.map((e) => (
-            <tr key={`${e.subjectId}-${e.studentId}`}>
-              <td>{e.subjectName}</td>
-              <td>{e.avgScore ? Number(e.avgScore).toFixed(2) : "-"}</td>
-              <td>{e.improvements}</td>
+      <div className="table-wrapper">
+        <table className="course-table">
+          <thead>
+            <tr>
+              <th>과목 이름</th>
+              <th>총 평가 점수</th>
+              <th>건의 사항</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {evaluationData.map((e) => (
+              <tr key={`${e.subjectId}-${e.studentId}`}>
+                <td>{e.subjectName}</td>
+                <td>{e.avgScore ? Number(e.avgScore).toFixed(2) : "-"}</td>
+                <td>{e.improvements}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 

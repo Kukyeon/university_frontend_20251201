@@ -59,44 +59,45 @@ const CourseStudentList = ({ courseId, goBack }) => {
         <div className="student-list-container">
           <h2>학생 리스트 조회</h2>
           <button onClick={goBack}>← 강의 목록으로</button>
-
-          <table className="student-table">
-            <thead>
-              <tr>
-                <th>학생 번호</th>
-                <th>이름</th>
-                <th>소속</th>
-                <th>결석</th>
-                <th>지각</th>
-                <th>과제점수</th>
-                <th>중간시험</th>
-                <th>기말시험</th>
-                <th>환산점수</th>
-                <th>점수 기입</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {students.map((stu) => (
-                <tr key={stu.studentId}>
-                  <td>{stu.studentId}</td>
-                  <td>{stu.studentName}</td>
-                  <td>{stu.deptName}</td>
-                  <td>{stu.absent ?? ""}</td>
-                  <td>{stu.lateness ?? ""}</td>
-                  <td>{stu.homework ?? ""}</td>
-                  <td>{stu.midExam ?? ""}</td>
-                  <td>{stu.finalExam ?? ""}</td>
-                  <td>{stu.convertedMark ?? ""}</td>
-                  <td>
-                    <button onClick={() => handleInputClick(stu)}>
-                      {stu.grade == null ? "수정" : "기입"}
-                    </button>
-                  </td>
+          <div className="table-wrapper">
+            <table className="course-table">
+              <thead>
+                <tr>
+                  <th>학생 번호</th>
+                  <th>이름</th>
+                  <th>소속</th>
+                  <th>결석</th>
+                  <th>지각</th>
+                  <th>과제점수</th>
+                  <th>중간시험</th>
+                  <th>기말시험</th>
+                  <th>환산점수</th>
+                  <th>점수 기입</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {students.map((stu) => (
+                  <tr key={stu.studentId}>
+                    <td>{stu.studentId}</td>
+                    <td>{stu.studentName}</td>
+                    <td>{stu.deptName}</td>
+                    <td>{stu.absent ?? ""}</td>
+                    <td>{stu.lateness ?? ""}</td>
+                    <td>{stu.homework ?? ""}</td>
+                    <td>{stu.midExam ?? ""}</td>
+                    <td>{stu.finalExam ?? ""}</td>
+                    <td>{stu.convertedMark ?? ""}</td>
+                    <td>
+                      <button onClick={() => handleInputClick(stu)}>
+                        {stu.grade == null ? "수정" : "기입"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
