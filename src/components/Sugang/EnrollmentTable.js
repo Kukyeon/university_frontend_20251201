@@ -7,7 +7,7 @@ const EnrollmentTable = ({
   handleRegister,
 }) => {
   return (
-    <table className="enrollment-table">
+    <table className="course-table">
       <thead>
         <tr>
           <th>학과</th>
@@ -30,11 +30,11 @@ const EnrollmentTable = ({
         ) : (
           subjects.map((sub) => {
             const isApplied = myEnrolledIds.includes(sub.id);
-            
+
             // ★ [변경] 기간 0일 때는 정원 마감 개념이 없음 (무조건 false)
             // 기간 1일 때만 실제 인원(numOfStudent)과 정원(capacity) 비교
-            const isFull = period === 1 && (sub.numOfStudent >= sub.capacity);
-            const isClosed = isFull; 
+            const isFull = period === 1 && sub.numOfStudent >= sub.capacity;
+            const isClosed = isFull;
 
             // 버튼 텍스트 및 상태 로직
             let buttonText = "";
@@ -49,23 +49,40 @@ const EnrollmentTable = ({
               if (period === 0) {
                 // 장바구니 기간: 마감 없음, 무조건 담기 가능
                 buttonText = "장바구니";
-                btnStyle = { backgroundColor: "#fcc419", color: "#fff", fontWeight: "bold" };
+                btnStyle = {
+                  backgroundColor: "#fcc419",
+                  color: "#fff",
+                  fontWeight: "bold",
+                };
               } else {
                 // 본 수강 기간: 마감 시 버튼 비활성화
                 buttonText = isClosed ? "마감" : "신청";
                 isDisabled = isClosed;
-                btnStyle = isClosed 
-                  ? { backgroundColor: "#868e96", cursor: "not-allowed" } 
-                  : { backgroundColor: "#0d6efd", color: "#fff", fontWeight: "bold" };
+                btnStyle = isClosed
+                  ? { backgroundColor: "#868e96", cursor: "not-allowed" }
+                  : {
+                      backgroundColor: "#0d6efd",
+                      color: "#fff",
+                      fontWeight: "bold",
+                    };
               }
             }
 
             return (
-              <tr key={sub.id} style={{ backgroundColor: isApplied ? "#f1f3f5" : "white" }}>
+              <tr
+                key={sub.id}
+                style={{ backgroundColor: isApplied ? "#f1f3f5" : "white" }}
+              >
                 <td>{sub.department?.name}</td>
                 <td>{sub.id}</td>
                 <td>{sub.type}</td>
-                <td style={{ textAlign: "left", paddingLeft: "15px", fontWeight: "bold" }}>
+                <td
+                  style={{
+                    textAlign: "left",
+                    paddingLeft: "15px",
+                    fontWeight: "bold",
+                  }}
+                >
                   {sub.name}
                 </td>
                 <td>{sub.professor?.name}</td>
@@ -73,17 +90,22 @@ const EnrollmentTable = ({
                 <td>
                   {sub.subDay} {sub.startTime}~{sub.endTime} ({sub.room.id})
                 </td>
-                
+
                 {/* ★ [핵심 변경] 인원수 표시 로직 */}
                 <td>
                   {period === 0 ? (
-                     // 기간 0: 찜한 인원수 표시 (basketCount가 없으면 0 처리)
+                    // 기간 0: 찜한 인원수 표시 (basketCount가 없으면 0 처리)
                     <span style={{ color: "#f08c00", fontWeight: "bold" }}>
-                       {sub.basketCount || 0}
+                      {sub.basketCount || 0}
                     </span>
                   ) : (
-                     // 기간 1: 실제 경쟁률 표시
-                    <span style={{ color: isFull ? "red" : "black", fontWeight: isFull ? "bold" : "normal" }}>
+                    // 기간 1: 실제 경쟁률 표시
+                    <span
+                      style={{
+                        color: isFull ? "red" : "black",
+                        fontWeight: isFull ? "bold" : "normal",
+                      }}
+                    >
                       {sub.numOfStudent} / {sub.capacity}
                     </span>
                   )}
@@ -93,7 +115,12 @@ const EnrollmentTable = ({
                   <button
                     onClick={() => handleRegister(sub)}
                     disabled={isDisabled}
-                    style={{ border: "none", padding: "5px 10px", borderRadius: "4px", ...btnStyle }}
+                    style={{
+                      border: "none",
+                      padding: "5px 10px",
+                      borderRadius: "4px",
+                      ...btnStyle,
+                    }}
                   >
                     {buttonText}
                   </button>

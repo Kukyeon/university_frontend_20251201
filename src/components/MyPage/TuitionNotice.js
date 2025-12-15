@@ -49,7 +49,7 @@ const TuitionNotice = ({ user }) => {
   if (loading) return <p>로딩 중...</p>;
 
   return (
-    <section className="mypage-card">
+    <>
       <h3>등록금 납부 고지서</h3>
       {tuitionNotice?.error ? (
         <p style={{ color: "red" }}>{tuitionNotice.error}</p>
@@ -115,7 +115,7 @@ const TuitionNotice = ({ user }) => {
       ) : (
         <p>등록금 고지서 정보가 없습니다.</p>
       )}
-    </section>
+    </>
   );
 };
 

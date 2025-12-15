@@ -25,45 +25,24 @@ const ScheduleList = ({ onSelect, onActionComplete }) => {
   if (schedules.length === 0) return <div>등록된 학사 일정이 없습니다.</div>;
 
   return (
-    <div>
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          borderTop: "2px solid #333",
-        }}
-      >
+    <div className="table-wrapper">
+      <table className="course-table">
         <thead>
-          <tr style={{ borderBottom: "1px solid #ddd" }}>
-            <th style={{ padding: "12px", width: "5%", textAlign: "center" }}>
-              ID
-            </th>
-            <th style={{ padding: "12px", width: "20%", textAlign: "center" }}>
-              날짜
-            </th>
-            <th style={{ padding: "12px", textAlign: "left" }}>내용</th>
+          <tr>
+            <th>ID</th>
+            <th>날짜</th>
+            <th>내용</th>
           </tr>
         </thead>
         <tbody>
           {schedules.map((s) => (
-            <tr
-              key={s.id}
-              style={{ borderBottom: "1px solid #eee", cursor: "pointer" }}
-              onClick={() => onSelect(s.id, "detail")}
-            >
-              <td style={{ padding: "8px", textAlign: "center" }}>{s.id}</td>
-              <td style={{ padding: "8px", textAlign: "center" }}>
+            <tr key={s.id} onClick={() => onSelect(s.id, "detail")}>
+              <td>{s.id}</td>
+              <td>
                 {s.startDay?.substring(5)}~{s.endDay?.substring(5)}
               </td>
 
-              <td
-                style={{
-                  padding: "8px",
-                  color: "#333",
-                }}
-              >
-                {s.information}
-              </td>
+              <td>{s.information}</td>
             </tr>
           ))}
         </tbody>

@@ -1,0 +1,194 @@
+/* ===== 컨테이너 전체 ===== */
+.all-course-container {
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 100%;
+  font-size: 13px;
+}
+
+/* ===== 검색 필터 ===== */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.department-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px; /* PC용 여유 있는 간격 */
+  align-items: center;
+}
+
+.department-form input,
+.department-form select {
+  min-width: 100px;
+  max-width: 150px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.department-form button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #ff6f61;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.department-form button:hover {
+  background-color: #e85b50;
+}
+
+/* 총 수강 목록 표시 */
+.total-count {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* ===== 테이블 ===== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+.course-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 12px;
+  table-layout: auto; /* 열 너비를 내용에 맞춤 */
+  white-space: nowrap; /* 내용 길이가 길면 줄바꿈 방지 */
+}
+.course-table th,
+.course-table td {
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+}
+
+.course-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+.course-table .course-name {
+  text-align: left;
+  min-width: 120px; /* 이름 길이에 맞춘 최소폭 */
+}
+/* 버튼 */
+.small-btn {
+  display: inline-block;
+  width: 70px; /* 고정 */
+  padding: 4px 0;
+  font-size: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: 0.2s;
+}
+
+.small-btn:hover {
+  background-color: #45a049;
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.pagination button {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #ff6f61;
+  color: #fff;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 검색 결과 없을 때 */
+.no-data {
+  text-align: center;
+  color: #999;
+  padding: 12px;
+}
+
+/* ===== 반응형: 태블릿 ===== */
+@media (max-width: 1024px) {
+  .department-form {
+    gap: 8px;
+  }
+  .small-btn {
+    width: 60px; /* 화면이 작아지면 버튼도 작게 */
+    font-size: 11px;
+  }
+  .department-form input,
+  .department-form select {
+    max-width: 120px;
+    font-size: 13px;
+  }
+
+  .department-form button {
+    width: 120px;
+    padding: 5px 0;
+    font-size: 12px;
+  }
+}
+
+/* ===== 반응형: 모바일 ===== */
+@media (max-width: 768px) {
+  .department-form {
+    flex-direction: row; /* 세로 배치 */
+    gap: 6px;
+  }
+
+  .department-form input,
+  .department-form select {
+    min-width: 50px;
+    max-width: 100%;
+    font-size: 12px;
+  }
+  .small-btn {
+    width: 50px; /* 모바일에서 더 작게 */
+    font-size: 10px;
+    padding: 3px 0;
+  }
+  .department-form button {
+    width: 100%;
+    padding: 6px 0;
+    font-size: 12px;
+  }
+
+  .course-table {
+    font-size: 10px;
+    min-width: 500px; /* 테이블 최소 폭 */
+  }
+}

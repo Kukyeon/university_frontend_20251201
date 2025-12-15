@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
 import { courseApi } from "../../api/gradeApi";
+// import "./CoursePage.css"; // CSS import
 
 const AllCourse = () => {
-  const [year, setYear] = useState(""); // 초기값 빈 문자열 → 전체 조회
+  const [year, setYear] = useState("");
   const [semester, setSemester] = useState("");
   const [department, setDepartment] = useState("");
   const [name, setName] = useState("");
@@ -33,8 +34,6 @@ const AllCourse = () => {
   const loadCourses = async (filter = {}) => {
     try {
       const params = { page };
-
-      // filter 객체 또는 상태 값에 따라 조건부로 params 추가
       if (filter.year || year) params.year = parseInt(filter.year || year);
       if (filter.semester || semester)
         params.semester = (filter.semester || semester) === "1학기" ? 1 : 2;
@@ -52,7 +51,7 @@ const AllCourse = () => {
   };
 
   const handleSearch = () => {
-    setPage(0); // 페이지 초기화
+    setPage(0);
     loadCourses({ year, semester, department, name });
   };
 
@@ -65,34 +64,32 @@ const AllCourse = () => {
   };
 
   return (
-    <div className="all-course-container">
+    <>
+      <h3>전체 강의 조회</h3>
       {/* 검색 필터 */}
       <div className="filter-container">
-        <div className="department-form" style={{ marginBottom: "15px" }}>
-          <label>연도</label>
+        <div className="department-form">
           <select value={year} onChange={(e) => setYear(e.target.value)}>
-            <option value="">전체</option>
+            <option value="">전체/연도</option>
             <option value="2025">2025</option>
             <option value="2024">2024</option>
             <option value="2023">2023</option>
           </select>
 
-          <label>학기</label>
           <select
             value={semester}
             onChange={(e) => setSemester(e.target.value)}
           >
-            <option value="">전체</option>
+            <option value="">전체/학기</option>
             <option value="1학기">1학기</option>
             <option value="2학기">2학기</option>
           </select>
 
-          <label>개설학과</label>
           <select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
           >
-            <option value="">전체</option>
+            <option value="">전체/학과</option>
             {departments.map((dept) => (
               <option key={dept.id} value={dept.id}>
                 {dept.name}
@@ -100,7 +97,6 @@ const AllCourse = () => {
             ))}
           </select>
 
-          <label>강의명</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -117,57 +113,59 @@ const AllCourse = () => {
       <p className="total-count">강의 목록 [총 {courses.length}건]</p>
 
       {/* 강의 테이블 */}
-      <table className="course-table">
-        <thead>
-          <tr>
-            <th>연도/학기</th>
-            <th>단과대학</th>
-            <th>개설학과</th>
-            <th>학수번호</th>
-            <th>강의구분</th>
-            <th>강의명</th>
-            <th>담당교수</th>
-            <th>학점</th>
-            <th>수강인원</th>
-            <th>정원</th>
-            <th>강의계획서</th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses.length === 0 ? (
+      <div className="table-wrapper">
+        <table className="course-table">
+          <thead>
             <tr>
-              <td colSpan="11" className="no-data">
-                검색된 강좌가 없습니다.
-              </td>
+              <th>연도/학기</th>
+              <th>단과대학</th>
+              <th>개설학과</th>
+              <th>학수번호</th>
+              <th>강의구분</th>
+              <th>강의명</th>
+              <th>담당교수</th>
+              <th>학점</th>
+              <th>수강인원</th>
+              <th>정원</th>
+              <th>강의계획서</th>
             </tr>
-          ) : (
-            courses.map((c) => (
-              <tr key={c.id}>
-                <td>
-                  {c.subYear}-{c.semester}학기
-                </td>
-                <td>{c.department?.college?.name || "-"}</td>
-                <td>{c.department?.name || "-"}</td>
-                <td>{c.id}</td>
-                <td>{c.type}</td>
-                <td className="course-name">{c.name}</td>
-                <td>{c.professor?.name || "미정"}</td>
-                <td>{c.grades}</td>
-                <td>{c.numOfStudent}</td>
-                <td>{c.capacity}</td>
-                <td>
-                  <button
-                    className="small-btn"
-                    onClick={() => openSyllabus(c.id)}
-                  >
-                    조회
-                  </button>
+          </thead>
+          <tbody>
+            {courses.length === 0 ? (
+              <tr>
+                <td colSpan="11" className="no-data">
+                  검색된 강좌가 없습니다.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              courses.map((c) => (
+                <tr key={c.id}>
+                  <td>
+                    {c.subYear}-{c.semester}학기
+                  </td>
+                  <td>{c.department?.college?.name || "-"}</td>
+                  <td>{c.department?.name || "-"}</td>
+                  <td>{c.id}</td>
+                  <td>{c.type}</td>
+                  <td className="course-name">{c.name}</td>
+                  <td>{c.professor?.name || "미정"}</td>
+                  <td>{c.grades}</td>
+                  <td>{c.numOfStudent}</td>
+                  <td>{c.capacity}</td>
+                  <td>
+                    <button
+                      className="small-btn"
+                      onClick={() => openSyllabus(c.id)}
+                    >
+                      조회
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {/* 페이지네이션 */}
       <div className="pagination">
@@ -184,7 +182,7 @@ const AllCourse = () => {
           다음 ▶
         </button>
       </div>
-    </div>
+    </>
   );
 };
 
