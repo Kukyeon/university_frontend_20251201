@@ -29,14 +29,14 @@ const CoursePlanPage = ({user, role}) => {
     loadData();
   }, [subjectId]);
 
-//  useEffect(() => {
-//     if(!loading && syllabus) {
-//         console.log("=== 권한 체크 디버깅 ===");
-//         console.log("받은 role:", role);
-//         console.log("받은 user:", user);
-//         console.log("강의 계획서 교수ID:", syllabus.professorId);
-//     }
-//   }, [loading, syllabus, user, role]);
+ useEffect(() => {
+    if(!loading && syllabus) {
+        console.log("=== 권한 체크 디버깅 ===");
+        console.log("받은 role:", role);
+        console.log("받은 user:", user);
+        console.log("강의 계획서 교수ID:", syllabus.professorId);
+    }
+  }, [loading, syllabus, user, role]);
 
  const canEdit = () => {
     // 1. 데이터가 없으면 false
