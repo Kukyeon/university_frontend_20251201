@@ -22,7 +22,7 @@ const GradeTotal = ({ data }) => {
                   <td>{mg.semester}</td>
                   <td>{mg.totalCredit}</td>
                   <td>{mg.earnedCredit}</td>
-                  <td>{mg.averageScore}</td>
+                  <td>{Number(mg.averageScore).toFixed(2)}</td>
                 </tr>
               ))
             ) : (

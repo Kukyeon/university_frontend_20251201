@@ -1,21 +1,37 @@
 /* ====== Global Reset ====== */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html,
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  background-color: #f9f9f9;
+body,
+#root {
+  height: 100%;
   font-family: system-ui, -apple-system, BlinkMacSystemFont;
 }
 
-/* ====== Page 영역 ====== */
+/* ====== Layout Flex 설정 ====== */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ====== Header/Main/Footer 구조 ====== */
 .page {
-  min-height: calc(100dvh - 120px); /* header/footer 고려 */
+  flex: 1; /* main이 남은 공간 채우기 */
+  display: flex;
+  flex-direction: column;
   padding: 40px 0;
+  background-color: #f9f9f9;
 }
 
 /* ====== Container ====== */
@@ -31,7 +47,6 @@ body {
   .page {
     padding: 20px 0;
   }
-
   .container {
     padding: 0 16px;
   }

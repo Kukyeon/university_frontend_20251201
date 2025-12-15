@@ -132,13 +132,15 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
   return (
     <>
       <h3>내 정보 조회</h3>
-      <table>
-        <tbody>
-          {role === "student" && renderStudentInfo()}
-          {role === "professor" && renderProfessorInfo()}
-          {role === "staff" && renderStaffInfo()}
-        </tbody>
-      </table>
+      <div className="table-wrapper">
+        <table className="course-table">
+          <tbody>
+            {role === "student" && renderStudentInfo()}
+            {role === "professor" && renderProfessorInfo()}
+            {role === "staff" && renderStaffInfo()}
+          </tbody>
+        </table>
+      </div>
 
       <div style={{ marginTop: "20px" }}>
         {editMode ? (
@@ -154,36 +156,38 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
       {role === "student" && (
         <>
           <h3>학적 변동 내역</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>변동 일자</th>
-                <th>변동 구분</th>
-                <th>세부</th>
-                <th>승인 여부</th>
-                <th>복학 예정 연도/학기</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userData?.academicChanges?.length > 0 ? (
-                userData.academicChanges.map((change, idx) => (
-                  <tr key={idx}>
-                    <td>{change.date}</td>
-                    <td>{change.type}</td>
-                    <td>{change.detail}</td>
-                    <td>{change.approval}</td>
-                    <td>{change.returnSemester}</td>
-                  </tr>
-                ))
-              ) : (
+          <div className="table-wrapper">
+            <table className="course-table">
+              <thead>
                 <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>
-                    학적 변동 내역이 없습니다.
-                  </td>
+                  <th>변동 일자</th>
+                  <th>변동 구분</th>
+                  <th>세부</th>
+                  <th>승인 여부</th>
+                  <th>복학 예정 연도/학기</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {userData?.academicChanges?.length > 0 ? (
+                  userData.academicChanges.map((change, idx) => (
+                    <tr key={idx}>
+                      <td>{change.date}</td>
+                      <td>{change.type}</td>
+                      <td>{change.detail}</td>
+                      <td>{change.approval}</td>
+                      <td>{change.returnSemester}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: "center" }}>
+                      학적 변동 내역이 없습니다.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </>

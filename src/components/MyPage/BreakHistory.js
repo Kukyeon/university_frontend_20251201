@@ -35,36 +35,38 @@ const BreakHistory = ({ user, role }) => {
     <>
       <h3>휴학 내역 조회</h3>
       {leaveHistory.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>신청일자</th>
-              <th>구분</th>
-              <th>시작학기</th>
-              <th>종료학기</th>
-              <th>신청서 확인</th>
-              <th>상태</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leaveHistory.map((item) => (
-              <tr key={item.id}>
-                <td>{item.appDate}</td>
-                <td>{item.type}</td>
-                <td>
-                  {item.fromYear}년 {item.fromSemester}학기
-                </td>
-                <td>
-                  {item.toYear}년 {item.toSemester}학기
-                </td>
-                <td>
-                  <button onClick={() => handleView(item)}>보기</button>
-                </td>
-                <td>{item.status}</td>
+        <div className="table-wrapper">
+          <table className="course-table">
+            <thead>
+              <tr>
+                <th>신청일자</th>
+                <th>구분</th>
+                <th>시작학기</th>
+                <th>종료학기</th>
+                <th>신청서 확인</th>
+                <th>상태</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {leaveHistory.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.appDate}</td>
+                  <td>{item.type}</td>
+                  <td>
+                    {item.fromYear}년 {item.fromSemester}학기
+                  </td>
+                  <td>
+                    {item.toYear}년 {item.toSemester}학기
+                  </td>
+                  <td>
+                    <button onClick={() => handleView(item)}>보기</button>
+                  </td>
+                  <td>{item.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p>신청 내역이 없습니다.</p>
       )}

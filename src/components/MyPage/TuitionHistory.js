@@ -24,30 +24,32 @@ const TuitionHistory = ({ user }) => {
     <>
       <h3>등록금 내역 조회</h3>
       {tuitionHistory && tuitionHistory.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>등록연도</th>
-              <th>등록학기</th>
-              <th>장학금 유형</th>
-              <th>등록금</th>
-              <th>장학금</th>
-              <th>납입금</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tuitionHistory.map((item, idx) => (
-              <tr key={idx}>
-                <td>{item.tuiYear}</td>
-                <td>{item.semester}</td>
-                <td>{item.scholarshipType?.type}유형</td>
-                <td>{item.tuiAmount}원</td>
-                <td>{item.schAmount}원</td>
-                <td>{item.tuiAmount - item.schAmount}원</td>
+        <div className="table-wrapper">
+          <table className="course-table">
+            <thead>
+              <tr>
+                <th>등록연도</th>
+                <th>등록학기</th>
+                <th>장학금 유형</th>
+                <th>등록금</th>
+                <th>장학금</th>
+                <th>납입금</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {tuitionHistory.map((item, idx) => (
+                <tr key={idx}>
+                  <td>{item.tuiYear}</td>
+                  <td>{item.semester}</td>
+                  <td>{item.scholarshipType?.type}유형</td>
+                  <td>{item.tuiAmount}원</td>
+                  <td>{item.schAmount}원</td>
+                  <td>{item.tuiAmount - item.schAmount}원</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p>등록금 납부 내역이 없습니다.</p>
       )}
