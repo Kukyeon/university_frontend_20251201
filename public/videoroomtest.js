@@ -969,15 +969,17 @@ function unpublishOwnFeed() {
 function toggleMute() {
   var muted = sfutest.isAudioMuted();
   Janus.log((muted ? "Unmuting" : "Muting") + " local stream...");
-  if (muted) {
-    // 현재 Muted 상태이므로, Unmute (audio: true) 요청을 보냅니다.
+  var buttonText = $("#mute").html();
+
+  if (buttonText.includes("음소거 해제")) {
     sfutest.send({ message: { request: "configure", audio: true } });
-    // 💡 버튼 텍스트를 즉시 반전시킵니다.
+    Janus.log("Unmuting local stream...");
+
     $("#mute").html("음소거");
-  } else {
-    // 현재 Unmuted 상태이므로, Mute (audio: false) 요청을 보냅니다.
+  } else if (buttonText.includes("음소거")) {
     sfutest.send({ message: { request: "configure", audio: false } });
-    // 💡 버튼 텍스트를 즉시 반전시킵니다.
+    Janus.log("Muting local stream...");
+
     $("#mute").html("음소거 해제");
   }
   // muted = sfutest.isAudioMuted();
