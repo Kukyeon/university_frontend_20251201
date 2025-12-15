@@ -44,7 +44,7 @@ const College = () => {
   };
 
   return (
-    <div className="mypage-card">
+    <>
       <h3>단과대학 관리</h3>
       <div style={{ marginBottom: "10px" }}>
         <input
@@ -79,7 +79,7 @@ const College = () => {
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 };
 export default College;

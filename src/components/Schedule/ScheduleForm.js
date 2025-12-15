@@ -36,45 +36,37 @@ const ScheduleForm = ({ id, onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="schedule-form">
-      <table>
-        <tbody>
-          <tr>
-            <td>시작날짜</td>
-            <td>
-              <input
-                type="date"
-                name="startDay"
-                value={form.startDay}
-                onChange={handleChange}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>종료날짜</td>
-            <td>
-              <input
-                type="date"
-                name="endDay"
-                value={form.endDay}
-                onChange={handleChange}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>내용</td>
-            <td>
-              <input
-                type="text"
-                name="information"
-                value={form.information}
-                onChange={handleChange}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <button type="submit">저장</button>
+    <form onSubmit={handleSubmit} className="change-password-form">
+      <div className="input-group">
+        <label>시작날짜</label>
+        <input
+          type="date"
+          name="startDay"
+          value={form.startDay}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="input-group">
+        <label>종료날짜</label>
+        <input
+          type="date"
+          name="endDay"
+          value={form.endDay}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="input-group">
+        <label>내용</label>
+        <input
+          type="text"
+          name="information"
+          value={form.information}
+          onChange={handleChange}
+        />
+      </div>
+      <button type="submit" className="btn-save">
+        저장
+      </button>
     </form>
   );
 };

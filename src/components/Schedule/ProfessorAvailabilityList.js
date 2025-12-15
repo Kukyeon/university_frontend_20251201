@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getProfessorAvailability } from "../../api/scheduleApi";
+import "../../pages/SchedulePage.css";
 
 // 날짜/시간 포맷팅 함수 (MM-DD HH:mm)
 const formatDateTime = (dateTimeStr) => {
@@ -42,26 +43,38 @@ const ProfessorAvailabilityList = ({ professorId }) => {
     fetchSlots();
   }, [professorId]); // professorId가 변경될 때 또는 key가 변경되어 재렌더링될 때 호출
 
-  if (loading) return <div>⏳ 로딩 중...</div>;
-  if (error) return <div style={{ color: "red" }}>🚨 {error}</div>;
+  if (loading) return <div className="loading-text">⏳ 로딩 중...</div>;
+  if (error) return <div className="error-message">🚨 {error}</div>;
 
   return (
-    <div style={{ marginTop: "10px" }}>
+    // 💡 클래스 적용
+    <div className="availability-list-container">
       {slots.length === 0 ? (
-        <p>등록된 상담 가능 시간이 없습니다.</p>
+        <p className="info-message">등록된 상담 가능 시간이 없습니다.</p>
       ) : (
-        <ul>
+        <ul className="availability-ul">
           {slots.map((slot) => (
+            // 💡 예약 여부에 따라 클래스를 다르게 적용
             <li
               key={slot.id}
-              style={{
-                marginBottom: "5px",
-                fontWeight: slot.booked ? "bold" : "normal",
-                color: slot.booked ? "gray" : "green",
-              }}
+              className={`availability-item status-${
+                slot.booked ? "booked" : "available"
+              }`}
             >
-              {formatDateTime(slot.startTime)} ~ {formatDateTime(slot.endTime)}
-              (ID: {slot.id}) — **상태:** {slot.booked ? "예약됨" : "예약 가능"}
+              <span className="slot-time">
+                {formatDateTime(slot.startTime)} ~{" "}
+                {formatDateTime(slot.endTime)}
+              </span>
+              <span className="slot-info">
+                (ID: {slot.id}) —
+                <span
+                  className={`slot-status ${
+                    slot.booked ? "status-booked" : "status-available"
+                  }`}
+                >
+                  **상태:** {slot.booked ? "예약됨" : "예약 가능"}
+                </span>
+              </span>
             </li>
           ))}
         </ul>

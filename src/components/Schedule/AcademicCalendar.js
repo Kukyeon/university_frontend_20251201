@@ -47,30 +47,33 @@ const AcademicCalendar = () => {
   if (schedule.length === 0) return <div>등록된 학사 일정이 없습니다.</div>;
 
   return (
-    <div className="academic-calendar">
-      <h3 className="notice-page__title">학사 일정</h3>
-
-      <table>
-        <thead>
-          <tr>
-            <th>월</th>
-            <th>기간</th>
-            <th>일정 내용</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(groupedSchedule).map(([month, events]) =>
-            events.map((event, index) => (
-              <tr key={event.id || index}>
-                {index === 0 ? <td rowSpan={events.length}>{month}</td> : null}
-                <td>{event.period}</td>
-                <td>{event.content}</td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <h3>학사 일정</h3>
+      <div className="table-wrapper">
+        <table className="course-table">
+          <thead>
+            <tr>
+              <th>월</th>
+              <th>기간</th>
+              <th>일정 내용</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(groupedSchedule).map(([month, events]) =>
+              events.map((event, index) => (
+                <tr key={event.id || index}>
+                  {index === 0 ? (
+                    <td rowSpan={events.length}>{month}</td>
+                  ) : null}
+                  <td>{event.period}</td>
+                  <td>{event.content}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 

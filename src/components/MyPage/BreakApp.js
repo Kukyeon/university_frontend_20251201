@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 
 const BreakApp = ({ user }) => {
@@ -7,7 +7,6 @@ const BreakApp = ({ user }) => {
   const [endSemester, setEndSemester] = useState("");
   const [endOptions, setEndOptions] = useState([]);
 
-  // 시작 학기 초기화
   useEffect(() => {
     const now = new Date();
     let year = now.getFullYear();
@@ -16,7 +15,6 @@ const BreakApp = ({ user }) => {
     const start = `${year}-${sem}`;
     setStartSemester(start);
 
-    // 종료 학기 옵션 생성 (최대 4학기 선택 가능)
     const options = [];
     let optYear = year;
     let optSem = sem;
@@ -29,8 +27,9 @@ const BreakApp = ({ user }) => {
       }
     }
     setEndOptions(options);
-    setEndSemester(options[0]); // 기본 종료 학기 첫 옵션으로
+    setEndSemester(options[0]);
   }, []);
+
   const handleSubmit = async () => {
     if (!leaveType || !endSemester) {
       alert("모든 항목을 선택해주세요.");
@@ -43,6 +42,7 @@ const BreakApp = ({ user }) => {
       alert("종료 학기가 시작 학기 이전일 수 없습니다.");
       return;
     }
+
     try {
       await api.post("/break/app", {
         type: leaveType,
@@ -62,7 +62,7 @@ const BreakApp = ({ user }) => {
   };
 
   return (
-    <section className="mypage-card leave-form">
+    <>
       <h3>휴학 신청서</h3>
       <table>
         <tbody>
@@ -152,7 +152,7 @@ const BreakApp = ({ user }) => {
         {new Date().getFullYear()}년 {new Date().getMonth() + 1}월{" "}
         {new Date().getDate()}일
       </p>
-    </section>
+    </>
   );
 };
 

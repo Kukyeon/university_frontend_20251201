@@ -62,7 +62,7 @@ const Classroom = () => {
   };
 
   return (
-    <div className="mypage-card">
+    <>
       <h3>강의실 관리</h3>
 
       <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
@@ -112,7 +112,7 @@ const Classroom = () => {
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 };
 
