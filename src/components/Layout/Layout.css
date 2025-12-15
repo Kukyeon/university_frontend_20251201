@@ -1,0 +1,38 @@
+/* ====== Global Reset ====== */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #f9f9f9;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+/* ====== Page 영역 ====== */
+.page {
+  min-height: calc(100dvh - 120px); /* header/footer 고려 */
+  padding: 40px 0;
+}
+
+/* ====== Container ====== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 768px) {
+  .page {
+    padding: 20px 0;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+}

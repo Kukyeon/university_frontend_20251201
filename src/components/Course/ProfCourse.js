@@ -59,7 +59,8 @@ const ProfCourse = () => {
 
       {/* 🔥 강의 목록 화면 */}
       {!selectedCourseId && (
-        <div className="my-course-container">
+        <>
+          <h3>내 강의 조회</h3>
           <div className="filter-container">
             <div className="department-form" style={{ marginBottom: "15px" }}>
               <label>연도</label>
@@ -87,54 +88,55 @@ const ProfCourse = () => {
               </button>
             </div>
           </div>
-
-          <table className="course-table">
-            <thead>
-              <tr>
-                <th>학수번호</th>
-                <th>강의명</th>
-                <th>강의시간</th>
-                <th>강의계획서</th>
-                <th>학생 목록</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.length === 0 ? (
+          <div className="table-wrapper">
+            <table className="course-table">
+              <thead>
                 <tr>
-                  <td colSpan="5" className="no-data">
-                    조회된 강의가 없습니다.
-                  </td>
+                  <th>학수번호</th>
+                  <th>강의명</th>
+                  <th>강의시간</th>
+                  <th>강의계획서</th>
+                  <th>학생 목록</th>
                 </tr>
-              ) : (
-                courses.map((c) => (
-                  <tr key={c.id}>
-                    <td>{c.id}</td>
-                    <td className="course-name">{c.name}</td>
-                    <td>
-                      {c.subDay} {c.startTime}:00-{c.endTime}:00 ({c.roomId})
-                    </td>
-                    <td>
-                      <button
-                        className="small-btn"
-                        onClick={() => openSyllabus(c.id)}
-                      >
-                        조회
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="small-btn"
-                        onClick={() => openStudentList(c.id)}
-                      >
-                        조회
-                      </button>
+              </thead>
+              <tbody>
+                {courses.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="no-data">
+                      조회된 강의가 없습니다.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ) : (
+                  courses.map((c) => (
+                    <tr key={c.id}>
+                      <td>{c.id}</td>
+                      <td className="course-name">{c.name}</td>
+                      <td>
+                        {c.subDay} {c.startTime}:00-{c.endTime}:00 ({c.roomId})
+                      </td>
+                      <td>
+                        <button
+                          className="small-btn"
+                          onClick={() => openSyllabus(c.id)}
+                        >
+                          조회
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          className="small-btn"
+                          onClick={() => openStudentList(c.id)}
+                        >
+                          조회
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

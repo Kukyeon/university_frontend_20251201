@@ -8,6 +8,7 @@
   justify-content: flex-end;
   align-items: center;
   position: relative;
+  z-index: 1100;
 }
 
 .header-top ul {
@@ -59,7 +60,7 @@
   text-decoration: none;
 }
 
-/* 데스크탑 메뉴 */
+/* ================= 데스크탑 메뉴 ================= */
 .nav-menu ul {
   display: flex;
   justify-content: center;
@@ -81,7 +82,7 @@
   color: #ff6f61;
 }
 
-/* ================= 모바일 슬라이드 메뉴 ================= */
+/* ================= 모바일 ================= */
 .mobile-menu-icon {
   display: none;
   cursor: pointer;
@@ -91,19 +92,10 @@
   font-size: 32px;
   color: #333;
 }
+
+/* 기본 상태에서는 렌더링 안 함 */
 .mobile-slide-menu {
-  display: none; /* 기본 숨김 */
-  flex-direction: column;
-  position: fixed;
-  top: 0;
-  right: -250px;
-  width: 250px;
-  height: 100vh;
-  background-color: #fff;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  transition: right 0.3s ease-in-out;
-  z-index: 2000;
+  display: none;
 }
 
 @media (max-width: 900px) {
@@ -112,25 +104,34 @@
     display: none;
   }
 
-  /* 햄버거 버튼 보이기 */
+  /* 햄버거 버튼 표시 */
   .mobile-menu-icon {
     display: block;
+    position: relative;
+    z-index: 3000;
   }
 
+  /* 모바일 슬라이드 메뉴 */
   .mobile-slide-menu {
-    display: flex; /* 미디어쿼리 안에서만 flex */
-  }
+    display: flex; /* ✅ 필수 */
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 250px;
 
-  .mobile-slide-menu:not(.open) {
-    right: -250px; /* 화면 밖으로 숨김 */
-    pointer-events: none; /* 클릭 방지 */
-    opacity: 0; /* 완전히 숨김 */
+    /* 🔴 핵심 수정 */
+    height: 100dvh;
+
+    background-color: #fff;
+    z-index: 9999;
+
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
   }
 
   .mobile-slide-menu.open {
-    right: 0;
-    pointer-events: auto;
-    opacity: 1;
+    transform: translateX(0);
   }
 
   .mobile-slide-menu .close-btn {

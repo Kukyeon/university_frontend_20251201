@@ -21,7 +21,7 @@ const TuitionHistory = ({ user }) => {
     fetchTuitionHistory();
   }, [user.id]);
   return (
-    <section className="mypage-card">
+    <>
       <h3>등록금 내역 조회</h3>
       {tuitionHistory && tuitionHistory.length > 0 ? (
         <table>
@@ -51,7 +51,7 @@ const TuitionHistory = ({ user }) => {
       ) : (
         <p>등록금 납부 내역이 없습니다.</p>
       )}
-    </section>
+    </>
   );
 };
 

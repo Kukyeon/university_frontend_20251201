@@ -1,14 +1,24 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { createPortal } from "react-dom";
 import HeaderTop from "./HeaderTop";
 import "./Header.css";
 
 const Header = ({ user, logout, role }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
-  const toggleMobileMenu = () => setMobileMenuOpen((prev) => !prev);
+  const toggleMobileMenu = () => {
+    console.log("햄버거 클릭");
+    setMobileMenuOpen((prev) => !prev);
+  };
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  // ✅ 라우트 변경 시 상태 리셋
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const menuItems = [
     { label: "홈", path: "/" },
@@ -30,33 +40,37 @@ const Header = ({ user, logout, role }) => {
   ];
 
   return (
-    <header>
-      {/* 상단 HeaderTop */}
-      {user && <HeaderTop user={user} logout={logout} />}
+    <>
+      <header>
+        {user && <HeaderTop user={user} logout={logout} />}
 
-      <div className="main-header">
-        <div className="logo">
-          <Link to="/">학교 로고</Link>
+        <div className="main-header">
+          <div className="logo">
+            <Link to="/">학교 로고</Link>
+          </div>
+
+          <nav className="nav-menu">
+            <ul>
+              {menuItems.map((item) => (
+                <li key={item.path}>
+                  <Link to={item.path}>{item.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="mobile-menu-icon" onClick={toggleMobileMenu}>
+            <span className="material-symbols-outlined">menu</span>
+          </div>
         </div>
+      </header>
 
-        {/* 데스크탑 메뉴 */}
-        <nav className="nav-menu">
-          <ul>
-            {menuItems.map((item) => (
-              <li key={item.path}>
-                <Link to={item.path}>{item.label}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* 모바일 햄버거 버튼 */}
-        <div className="mobile-menu-icon" onClick={toggleMobileMenu}>
-          <span className="material-symbols-outlined">menu</span>
-        </div>
-
-        {/* 모바일 슬라이드 메뉴 */}
-        <div className={`mobile-slide-menu ${mobileMenuOpen ? "open" : ""}`}>
+      {/* 🔥 Portal + key로 강제 리마운트 */}
+      {createPortal(
+        <div
+          key={location.pathname}
+          className={`mobile-slide-menu ${mobileMenuOpen ? "open" : ""}`}
+        >
           <button className="close-btn" onClick={closeMobileMenu}>
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -69,9 +83,10 @@ const Header = ({ user, logout, role }) => {
               </li>
             ))}
           </ul>
-        </div>
-      </div>
-    </header>
+        </div>,
+        document.body
+      )}
+    </>
   );
 };
 

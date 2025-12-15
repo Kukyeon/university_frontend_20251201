@@ -9,9 +9,7 @@ const ProfessorRegister = () => {
     address: "",
     tel: "",
     email: "",
-    department: {
-      id: "",
-    },
+    department: { id: "" },
   });
 
   const handleChange = (e) => {
@@ -25,12 +23,11 @@ const ProfessorRegister = () => {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
+
   const handleSubmit = async () => {
     try {
-      const res = await api.post("/staff/professor", formData); // formData 전송
-      console.log("교수 등록 성공:", res.data);
+      await api.post("/staff/professor", formData);
       alert("교수 등록 완료!");
-      // 폼 초기화
       setFormData({
         name: "",
         birthDate: "",
@@ -38,108 +35,72 @@ const ProfessorRegister = () => {
         address: "",
         tel: "",
         email: "",
-        department: {
-          id: "",
-        },
+        department: { id: "" },
       });
     } catch (err) {
-      console.error(err);
-      alert("교수 등록 실패: " + err.response?.data?.message || err.message);
+      alert("교수 등록 실패: " + (err.response?.data?.message || err.message));
     }
   };
+
   return (
-    <div className="student-form-vertical mypage-card">
+    <>
       <h3>교수 등록</h3>
-      <div className="form-row">
-        <label>이름</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-        />
-      </div>
 
-      <div className="form-row">
-        <label>생년월일</label>
-        <input
-          type="date"
-          name="birthDate"
-          value={formData.birthDate}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-row">
-        <label>성별</label>
-        <div className="gender-radio-group">
-          <label>
-            남성
-            <input
-              type="radio"
-              name="gender"
-              value="남성"
-              checked={formData.gender === "남성"}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            여성
-            <input
-              type="radio"
-              name="gender"
-              value="여성"
-              checked={formData.gender === "여성"}
-              onChange={handleChange}
-            />
-          </label>
+      {/* 입력 필드 */}
+      {[
+        { label: "이름", name: "name", type: "text" },
+        { label: "생년월일", name: "birthDate", type: "date" },
+        { label: "주소", name: "address", type: "text" },
+        { label: "전화번호", name: "tel", type: "text" },
+        { label: "이메일", name: "email", type: "email" },
+        {
+          label: "과 ID",
+          name: "departmentNo",
+          type: "text",
+          value: formData.department.id,
+        },
+      ].map((field) => (
+        <div className="input-group" key={field.name}>
+          <label>{field.label}</label>
+          <input
+            type={field.type}
+            name={field.name}
+            value={field.value ?? formData[field.name]}
+            onChange={handleChange}
+          />
         </div>
+      ))}
+
+      {/* 성별 라디오 */}
+      <div className="gender-radio-group">
+        <label>
+          남성
+          <input
+            type="radio"
+            name="gender"
+            value="남성"
+            checked={formData.gender === "남성"}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          여성
+          <input
+            type="radio"
+            name="gender"
+            value="여성"
+            checked={formData.gender === "여성"}
+            onChange={handleChange}
+          />
+        </label>
       </div>
 
-      <div className="form-row">
-        <label>주소</label>
-        <input
-          type="text"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-        />
+      <div className="form-actions">
+        <button className="primary-btn" onClick={handleSubmit}>
+          등록
+        </button>
       </div>
-
-      <div className="form-row">
-        <label>전화번호</label>
-        <input
-          type="text"
-          name="tel"
-          value={formData.tel}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-row">
-        <label>이메일</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="form-row">
-        <label>과 ID</label>
-        <input
-          type="text"
-          name="departmentNo"
-          value={formData.department.id}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={handleSubmit}>등록</button>
-      </div>
-    </div>
+    </>
   );
 };
 

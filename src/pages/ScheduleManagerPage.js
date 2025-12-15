@@ -33,8 +33,8 @@ const ScheduleManagerPage = () => {
   };
 
   return (
-    <div className="schedule-manager-container">
-      <h3 className="notice-page__title">학사 일정 관리</h3>
+    <>
+      <h3>학사 일정 관리</h3>
 
       {viewMode !== "list" && (
         <button
@@ -46,14 +46,14 @@ const ScheduleManagerPage = () => {
       )}
 
       {/* 단일 컨테이너 안에서 모드별 컴포넌트 교체 */}
-      <div className="schedule-content-container">
+      <>
         {viewMode === "list" && (
           <>
             <button
               className="schedule-button green"
               onClick={() => setViewMode("create")}
             >
-              ➕ 새 학사 일정 등록
+              새 학사 일정 등록
             </button>
             <ScheduleList
               onSelect={handleSelect}
@@ -77,8 +77,8 @@ const ScheduleManagerPage = () => {
             onDelete={handleDeleteComplete}
           />
         )}
-      </div>
-    </div>
+      </>
+    </>
   );
 };
 
