@@ -39,7 +39,7 @@ function VideoRoom({
   return (
     // 💡 클래스 적용
     <div className="video-room-container">
-      <h2 className="video-room-title">💬 화상 상담 (상담 ID: {room})</h2>
+      <h2 className="video-room-title">💬 화상 상담 (방 번호 : {room} 번)</h2>
 
       {/* 💡 Iframe 클래스 적용 */}
       <iframe
