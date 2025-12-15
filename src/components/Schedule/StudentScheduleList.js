@@ -63,13 +63,6 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
               {formatDateTime(s.startTime)} ~ {formatDateTime(s.endTime)} |{" "}
               {s.status}
             </span>
-            <button
-              onClick={() => handleCancel(s.scheduleId)}
-              style={{ marginLeft: "10px" }}
-              disabled={s.status !== "확인됨"}
-            >
-              취소
-            </button>
           </li>
         ))}
       </ul>
