@@ -71,6 +71,7 @@ const AdminDashboard = () => {
         <thead style={{ background: '#333', color: 'white' }}>
           <tr>
             <th></th>
+            <th>분석 날짜</th>
             <th>학과</th>
             <th>학번</th>
             <th>이름</th>
@@ -95,7 +96,8 @@ const AdminDashboard = () => {
                   />
                 </td>
                 {/* 관리자는 '학과'를 봐야 하므로 학과 컬럼 필수! */}
-                <td style={{ fontWeight: 'bold' }}>{risk.departmentName}</td>
+                <td>{risk.analyzedDate}</td>
+                <td style={{ fontWeight: 'bold' }}>{risk.departmentName}</td>               
                 <td>{risk.studentId}</td>
                 <td>{risk.studentName}</td>
                 <td>{risk.grade}학년</td>

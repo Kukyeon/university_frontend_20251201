@@ -125,8 +125,10 @@ const ProfDashboard = (user) => {
           <tr>
             <th style={{ width: "50px" }}>선택</th>
             <th>분석 날짜</th>
+            {/* <th>학과</th> */}
             <th>학번</th>
             <th>이름</th>
+            <th>학년</th>
             <th>위험도</th>
             <th>상태</th>
             <th>AI 분석 원인</th>
@@ -149,8 +151,10 @@ const ProfDashboard = (user) => {
                 </td>
                 {/* 날짜 */}
                 <td>{risk.analyzedDate}</td>
+                {/* <td style={{ fontWeight: 'bold' }}>{risk.departmentName}</td> */}
                 <td>{risk.studentId}</td>
                 <td>{risk.studentName}</td>
+                <td>{risk.grade}</td>
                 {/* 점수 */}
                 <td>{risk.riskScore}점</td>
                 {/* 상태 (색상 강조) */}
