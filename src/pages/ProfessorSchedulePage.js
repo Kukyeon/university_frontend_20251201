@@ -1,40 +1,57 @@
 import React, { useState } from "react";
 import ProfessorAvailability from "../components/Schedule/ProfessorAvailability";
 import ProfessorAvailabilityList from "../components/Schedule/ProfessorAvailabilityList";
-
 import ProfessorScheduleRequests from "../components/Schedule/ProfessorScheduleRequests";
+import "./SchedulePage.css"; // 💡 이 파일을 import 해야 합니다.
 
 const ProfessorSchedulePage = ({ user, role }) => {
-  // 등록 후 목록을 갱신하기 위한 상태
   const professorId = user?.id;
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // onSaved 발생 시 refreshKey를 변경하여 목록 컴포넌트가 재렌더링되도록 트리거
   const handleRefresh = () => setRefreshKey((prev) => prev + 1);
 
   if (role !== "professor" || !professorId) {
     return (
-      <div style={{ padding: "20px", color: "red" }}>
+      // 💡 클래스 적용
+      <div className="access-denied-message">
         상담 관리는 교수만 접근 가능합니다.
       </div>
     );
   }
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>교수 상담 관리</h1>
+    // 💡 .page-container 적용
+    <div className="page-container">
+      {/* 💡 메인 내용 카드 적용 */}
+      <div className="page-card professor-schedule-card">
+        <h1 className="card-title">교수 상담 관리</h1>
 
-      {/* 1. 가능 시간 등록 컴포넌트  */}
-      <ProfessorAvailability
-        professorId={professorId}
-        onSaved={handleRefresh}
-      />
+        {/* 📌 상담 가능 시간 등록 */}
+        <div className="section-container">
+          <ProfessorAvailability
+            professorId={professorId}
+            onSaved={handleRefresh}
+          />
+        </div>
 
-      {/* 2. 등록된 가능 시간 목록 컴포넌트 */}
-      <h2>등록된 상담 가능 시간 목록</h2>
-      <ProfessorAvailabilityList professorId={professorId} key={refreshKey} />
+        {/* 📌 등록된 상담 가능 시간 목록 */}
+        <div className="section-container">
+          <h2 className="section-title">등록된 상담 가능 시간 목록</h2>
+          <ProfessorAvailabilityList
+            professorId={professorId}
+            key={refreshKey}
+          />
+        </div>
 
-      <h2>예약 현황</h2>
-      <ProfessorScheduleRequests professorId={professorId} key={refreshKey} />
+        {/* 📌 예약 현황 */}
+        <div className="section-container">
+          <h2 className="section-title">예약 현황</h2>
+          <ProfessorScheduleRequests
+            professorId={professorId}
+            key={refreshKey}
+          />
+        </div>
+      </div>
     </div>
   );
 };

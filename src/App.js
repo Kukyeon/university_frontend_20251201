@@ -11,7 +11,6 @@ import NoticePage from "./pages/NoticePage";
 import NoticeDetail from "./components/Notice/NoticeDetail";
 import NoticeForm from "./components/Notice/NoticeForm";
 import EvaluationPage from "./pages/EvaluationPage";
-import VideoRoomApp from "./VideoRoomApp";
 import AcademicPage from "./pages/AcademicPage";
 import Academic from "./pages/Academic";
 import CounselingRecordPage from "./pages/CounselingRecordPage";
@@ -42,6 +41,8 @@ import CoursePage from "./pages/CoursePage";
 import Sugang from "./pages/Sugang";
 import CourseStudentList from "./components/Course/CourseStudentList";
 import { ro } from "date-fns/locale";
+import VideoRoom from "./components/Schedule/VideoRoom";
+import VideoRoomApp from "./VideoRoomApp";
 import MainLayout from "./components/Layout/MainLayout";
 
 function App() {
@@ -156,6 +157,54 @@ function App() {
               </ProtectedRoute>
             }
           />
+    <Route
+          path="/professor/videoroom/:scheduleId"
+          element={
+            <ProtectedRoute user={user} role={role} roleRequired="professor">
+              <VideoRoom
+                professorId={user?.id}
+                userRole={role}
+                userName={user?.name}
+                onFinish={() => {
+                  navigate(-1);
+                }}
+              />
+            </ProtectedRoute>
+          }
+        />
+        {/* 상담 / 화상 회의 */}
+        <Route path="/records" element={<CounselingRecordPage user={user} />} />
+        <Route
+          path="/student-schedule"
+          element={
+            // <ProtectedRoute user={user} role={role} roleRequired="STUDENT">
+            <StudentSchedulePage user={user} role={role} />
+            // </ProtectedRoute>
+          }
+        />
+        {/* 학생용 상세 보기 */}
+        <Route
+          path="/student/counseling/detail/:scheduleId"
+          element={<StudentCounselingDetail user={user} />}
+        />
+        {/* 교수용 상세 보기 (권한 설정 필요) */}
+        <Route
+          path="/professor/counseling/detail/:scheduleId"
+          element={<ProfessorCounselingDetail />}
+        />
+        {/* 2. 교수용 상담 기록 작성/수정 폼 (새로 추가) */}
+        <Route
+          path="/professor/counseling/write/:scheduleId"
+          element={<CounselingRecordForm />}
+        />
+        <Route
+          path="/professor-schedule"
+          element={
+            // <ProtectedRoute user={user} role={role} roleRequired="PROFESSOR">
+            <ProfessorSchedulePage user={user} role={role} />
+            // </ProtectedRoute>
+          }
+        />
           {/* 공지사항, 학사일정 상세/등록/수정  */}
           <Route path="/notice" element={<NoticePage role={role} />} />
           <Route path="/notice/:id" element={<NoticeDetail role={role} />} />

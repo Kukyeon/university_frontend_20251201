@@ -4,6 +4,7 @@ import {
   updateScheduleStatus,
 } from "../../api/scheduleApi";
 import { useNavigate } from "react-router-dom";
+import "../../pages/SchedulePage.css";
 
 // 날짜/시간 포맷팅 함수 (유지)
 const formatDateTime = (dateTimeStr) => {
@@ -64,39 +65,46 @@ const ProfessorScheduleRequests = ({ professorId }) => {
     }
   };
 
-  if (loading) return <div>⏳ 예약 요청 목록 로딩 중...</div>;
-  if (error) return <div style={{ color: "red" }}>🚨 {error}</div>;
+  if (loading)
+    return <div className="loading-text">⏳ 예약 요청 목록 로딩 중...</div>;
+  if (error) return <div className="error-message">🚨 {error}</div>;
 
   return (
-    <div style={{ marginTop: "20px" }}>
-      <h3>교수님에게 신청된 상담 목록</h3>
+    // 💡 클래스 적용
+    <div className="request-list-container">
+      <h3 className="list-title">교수님에게 신청된 상담 목록</h3>
       {requests.length === 0 ? (
-        <p>현재 대기 중인 상담 요청이 없습니다.</p>
+        <p className="info-message">현재 대기 중인 상담 요청이 없습니다.</p>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        // 💡 클래스 적용
+        <ul className="request-ul">
           {requests.map((req) => (
             <li
               key={req.id}
-              style={{ borderBottom: "1px solid #eee", padding: "10px 0" }}
+              // 💡 상태별 클래스 추가 (소문자 변환)
+              className={`request-item status-${req.status.toLowerCase()}`}
               onClick={() =>
                 navigate(
-                  `/professor/counseling/detail/${req.id}?studentId=${req.studentId}`
+                  `/professor/counseling/detail/${req.id}?studentId=${req.studentId}&professorId=${professorId}`
                 )
               }
             >
-              <div style={{ fontWeight: "bold" }}>
-                학생 ID: {req.studentName} | {formatDateTime(req.startTime)}
+              <div className="request-info-header">
+                학생 이름 : {req.studentName} | {formatDateTime(req.startTime)}
               </div>
-              <div>
-                현재 상태: **{req.status}**
-                {req.status === "PENDING" && ( // CONFIRMED 상태일 때만 버튼 표시
+              <div className="request-actions">
+                {/* 💡 상태 배지 */}
+                <span
+                  className={`status-badge status-${req.status.toLowerCase()}`}
+                >
+                  현재 상태: {req.status}
+                </span>
+
+                {/* PENDING 상태 */}
+                {req.status === "PENDING" && (
                   <>
                     <button
-                      style={{
-                        marginLeft: "10px",
-                        background: "#007bff",
-                        color: "white",
-                      }}
+                      className="btn-approve"
                       onClick={(e) => {
                         e.stopPropagation(); // li 클릭 방지
                         handleStatusChange(req.id, "CONFIRMED");
@@ -105,11 +113,7 @@ const ProfessorScheduleRequests = ({ professorId }) => {
                       예약 승인
                     </button>
                     <button
-                      style={{
-                        marginLeft: "5px",
-                        background: "#f44336",
-                        color: "white",
-                      }}
+                      className="btn-reject"
                       onClick={(e) => {
                         e.stopPropagation(); // li 클릭 방지
                         handleStatusChange(req.id, "CANCELED");
@@ -119,15 +123,12 @@ const ProfessorScheduleRequests = ({ professorId }) => {
                     </button>
                   </>
                 )}
-                {/* 기타 상태 처리 로직 추가 가능 */}
-                {req.status === "CONFIRMED" && ( // DTO에서 "확인됨"으로 변환했으므로 한글 사용
+
+                {/* CONFIRMED 상태 */}
+                {req.status === "CONFIRMED" && (
                   <>
                     <button
-                      style={{
-                        marginLeft: "10px",
-                        background: "#4CAF50",
-                        color: "white",
-                      }}
+                      className="btn-complete"
                       onClick={(e) => {
                         // ⭐ 이벤트 버블링 방지 추가
                         e.stopPropagation();
@@ -137,11 +138,7 @@ const ProfessorScheduleRequests = ({ professorId }) => {
                       완료 처리
                     </button>
                     <button
-                      style={{
-                        marginLeft: "5px",
-                        background: "#f44336",
-                        color: "white",
-                      }}
+                      className="btn-reject-confirmed"
                       onClick={(e) => {
                         // ⭐ 이벤트 버블링 방지 추가
                         e.stopPropagation();
@@ -152,6 +149,7 @@ const ProfessorScheduleRequests = ({ professorId }) => {
                     </button>
                   </>
                 )}
+                {/* 기타 상태 처리 로직 추가 가능 */}
               </div>
             </li>
           ))}
