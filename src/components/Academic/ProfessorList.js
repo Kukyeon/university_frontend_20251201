@@ -39,71 +39,69 @@ const ProfessorList = () => {
     }
   };
   return (
-    <div className="mypage-card">
+    <>
       <h3>교수 명단 조회</h3>
-      <div className="academic-search-wrapper">
-        <label className="academic-search-label">
-          학과 번호:
+      <div className="filter-container">
+        <div className="department-form">
+          <label>학과 번호:</label>
           <input
             type="text"
-            className="academic-search-input"
             value={searchDept}
             onChange={(e) => setSearchDept(e.target.value)}
           />
-        </label>
-        <label className="academic-search-label">
-          사번:
+
+          <label>사번:</label>
           <input
             type="text"
-            className="academic-search-input"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
           />
-        </label>
-        <button onClick={getSerchList} className="search-btn">
-          조회
-        </button>
+          <button onClick={getSerchList} className="search-btn">
+            조회
+          </button>
+        </div>
       </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>사번</th>
-            <th>이름</th>
-            <th>생년월일</th>
-            <th>성별</th>
-            <th>주소</th>
-            <th>전화번호</th>
-            <th>이메일</th>
-            <th>학과번호</th>
-            <th>고용일</th>
-          </tr>
-        </thead>
-        <tbody>
-          {professors.length ? (
-            professors.map((prof) => (
-              <tr key={prof.id}>
-                <td>{prof.id}</td>
-                <td>{prof.name}</td>
-                <td>{prof.birthDate}</td>
-                <td>{prof.gender}</td>
-                <td>{prof.address}</td>
-                <td>{prof.tel}</td>
-                <td>{prof.email}</td>
-                <td>{prof.department.id}</td>
-                <td>{prof.hireDate}</td>
-              </tr>
-            ))
-          ) : (
+      <div className="table-wrapper">
+        <table className="course-table">
+          <thead>
             <tr>
-              <td colSpan="9" style={{ textAlign: "center" }}>
-                조회된 교수가 없습니다.
-              </td>
+              <th>사번</th>
+              <th>이름</th>
+              <th>생년월일</th>
+              <th>성별</th>
+              <th>주소</th>
+              <th>전화번호</th>
+              <th>이메일</th>
+              <th>학과번호</th>
+              <th>고용일</th>
             </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {professors.length ? (
+              professors.map((prof) => (
+                <tr key={prof.id}>
+                  <td>{prof.id}</td>
+                  <td>{prof.name}</td>
+                  <td>{prof.birthDate}</td>
+                  <td>{prof.gender}</td>
+                  <td>{prof.address}</td>
+                  <td>{prof.tel}</td>
+                  <td>{prof.email}</td>
+                  <td>{prof.department.id}</td>
+                  <td>{prof.hireDate}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9" style={{ textAlign: "center" }}>
+                  조회된 교수가 없습니다.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 

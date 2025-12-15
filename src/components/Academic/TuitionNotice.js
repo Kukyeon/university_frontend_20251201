@@ -18,12 +18,12 @@ const TuitionNotice = () => {
   };
 
   return (
-    <div className="mypage-card">
+    <>
       <h3>등록금 고지서 발송</h3>
       <button onClick={handleSend} disabled={loading}>
         {loading ? "발송 중..." : "발송"}
       </button>
-    </div>
+    </>
   );
 };
 

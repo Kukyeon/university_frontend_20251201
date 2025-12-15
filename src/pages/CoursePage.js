@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import SectionLayout from "../components/Layout/SectionLayout";
+
 import ProfCourse from "../components/Course/ProfCourse";
 import ProfEvaluation from "../components/Course/ProfEvalution";
 import AllCourse from "../components/Course/AllCourse";
-
+import "./CoursePage.css";
 const CoursePage = ({ role }) => {
   const [activeTab, setActiveTab] = useState("전체 강의 조회");
 
@@ -11,40 +13,32 @@ const CoursePage = ({ role }) => {
       ? ["전체 강의 조회", "내 강의 조회", "내 강의 평가"]
       : ["전체 강의 조회"];
 
-  console.log(role);
-  return (
-    <div className="academic-page-container">
-      {/* 사이드바 */}
-      <aside className="academic-sidebar">
-        <h2>수업</h2>
-        <ul>
-          {menuItems.map((item) => (
-            <li
-              key={item}
-              className={activeTab === item ? "active" : ""}
-              onClick={() => setActiveTab(item)}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      </aside>
+  /* ===== Sidebar ===== */
+  const sidebar = (
+    <ul className="section-menu">
+      {menuItems.map((item) => (
+        <li
+          key={item}
+          className={activeTab === item ? "active" : ""}
+          onClick={() => setActiveTab(item)}
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
 
-      {/* 메인 콘텐츠 */}
-      <main className="academic-content">
-        <div className="mypage-card">
-          <h2>{activeTab}</h2>
-          {/* 여기에 activeTab에 따라 다른 내용 렌더링 */}
-          {activeTab === "전체 강의 조회" && <AllCourse />}
-          {role === "professor" && (
-            <>
-              {activeTab === "내 강의 조회" && <ProfCourse />}
-              {activeTab === "내 강의 평가" && <ProfEvaluation />}
-            </>
-          )}
-        </div>
-      </main>
-    </div>
+  return (
+    <SectionLayout title="수업" sidebar={sidebar}>
+      {activeTab === "전체 강의 조회" && <AllCourse />}
+
+      {role === "professor" && (
+        <>
+          {activeTab === "내 강의 조회" && <ProfCourse />}
+          {activeTab === "내 강의 평가" && <ProfEvaluation />}
+        </>
+      )}
+    </SectionLayout>
   );
 };
 

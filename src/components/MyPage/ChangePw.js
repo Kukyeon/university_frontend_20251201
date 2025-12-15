@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 import api from "../../api/axiosConfig";
 
 const ChangePw = () => {
@@ -14,14 +14,9 @@ const ChangePw = () => {
       return;
     }
     try {
-      const payload = {
-        //userId,
-        oldPassword,
-        newPassword,
-      };
+      const payload = { oldPassword, newPassword };
       await api.put("/user/update/pw", payload);
       alert("비밀번호 변경 완료! (API 연동 전 임시 기능)");
-      // 입력 초기화
       setOldPassword("");
       setNewPassword("");
       setConfirmPw("");
@@ -31,7 +26,7 @@ const ChangePw = () => {
   };
 
   return (
-    <section className="mypage-card">
+    <>
       <h3>비밀번호 변경</h3>
       <form className="change-password-form" onSubmit={handleChangePassword}>
         <div className="input-group">
@@ -68,7 +63,7 @@ const ChangePw = () => {
           변경
         </button>
       </form>
-    </section>
+    </>
   );
 };
 

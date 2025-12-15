@@ -79,7 +79,7 @@ const Department = () => {
     }
   };
   return (
-    <div className="mypage-card">
+    <>
       <h3>학과 관리</h3>
       {/* 버튼 */}
       <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
@@ -174,7 +174,7 @@ const Department = () => {
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 };
 
