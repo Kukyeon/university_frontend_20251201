@@ -1,9 +1,8 @@
-// src/pages/ProfessorCounselingDetail.js (수정)
 import VideoRoom from "../../components/Schedule/VideoRoom";
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { getCounselingRecord, saveRecord } from "../../api/scheduleApi";
-// RecordAutoSave 컴포넌트는 더 이상 사용하지 않습니다.
+import "../../pages/SchedulePage.css";
 
 const ProfessorCounselingDetail = () => {
   const { scheduleId } = useParams();
@@ -15,14 +14,15 @@ const ProfessorCounselingDetail = () => {
 
   const [record, setRecord] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // 💡 VideoRoom 컴포넌트를 직접 렌더링하기 위한 상태
-  const [isMeetingActive, setIsMeetingActive] = useState(false); // 화상 회의 시작 버튼 클릭 핸들러
+  const [error, setError] = useState(null);
+  const [isMeetingActive, setIsMeetingActive] = useState(false);
 
   const handleStartVideo = () => {
     // record가 아직 로드되지 않았으면 실행하지 않습니다.
     if (!record) return;
     setIsMeetingActive(true);
   };
+
   const handleFinishMeeting = async (finalNotes) => {
     setIsMeetingActive(false);
     setLoading(true); // 저장 및 재요청 동안 로딩 상태 표시
@@ -73,7 +73,7 @@ const ProfessorCounselingDetail = () => {
     if (!isMeetingActive) {
       fetchRecord();
     }
-  }, [scheduleId, studentId, isMeetingActive]); // 화상 회의 종료 후 재요청 // 💡 VideoRoom 컴포넌트를 import하고 직접 렌더링
+  }, [scheduleId, studentId, isMeetingActive]); // 화상 회의 종료 후 재요청
 
   if (isMeetingActive) {
     const currentProfessorName = record.schedule.professorName || "교수";
@@ -92,95 +92,90 @@ const ProfessorCounselingDetail = () => {
     );
   }
 
-  if (loading) return <div>상담 상세 로딩 중...</div>;
-  if (error) return <div style={{ color: "red" }}>에러: {error}</div>;
+  // 💡 클래스 적용
+  if (loading) return <div className="loading-text">상담 상세 로딩 중...</div>;
+  if (error) return <div className="error-message">에러: {error}</div>;
   if (!record || !record.schedule)
-    return <div>상담 상세 정보가 존재하지 않습니다.</div>;
+    return (
+      <div className="info-message">상담 상세 정보가 존재하지 않습니다.</div>
+    );
 
   const schedule = record.schedule;
   const isConfirmed =
     schedule.status === "확인됨" || schedule.status === "CONFIRMED";
   const isCompleted =
     schedule.status === "상담 완료" || schedule.status === "COMPLETED";
-  const canWriteOrEditRecord = isConfirmed || isCompleted; // ⭐️ STT 진행 상태 판단 로직 제거 // const isSttInProgress = record.transcribeJobName && !record.notes;
+  const canWriteOrEditRecord = isConfirmed || isCompleted;
 
   return (
-    <div
-      style={{ border: "1px solid #ddd", padding: "20px", borderRadius: "5px" }}
-    >
-            <h3>[교수용] 상담 상세 내용</h3>     {" "}
-      <p>
-                <strong>학생 이름:</strong>{" "}
-        {schedule.studentName || "정보 없음"}     {" "}
-      </p>
-           {" "}
-      <p>
-                <strong>상담 일시:</strong>        {" "}
-        {new Date(schedule.startTime).toLocaleString()} ~        {" "}
-        {new Date(schedule.endTime).toLocaleString()}     {" "}
-      </p>
-           {" "}
-      <p>
-                <strong>현재 상태:</strong> {schedule.status}     {" "}
-      </p>
-            <hr />      <h4>상담 기록 (Notes)</h4>     {" "}
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "10px",
-          whiteSpace: "pre-wrap",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-                {/* 💡 STT 진행 중 메시지 제거 */}       {" "}
-        {record.notes || "저장된 상담 내용이 없습니다."}     {" "}
+    // 💡 클래스 적용
+    <div className="counseling-detail-page">
+      <h3 className="detail-page-title">[교수용] 상담 상세 내용</h3>
+
+      {/* 💡 정보 그룹 */}
+      <div className="schedule-info-group">
+        <p className="schedule-info-item">
+          <strong className="info-label">학생 이름:</strong>
+          <span className="info-value">
+            {schedule.studentName || "정보 없음"}
+          </span>
+        </p>
+
+        <p className="schedule-info-item">
+          <strong className="info-label">상담 일시:</strong>
+          <span className="info-value">
+            {new Date(schedule.startTime).toLocaleString()} ~{" "}
+            {new Date(schedule.endTime).toLocaleString()}
+          </span>
+        </p>
+
+        <p className="schedule-info-item">
+          <strong className="info-label">현재 상태:</strong>
+          <span
+            className={`status-badge status-${schedule.status.toLowerCase()}`}
+          >
+            {schedule.status}
+          </span>
+        </p>
       </div>
-           {" "}
+
+      <hr className="detail-divider" />
+
+      {/* 💡 상담 기록 영역 */}
+      <h4 className="record-section-title">상담 기록 (Notes)</h4>
+      <div className="counseling-notes-box">
+        {record.notes || "저장된 상담 내용이 없습니다."}
+      </div>
+
       {record.keywords && (
-        <p>
-                    <strong>키워드:</strong> {record.keywords}       {" "}
+        <p className="record-keywords">
+          <strong className="info-label">키워드:</strong>
+          <span className="info-value keywords-value">{record.keywords}</span>
         </p>
       )}
-            {/* ... (버튼 로직 유지) ... */}     {" "}
-      {isConfirmed && (
-        <button
-          onClick={handleStartVideo}
-          style={{
-            marginTop: "20px",
-            marginRight: "10px",
-            padding: "10px 20px",
-            background: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-                    🎥 화상 회의 시작        {" "}
-        </button>
-      )}
-           {" "}
-      {canWriteOrEditRecord && (
-        <button
-          onClick={handleWriteRecord}
-          style={{
-            marginTop: "20px",
-            padding: "10px 20px",
-            background: "#17a2b8",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-                    {record.notes ? "상담 기록 수정" : "상담 기록 작성"}       {" "}
-        </button>
-      )}
-         {" "}
+
+      {/* 💡 버튼 영역 */}
+      <div className="action-buttons-group">
+        {isConfirmed && (
+          <button
+            onClick={handleStartVideo}
+            className="btn-start-video" // 💡 클래스 적용
+          >
+            🎥 화상 회의 시작
+          </button>
+        )}
+
+        {canWriteOrEditRecord && (
+          <button
+            onClick={handleWriteRecord}
+            className="btn-edit-record" // 💡 클래스 적용
+          >
+            {record.notes ? "상담 기록 수정" : "상담 기록 작성"}
+          </button>
+        )}
+      </div>
     </div>
   );
 };
-
-// 💡 VideoRoom 컴포넌트 추가: CounselingRoomWrapper 대신 사용
 
 export default ProfessorCounselingDetail;

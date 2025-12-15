@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { saveRecord } from "../../api/scheduleApi"; // 👈 API import 필요
+import "./VideoRoom.css"; // 💡 CSS 파일을 여기에 import 해야 합니다.
 
 /**
  * Janus WebRTC Video Room을 iFrame으로 로드하는 컴포넌트입니다.
@@ -23,6 +24,7 @@ function VideoRoom({
   const isProfessor = userRole === "professor" || userRole === "prof";
   const [notes, setNotes] = useState(initialNotes || "");
   const [keywords] = useState(initialKeywords || "");
+
   // 💡 텍스트 입력 핸들러
   const handleNotesChange = (e) => {
     setNotes(e.target.value);
@@ -35,67 +37,37 @@ function VideoRoom({
   };
 
   return (
-    <div style={{ height: "100vh", width: "100%", padding: "0 20px" }}>
-      {" "}
-      {/* padding 추가 */}
-      <h2>💬 화상 상담 (상담 ID: {room})</h2>
-      {/* 💡 Iframe을 먼저 배치하여 상단에 비디오가 오도록 합니다. */}
+    // 💡 클래스 적용
+    <div className="video-room-container">
+      <h2 className="video-room-title">💬 화상 상담 (상담 ID: {room})</h2>
+
+      {/* 💡 Iframe 클래스 적용 */}
       <iframe
         src={iframeSrc}
         title={`Video Room ${room}`}
         id="JanusIframe"
-        style={{
-          width: "100%",
-          // 💡 Iframe 높이 조정: 450px + 버튼 공간을 뺀 나머지.
-          // (videoroomtest.html에서 비디오 높이를 400px로 설정했으므로, 500px 정도면 충분합니다)
-          height: "500px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          marginBottom: "10px" /* 아래 요소와의 간격 추가 */,
-        }}
+        className="video-room-iframe"
         allow="camera; microphone"
       ></iframe>
+
       {/* React 레벨에서 상담 종료 버튼 제공 */}
       <button
         onClick={handleFinishClick}
-        style={{
-          margin: "10px 0",
-          padding: "8px 15px",
-          background: "#f44336",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          display: "block" /* 블록 요소로 만들어 공간 확보 */,
-        }}
+        className="btn-finish-counseling" // 💡 클래스 적용
       >
         상담 종료 및 기록 저장
       </button>
+
       {/* 💡 교수 전용 기록 폼을 Iframe 아래로 배치합니다. */}
       {isProfessor && (
-        <div
-          style={{
-            marginBottom: "15px",
-            border: "1px solid #ddd",
-            padding: "10px",
-            borderRadius: "4px",
-            backgroundColor: "#f9f9f9",
-          }}
-        >
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-            }}
-          >
-            상담 기록 (교수 전용):
-          </label>
+        <div className="professor-note-container">
+          <label className="professor-note-label">상담 기록 (교수 전용):</label>
           <textarea
             value={notes}
             onChange={handleNotesChange}
             rows={5}
             placeholder="상담 내용을 여기에 기록하시면, '상담 종료' 버튼 클릭 시 자동으로 저장됩니다."
-            style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
+            className="professor-note-textarea" // 💡 클래스 적용
           />
         </div>
       )}

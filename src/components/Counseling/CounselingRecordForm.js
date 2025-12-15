@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { saveRecord, getCounselingRecord } from "../../api/scheduleApi";
+import "../../pages/SchedulePage.css";
 
 const CounselingRecordForm = () => {
   const { scheduleId } = useParams();
@@ -20,6 +21,7 @@ const CounselingRecordForm = () => {
             scheduleId,
             studentId
           );
+          // 기존 기록이 있으면 불러와서 상태에 설정
           setNotes(existingRecord.notes || "");
           setKeywords(existingRecord.keywords || "");
         } catch (error) {
@@ -37,6 +39,8 @@ const CounselingRecordForm = () => {
     try {
       await saveRecord(scheduleId, notes, keywords);
       alert("상담 기록이 성공적으로 저장되었습니다.");
+
+      // 저장 후 상세 페이지로 이동
       navigate(
         `/professor/counseling/detail/${scheduleId}?studentId=${studentId}`
       );
@@ -48,56 +52,37 @@ const CounselingRecordForm = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h3>상담 기록 {notes ? "수정" : "작성"}</h3>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-            }}
-          >
-            상담 내용:
-          </label>
+    // 💡 클래스 적용
+    <div className="record-form-container">
+      <h3 className="form-title">상담 기록 {notes ? "수정" : "작성"}</h3>
+      <form onSubmit={handleSubmit} className="record-form">
+        {/* 💡 상담 내용 그룹 */}
+        <div className="form-group">
+          <label className="form-label">상담 내용:</label>
           <textarea
+            className="form-textarea"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             required
             rows="10"
-            style={{ width: "100%", padding: "10px", boxSizing: "border-box" }}
+            placeholder="상담 내용을 입력하세요."
           />
         </div>
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-            }}
-          >
-            키워드 (쉼표로 구분):
-          </label>
+
+        {/* 💡 키워드 그룹 */}
+        <div className="form-group">
+          <label className="form-label">키워드 (쉼표로 구분):</label>
           <input
+            className="form-input"
             type="text"
             value={keywords}
             onChange={(e) => setKeywords(e.target.value)}
-            style={{ width: "100%", padding: "10px", boxSizing: "border-box" }}
+            placeholder="예: 학업 스트레스, 진로 고민, 시간 관리"
           />
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px 20px",
-            background: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
+
+        {/* 💡 저장 버튼 */}
+        <button type="submit" disabled={loading} className="btn-save-record">
           {loading ? "저장 중..." : "기록 저장"}
         </button>
       </form>

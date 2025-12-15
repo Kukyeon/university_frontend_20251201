@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getStudentSchedules, cancelAppointment } from "../../api/scheduleApi";
+import "../../pages/SchedulePage.css"; // 💡 이 파일을 import 해야 합니다.
 
 const formatDateTime = (dateTimeStr) => {
   if (!dateTimeStr) return "";
@@ -41,15 +42,19 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
     }
   };
 
-  if (!studentId) return <div>로그인이 필요합니다.</div>;
-  if (schedules.length === 0) return <div>예약된 상담 일정이 없습니다.</div>;
+  // 💡 클래스 적용
+  if (!studentId)
+    return <div className="info-message">로그인이 필요합니다.</div>;
+  if (schedules.length === 0)
+    return <div className="info-message">예약된 상담 일정이 없습니다.</div>;
 
   return (
-    <div>
-      <h3>나의 상담 일정</h3>
-      <ul>
+    <div className="schedule-list-container">
+      <h3 className="list-section-title">나의 상담 일정</h3>
+      <ul className="schedule-list">
         {schedules.map((s) => (
-          <li key={s.id} style={{ marginBottom: "5px" }}>
+          // 💡 클래스 적용
+          <li key={s.id} className={`schedule-item status-${s.status}`}>
             <span
               onClick={() => {
                 // 🚨 콘솔에 찍히는지 확인
@@ -57,12 +62,25 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
                 onSelect(s.scheduleId, s.profId);
                 console.log("--- 항목 클릭됨 ---", s.id, profId);
               }}
-              style={{ cursor: "pointer", fontWeight: "bold" }}
+              className="schedule-info-clickable" // 💡 클래스 적용
             >
-              {s.professorName && <span>{s.professorName} 교수님 | </span>}
-              {formatDateTime(s.startTime)} ~ {formatDateTime(s.endTime)} |{" "}
-              {s.status}
+              {s.professorName && (
+                <span className="professor-name">
+                  {s.professorName} 교수님 |{" "}
+                </span>
+              )}
+              <span className="schedule-time">
+                {formatDateTime(s.startTime)} ~ {formatDateTime(s.endTime)}
+              </span>{" "}
+              | <span className="schedule-status">{s.status}</span>
             </span>
+            <button
+              onClick={() => handleCancel(s.scheduleId)}
+              className="cancel-btn" // 💡 클래스 적용
+              disabled={s.status !== "확인됨"}
+            >
+              취소
+            </button>
           </li>
         ))}
       </ul>

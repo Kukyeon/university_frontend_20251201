@@ -4,6 +4,7 @@ import StudentScheduleList from "../components/Schedule/StudentScheduleList";
 import BookAppointment from "../components/Schedule/BookAppointment";
 import StudentCounselingDetail from "../components/Schedule/StudentCounselingDetail";
 import VideoRoom from "../components/Schedule/VideoRoom";
+import "./SchedulePage.css"; // 💡 CSS 파일을 여기에 import 해야 합니다.
 
 const StudentSchedulePage = ({ user, role }) => {
   const studentId = user?.id;
@@ -79,57 +80,65 @@ const StudentSchedulePage = ({ user, role }) => {
 
   if (role !== "student") {
     return (
-      <div style={{ padding: "20px", color: "red" }}>접근 권한이 없습니다.</div>
+      // 💡 인라인 스타일 제거 및 클래스 적용
+      <div className="access-denied-message">접근 권한이 없습니다.</div>
     );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      {/* 📌 목록 화면 */}
-      {!inRoom && !viewDetail && (
-        <>
-          <h1>학생 상담 일정</h1>
-          <StudentScheduleList studentId={studentId} onSelect={handleSelect} />
-          <BookAppointment studentId={studentId} />
-        </>
-      )}
+    // 💡 전체 컨테이너 클래스 적용
+    <div className="page-container">
+      {/* 💡 메인 내용 카드 클래스 적용 */}
+      <div className="page-card main-content-card">
+        {/* 📌 목록 화면 */}
+        {!inRoom && !viewDetail && (
+          <>
+            <h1 className="card-title">학생 상담 일정</h1>
+            <StudentScheduleList
+              studentId={studentId}
+              onSelect={handleSelect}
+            />
+            <BookAppointment studentId={studentId} />
+          </>
+        )}
 
-      {/* 📌 상담 상세 */}
-      {!inRoom && viewDetail && selectedScheduleId && (
-        <div>
-          <button
-            onClick={() => setViewDetail(false)}
-            style={{ marginBottom: "10px" }}
-          >
-            목록으로 돌아가기
-          </button>
+        {/* 📌 상담 상세 */}
+        {!inRoom && viewDetail && selectedScheduleId && (
+          <div>
+            <button
+              onClick={() => setViewDetail(false)}
+              className="btn-back" // 💡 클래스 적용
+            >
+              목록으로 돌아가기
+            </button>
 
-          <StudentCounselingDetail
-            scheduleId={selectedScheduleId}
+            <StudentCounselingDetail
+              scheduleId={selectedScheduleId}
+              studentId={studentId}
+              onStatusLoaded={setScheduleStatus}
+              onProfessorIdLoaded={handleProfessorIdLoaded}
+              onStartCounseling={() =>
+                handleStartCounseling({
+                  scheduleId: selectedScheduleId,
+                  professorId,
+                })
+              }
+            />
+          </div>
+        )}
+
+        {/* 🎥 화상 상담 */}
+        {inRoom && selectedScheduleId && professorId && (
+          <VideoRoom
+            scheduleId={selectedScheduleId} // ⭐ 교수와 동일한 room
             studentId={studentId}
-            onStatusLoaded={setScheduleStatus}
-            onProfessorIdLoaded={handleProfessorIdLoaded}
-            onStartCounseling={() =>
-              handleStartCounseling({
-                scheduleId: selectedScheduleId,
-                professorId,
-              })
-            }
+            professorId={professorId}
+            userRole="student"
+            userName={studentName}
+            onFinish={handleFinishCounseling}
           />
-        </div>
-      )}
-
-      {/* 🎥 화상 상담 */}
-      {inRoom && selectedScheduleId && professorId && (
-        <VideoRoom
-          scheduleId={selectedScheduleId} // ⭐ 교수와 동일한 room
-          studentId={studentId}
-          professorId={professorId}
-          userRole="student"
-          userName={studentName}
-          onFinish={handleFinishCounseling}
-        />
-      )}
+        )}
+      </div>
     </div>
   );
 };

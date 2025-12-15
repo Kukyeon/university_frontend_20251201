@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getStudentCounselingRecord } from "../../api/scheduleApi";
+import "../../pages/SchedulePage.css";
 
 const StudentCounselingDetail = ({
   scheduleId,
@@ -46,37 +47,50 @@ const StudentCounselingDetail = ({
     fetchRecord();
   }, [scheduleId, studentId, onStatusLoaded, onProfessorIdLoaded]);
 
-  if (loading) return <div>상담 기록 상세 로딩 중...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  // 💡 클래스 적용
+  if (loading)
+    return <div className="loading-text">상담 기록 상세 로딩 중...</div>;
+  if (error) return <div className="error-message">{error}</div>;
   if (!record || !record.schedule)
-    return <div>상담 상세 정보가 존재하지 않습니다.</div>;
+    return (
+      <div className="info-message">상담 상세 정보가 존재하지 않습니다.</div>
+    );
 
   const schedule = record.schedule;
 
   return (
-    <div
-      style={{
-        border: "1px solid #ddd",
-        padding: "20px",
-        borderRadius: "5px",
-        backgroundColor: "#fff",
-      }}
-    >
-      <h3>상담 상세 내용</h3>
-      <p>
-        <strong>현재 상태:</strong> {schedule.status}
-      </p>
-      <p>
-        <strong>일자 및 시간:</strong>{" "}
-        {new Date(schedule.startTime).toLocaleString()} ~{" "}
-        {new Date(schedule.endTime).toLocaleString()}
-      </p>
-      <p>
-        <strong>상담 교수:</strong> {schedule.professorName || "조회 필요"}
-      </p>
-      <p>
-        <strong>학생 이름:</strong> {schedule.studentName || "조회 필요"}
-      </p>
+    // 💡 클래스 적용
+    <div className="counseling-detail-card">
+      <h3 className="detail-section-title">상담 상세 내용</h3>
+
+      {/* 💡 정보 목록 */}
+      <div className="detail-info-group">
+        <p className="detail-info-item">
+          <strong className="info-label">현재 상태:</strong>
+          <span className={`status-badge status-${schedule.status}`}>
+            {schedule.status}
+          </span>
+        </p>
+        <p className="detail-info-item">
+          <strong className="info-label">일자 및 시간:</strong>{" "}
+          <span className="info-value">
+            {new Date(schedule.startTime).toLocaleString()} ~{" "}
+            {new Date(schedule.endTime).toLocaleString()}
+          </span>
+        </p>
+        <p className="detail-info-item">
+          <strong className="info-label">상담 교수:</strong>{" "}
+          <span className="info-value professor-name-detail">
+            {schedule.professorName || "조회 필요"}
+          </span>
+        </p>
+        <p className="detail-info-item">
+          <strong className="info-label">학생 이름:</strong>{" "}
+          <span className="info-value">
+            {schedule.studentName || "조회 필요"}
+          </span>
+        </p>
+      </div>
 
       {(schedule.status === "확인됨" || schedule.status === "CONFIRMED") && (
         <button
@@ -86,7 +100,7 @@ const StudentCounselingDetail = ({
               professorId: schedule.professorId,
             })
           }
-          style={{ marginTop: "10px" }}
+          className="btn-start-counseling" // 💡 클래스 적용
         >
           🎥 상담 시작
         </button>
