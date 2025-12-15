@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import StudentScheduleList from "../components/Schedule/StudentScheduleList";
 import BookAppointment from "../components/Schedule/BookAppointment";
 import StudentCounselingDetail from "../components/Schedule/StudentCounselingDetail";
@@ -6,24 +7,34 @@ import VideoRoom from "../components/Schedule/VideoRoom";
 
 const StudentSchedulePage = ({ user, role }) => {
   const studentId = user?.id;
-  const studentName = user?.name; // 학생 이름 추가
+  const studentName = user?.name || `학생-${studentId}`;
+
+  // 🔥 URL 파라미터 관리
+  const [searchParams, setSearchParams] = useSearchParams();
+  const scheduleIdFromUrl = searchParams.get("scheduleId");
+  const professorIdFromUrl = searchParams.get("professorId");
+
   const [selectedScheduleId, setSelectedScheduleId] = useState(null);
   const [inRoom, setInRoom] = useState(false);
   const [viewDetail, setViewDetail] = useState(false);
   const [scheduleStatus, setScheduleStatus] = useState(null);
   const [professorId, setProfessorId] = useState(null);
 
-  React.useEffect(() => {
+  // ✅ URL에 scheduleId가 있으면 자동으로 화상 상담 입장
+  useEffect(() => {
+    if (scheduleIdFromUrl && professorIdFromUrl) {
+      setSelectedScheduleId(scheduleIdFromUrl);
+      setProfessorId(professorIdFromUrl);
+      setInRoom(true);
+      setViewDetail(false);
+    }
+  }, [scheduleIdFromUrl, professorIdFromUrl]);
+
+  // 📌 디버그 로그 (유지)
+  useEffect(() => {
     console.log("--- StudentSchedulePage 상태 변경 ---");
     console.log(
       `inRoom: ${inRoom}, selectedScheduleId: ${selectedScheduleId}, professorId: ${professorId}`
-    );
-    console.log(
-      `VideoRoom 렌더링 조건 충족: ${!!(
-        inRoom &&
-        selectedScheduleId &&
-        professorId
-      )}`
     );
     if (!professorId && selectedScheduleId) {
       console.error(
@@ -32,21 +43,39 @@ const StudentSchedulePage = ({ user, role }) => {
     }
   }, [inRoom, selectedScheduleId, professorId]);
 
+  // 📌 일정 선택
   const handleSelect = (scheduleId, profId) => {
     setSelectedScheduleId(scheduleId);
-    setViewDetail(true);
-    setScheduleStatus(null);
     setProfessorId(profId);
+    setViewDetail(true);
+    setInRoom(false);
+    setScheduleStatus(null);
   };
 
+  // 📌 StudentCounselingDetail에서 교수 ID 보완
   const handleProfessorIdLoaded = (profId) => {
     if (profId) {
       setProfessorId(profId);
     }
   };
 
-  const canStartCounseling = (status) =>
-    status === "확인됨" || status === "CONFIRMED";
+  // 🔥 상담 시작 → URL에 scheduleId + professorId 기록
+  const handleStartCounseling = ({ scheduleId, professorId }) => {
+    setSearchParams({
+      scheduleId,
+      professorId,
+    });
+  };
+
+  // 🔥 상담 종료 → URL & 상태 초기화
+  const handleFinishCounseling = () => {
+    setSearchParams({});
+    setInRoom(false);
+    setViewDetail(false);
+    setSelectedScheduleId(null);
+    setProfessorId(null);
+    setScheduleStatus(null);
+  };
 
   if (role !== "student") {
     return (
@@ -56,6 +85,7 @@ const StudentSchedulePage = ({ user, role }) => {
 
   return (
     <div style={{ padding: "20px" }}>
+      {/* 📌 목록 화면 */}
       {!inRoom && !viewDetail && (
         <>
           <h1>학생 상담 일정</h1>
@@ -64,6 +94,7 @@ const StudentSchedulePage = ({ user, role }) => {
         </>
       )}
 
+      {/* 📌 상담 상세 */}
       {!inRoom && viewDetail && selectedScheduleId && (
         <div>
           <button
@@ -77,26 +108,26 @@ const StudentSchedulePage = ({ user, role }) => {
             scheduleId={selectedScheduleId}
             studentId={studentId}
             onStatusLoaded={setScheduleStatus}
-            onStartCounseling={() => setInRoom(true)}
             onProfessorIdLoaded={handleProfessorIdLoaded}
+            onStartCounseling={() =>
+              handleStartCounseling({
+                scheduleId: selectedScheduleId,
+                professorId,
+              })
+            }
           />
         </div>
       )}
 
+      {/* 🎥 화상 상담 */}
       {inRoom && selectedScheduleId && professorId && (
         <VideoRoom
-          scheduleId={selectedScheduleId}
+          scheduleId={selectedScheduleId} // ⭐ 교수와 동일한 room
           studentId={studentId}
           professorId={professorId}
-          userRole={role}
+          userRole="student"
           userName={studentName}
-          onFinish={() => {
-            setInRoom(false);
-            setViewDetail(false);
-            setSelectedScheduleId(null);
-            setScheduleStatus(null);
-            setProfessorId(null);
-          }}
+          onFinish={handleFinishCounseling}
         />
       )}
     </div>

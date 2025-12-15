@@ -1,4 +1,3 @@
-/* src/components/Schedule/VideoRoom.js (수정) */
 import React, { useState, useEffect, useCallback } from "react";
 import { saveRecord } from "../../api/scheduleApi"; // 👈 API import 필요
 
@@ -14,15 +13,16 @@ function VideoRoom({
   userName,
   onFinish,
   initialNotes,
+  initialKeywords,
 }) {
-  const room = scheduleId;
+  const room = Number(scheduleId);
   const htmlFile = "videoroomtest.html";
   const iframeSrc = `${process.env.PUBLIC_URL}/${htmlFile}?room=${room}&role=${userRole}&display=${userName}`;
 
   // 💡 교수용 상담 기록 상태 추가
-  const isProfessor = userRole === "professor";
+  const isProfessor = userRole === "professor" || userRole === "prof";
   const [notes, setNotes] = useState(initialNotes || "");
-
+  const [keywords] = useState(initialKeywords || "");
   // 💡 텍스트 입력 핸들러
   const handleNotesChange = (e) => {
     setNotes(e.target.value);
@@ -34,17 +34,43 @@ function VideoRoom({
     onFinish(finalNotes);
   };
 
-  // 컴포넌트 마운트 시 기존 기록을 불러오는 useEffect가 필요하지만,
-  // VideoRoom은 회의 시작 시에만 렌더링되므로,
-  // 초기 기록은 ProfessorCounselingDetail에서 불러와 props로 넘겨주는 것이 더 깔끔할 수 있습니다.
-  // (현재 코드에서는 생략하고, 새로운 기록만 작성한다고 가정합니다.)
-
   return (
     <div style={{ height: "100vh", width: "100%", padding: "0 20px" }}>
       {" "}
       {/* padding 추가 */}
       <h2>💬 화상 상담 (상담 ID: {room})</h2>
-      {/* 💡 교수 전용 기록 폼 */}
+      {/* 💡 Iframe을 먼저 배치하여 상단에 비디오가 오도록 합니다. */}
+      <iframe
+        src={iframeSrc}
+        title={`Video Room ${room}`}
+        id="JanusIframe"
+        style={{
+          width: "100%",
+          // 💡 Iframe 높이 조정: 450px + 버튼 공간을 뺀 나머지.
+          // (videoroomtest.html에서 비디오 높이를 400px로 설정했으므로, 500px 정도면 충분합니다)
+          height: "500px",
+          border: "1px solid #ccc",
+          borderRadius: "8px",
+          marginBottom: "10px" /* 아래 요소와의 간격 추가 */,
+        }}
+        allow="camera; microphone"
+      ></iframe>
+      {/* React 레벨에서 상담 종료 버튼 제공 */}
+      <button
+        onClick={handleFinishClick}
+        style={{
+          margin: "10px 0",
+          padding: "8px 15px",
+          background: "#f44336",
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+          display: "block" /* 블록 요소로 만들어 공간 확보 */,
+        }}
+      >
+        상담 종료 및 기록 저장
+      </button>
+      {/* 💡 교수 전용 기록 폼을 Iframe 아래로 배치합니다. */}
       {isProfessor && (
         <div
           style={{
@@ -73,33 +99,6 @@ function VideoRoom({
           />
         </div>
       )}
-      {/* React 레벨에서 상담 종료 버튼 제공 */}
-      <button
-        onClick={handleFinishClick} // 💡 수정된 종료 핸들러 사용
-        style={{
-          margin: "10px 0",
-          padding: "8px 15px",
-          background: "#f44336",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-        }}
-      >
-        상담 종료 및 기록 저장
-      </button>
-      <iframe
-        src={iframeSrc}
-        title={`Video Room ${room}`}
-        id="JanusIframe"
-        style={{
-          width: "100%",
-          // 💡 폼 공간 확보: 교수일 경우 높이 조정, 아닐 경우 기존 높이 유지
-          height: isProfessor ? "calc(100% - 240px)" : "calc(100% - 100px)",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-        }}
-        allow="camera; microphone"
-      ></iframe>
     </div>
   );
 }

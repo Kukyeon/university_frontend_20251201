@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getAllAvailableTimes, bookAppointment } from "../../api/scheduleApi";
+import {
+  getAllAvailableTimes,
+  bookAppointment,
+  getAllProfessors,
+} from "../../api/scheduleApi";
 
 const formatDateTime = (dateTimeStr) => {
   if (!dateTimeStr) return "";
@@ -17,6 +21,7 @@ const BookAppointment = ({ studentId }) => {
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [professorMap, setProfessorMap] = useState({});
 
   useEffect(() => {
     if (!studentId) {
@@ -57,7 +62,7 @@ const BookAppointment = ({ studentId }) => {
 
   if (loading) return <div>⏳ 예약 가능한 시간 불러오는 중...</div>;
   if (error) return <div style={{ color: "red" }}>⚠ {error}</div>;
-
+  console.log("slot 샘플:", availableSlots[0]);
   return (
     <div style={{ marginTop: "20px" }}>
       <h3>📅 상담 예약 가능한 시간</h3>
@@ -67,6 +72,7 @@ const BookAppointment = ({ studentId }) => {
         <ul>
           {availableSlots.map((slot) => (
             <li key={slot.id} style={{ marginBottom: "8px" }}>
+              <span>{slot.professorName} 교수님 | </span>
               🕒 {formatDateTime(slot.startTime)} ~{" "}
               {formatDateTime(slot.endTime)}
               <button

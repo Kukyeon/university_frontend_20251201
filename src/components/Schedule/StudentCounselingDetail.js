@@ -79,7 +79,15 @@ const StudentCounselingDetail = ({
       </p>
 
       {(schedule.status === "확인됨" || schedule.status === "CONFIRMED") && (
-        <button onClick={onStartCounseling} style={{ marginTop: "10px" }}>
+        <button
+          onClick={() =>
+            onStartCounseling({
+              scheduleId: schedule.id,
+              professorId: schedule.professorId,
+            })
+          }
+          style={{ marginTop: "10px" }}
+        >
           🎥 상담 시작
         </button>
       )}

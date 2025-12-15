@@ -59,6 +59,7 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
               }}
               style={{ cursor: "pointer", fontWeight: "bold" }}
             >
+              {s.professorName && <span>{s.professorName} 교수님 | </span>}
               {formatDateTime(s.startTime)} ~ {formatDateTime(s.endTime)} |{" "}
               {s.status}
             </span>

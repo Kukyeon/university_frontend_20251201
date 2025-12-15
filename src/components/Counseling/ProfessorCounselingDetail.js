@@ -76,6 +76,7 @@ const ProfessorCounselingDetail = () => {
   }, [scheduleId, studentId, isMeetingActive]); // 화상 회의 종료 후 재요청 // 💡 VideoRoom 컴포넌트를 import하고 직접 렌더링
 
   if (isMeetingActive) {
+    const currentProfessorName = record.schedule.professorName || "교수";
     return (
       <VideoRoom
         scheduleId={scheduleId}
@@ -83,7 +84,7 @@ const ProfessorCounselingDetail = () => {
         professorId={profId}
         onFinish={handleFinishMeeting}
         userRole="professor"
-        userName="교수님" // 실제 사용자 이름으로 대체 필요
+        userName={currentProfessorName} // 실제 사용자 이름으로 대체 필요
         // 💡 VideoRoom에 기존 기록 notes를 전달하여 회의 중 수정 가능하게 함
         initialNotes={record?.notes || ""}
         initialKeywords={record?.keywords || ""} // 💡 키워드도 전달하여 저장 시 누락 방지

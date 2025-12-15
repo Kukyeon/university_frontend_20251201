@@ -85,7 +85,7 @@ const ProfessorScheduleRequests = ({ professorId }) => {
               }
             >
               <div style={{ fontWeight: "bold" }}>
-                학생 ID: {req.studentName} | {formatDateTime(req.startTime)}
+                학생 이름 : {req.studentName} | {formatDateTime(req.startTime)}
               </div>
               <div>
                 현재 상태: **{req.status}**
