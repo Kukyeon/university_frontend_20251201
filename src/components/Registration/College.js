@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const College = () => {
   const [colleges, setColleges] = useState([]);
   const [newCollegeName, setNewCollegeName] = useState("");
+  const { showModal } = useModal();
   useEffect(() => {
     getList();
   }, []);
@@ -16,69 +18,94 @@ const College = () => {
     } catch (err) {
       console.error(err);
       setColleges([]);
-      alert("단과대학 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message: "단과대 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
   const handleAddCollege = async () => {
     if (!newCollegeName) return;
     try {
       const res = await api.post("/admin/college", { name: newCollegeName });
-      alert(`${newCollegeName} 등록 완료!`);
+      showModal({
+        type: "alert",
+        message: `${newCollegeName}를 등록히였습니다.`,
+      });
       setNewCollegeName("");
       getList(); // 등록 후 리스트 갱신
     } catch (err) {
       console.error(err);
-      alert("등록 실패");
+      showModal({
+        type: "alert",
+        message: "단과대 등록에 실패했습니다.",
+      });
     }
   };
 
-  const handleDeleteCollege = async (id) => {
-    try {
-      await api.delete(`/admin/college/${id}`);
-      alert("삭제 완료!");
-      getList(); // 삭제 후 리스트 갱신
-    } catch (err) {
-      console.error(err);
-      alert("삭제 실패");
-    }
+  const handleDeleteCollege = async (id, name) => {
+    showModal({
+      type: "confirm",
+      message: `${name}을 삭제 하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/admin/college/${id}`);
+          showModal({
+            type: "alert",
+            message: "단과대를 삭제하였습니다.",
+          });
+          getList(); // 삭제 후 리스트 갱신
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: "단과대 삭제에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   return (
     <>
       <h3>단과대학 관리</h3>
-      <div style={{ marginBottom: "10px" }}>
+      <div className="form-row">
         <input
           type="text"
           placeholder="신규 단과대학 이름"
           value={newCollegeName}
           onChange={(e) => setNewCollegeName(e.target.value)}
-          style={{ width: "200px", marginRight: "8px" }}
         />
         <button onClick={handleAddCollege}>등록</button>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>이름</th>
-            <th>삭제</th>
-          </tr>
-        </thead>
-        <tbody>
-          {colleges.map((college) => (
-            <tr key={college.id}>
-              <td>{college.id}</td>
-              <td>{college.name}</td>
-              <td>
-                <button onClick={() => handleDeleteCollege(college.id)}>
-                  삭제
-                </button>
-              </td>
+      <div className="table-wrapper">
+        <table className="course-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>이름</th>
+              <th>삭제</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {colleges.map((college) => (
+              <tr key={college.id}>
+                <td>{college.id}</td>
+                <td>{college.name}</td>
+                <td>
+                  <button
+                    onClick={() =>
+                      handleDeleteCollege(college.id, college.name)
+                    }
+                  >
+                    삭제
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };

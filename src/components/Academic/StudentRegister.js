@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const StudentRegister = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ const StudentRegister = () => {
     department: { id: "" },
     entranceDate: "",
   });
-
+  const { showModal } = useModal();
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "departmentNo") {
@@ -28,7 +29,10 @@ const StudentRegister = () => {
   const handleSubmit = async () => {
     try {
       await api.post("/staff/student", formData);
-      alert("학생 등록 완료!");
+      showModal({
+        type: "alert",
+        message: "학생 등록을 완료하였습니다.",
+      });
       setFormData({
         name: "",
         birthDate: "",
@@ -40,7 +44,13 @@ const StudentRegister = () => {
         entranceDate: "",
       });
     } catch (err) {
-      alert("학생 등록 실패: " + (err.response?.data?.message || err.message));
+      showModal({
+        type: "alert",
+        message:
+          err.response?.data?.message ||
+          err.message ||
+          "학생 등록을 실패했습니다.",
+      });
     }
   };
 

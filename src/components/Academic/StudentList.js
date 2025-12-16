@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [searchDept, setSearchDept] = useState("");
   const [searchId, setSearchId] = useState("");
   const [loading, setLoading] = useState(false); // 추가
-  const [updateMessage, setUpdateMessage] = useState(""); // 추가
-
+  const { showModal } = useModal();
   useEffect(() => {
     getList();
   }, []);
@@ -18,9 +18,11 @@ const StudentList = () => {
         res.data.content || (Array.isArray(res.data) ? res.data : [res.data]);
       setStudents(data);
     } catch (err) {
-      console.error(err);
       setStudents([]);
-      alert("전체 학생 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message: "학생 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
   const getSerchList = async () => {
@@ -33,23 +35,29 @@ const StudentList = () => {
       setStudents(
         res.data.content || (Array.isArray(res.data) ? res.data : [res.data])
       ); // PageResponse 구조면 content 사용
-      console.log(res.data);
     } catch (err) {
-      console.error(err);
       setStudents([]);
-      alert("학생 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message: "학생 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
   const handleUpdateGrades = async () => {
     setLoading(true);
-    setUpdateMessage("");
     try {
       await api.get("/staff/list/student/update"); // 스프링 컨트롤러 매핑
-      setUpdateMessage("전체 학생 학년/학기 업데이트 완료!");
+      showModal({
+        type: "alert",
+        message: "전체 학생 학기 업데이트를 완료하였습니다.",
+      });
       getList(); // 갱신 후 리스트 새로 조회
     } catch (err) {
       console.error(err);
-      setUpdateMessage("업데이트 실패!");
+      showModal({
+        type: "alert",
+        message: "학기 업데이트에 실패했습니다.",
+      });
     } finally {
       setLoading(false);
     }
@@ -57,31 +65,26 @@ const StudentList = () => {
   return (
     <>
       <h3>학생 명단 조회</h3>
-      <div style={{ marginBottom: "1rem" }}>
-        <button onClick={handleUpdateGrades} disabled={loading}>
-          {loading ? "업데이트 중..." : "새학기 적용"}
-        </button>
-        {updateMessage && (
-          <span style={{ marginLeft: "1rem" }}>{updateMessage}</span>
-        )}
-      </div>
       <div className="filter-container">
-        <div className="department-form">
-          <label>학과 번호:</label>
+        <div className="form-row">
           <input
             type="text"
             value={searchDept}
             onChange={(e) => setSearchDept(e.target.value)}
+            placeholder="학과 번호"
           />
 
-          <label>학번:</label>
           <input
             type="text"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
+            placeholder="학번"
           />
           <button onClick={getSerchList} className="search-btn">
             조회
+          </button>
+          <button onClick={handleUpdateGrades} disabled={loading}>
+            {loading ? "업데이트 중..." : "새학기 적용"}
           </button>
         </div>
       </div>

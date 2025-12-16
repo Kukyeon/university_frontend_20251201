@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const ProfessorList = () => {
   const [professors, setProfessors] = useState([]);
   const [searchDept, setSearchDept] = useState("");
   const [searchId, setSearchId] = useState("");
-
+  const { showModal } = useModal();
   useEffect(() => {
     getList();
   }, []);
@@ -18,7 +19,10 @@ const ProfessorList = () => {
     } catch (err) {
       console.error(err);
       setProfessors([]);
-      alert("전체 교수 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message: "교수 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
   const getSerchList = async () => {
@@ -31,30 +35,31 @@ const ProfessorList = () => {
       setProfessors(
         res.data.content || (Array.isArray(res.data) ? res.data : [res.data])
       ); // PageResponse 구조면 content 사용
-      console.log(res.data);
     } catch (err) {
-      console.error(err);
       setProfessors([]);
-      alert("교수 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message: "교수 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
   return (
     <>
       <h3>교수 명단 조회</h3>
       <div className="filter-container">
-        <div className="department-form">
-          <label>학과 번호:</label>
+        <div className="form-row">
           <input
             type="text"
             value={searchDept}
             onChange={(e) => setSearchDept(e.target.value)}
+            placeholder="학과 번호"
           />
 
-          <label>사번:</label>
           <input
             type="text"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
+            placeholder="사번"
           />
           <button onClick={getSerchList} className="search-btn">
             조회

@@ -31,11 +31,11 @@ const CoursePage = ({ role }) => {
 
   return (
     <SectionLayout title="수업" sidebar={sidebar}>
-      {activeTab === "전체 강의 조회" && <AllCourse />}
+      {activeTab === "전체 강의 조회" && <AllCourse role={role} />}
 
       {role === "professor" && (
         <>
-          {activeTab === "내 강의 조회" && <ProfCourse />}
+          {activeTab === "내 강의 조회" && <ProfCourse role={role} />}
           {activeTab === "내 강의 평가" && <ProfEvaluation />}
           {activeTab === "위험 학생 조회" && <ProfDashboard />}
         </>

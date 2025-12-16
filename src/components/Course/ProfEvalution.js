@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const ProfEvaluation = () => {
   const [evaluationData, setEvaluationData] = useState([]);
   const [subjects, setSubjects] = useState([]); // 셀렉트용 과목 목록
   const [selectedSubject, setSelectedSubject] = useState("");
   const [loading, setLoading] = useState(true);
+  const { showModal } = useModal();
   // 전체 평가 조회
   const fetchEvaluation = async (subjectName = "") => {
     try {
@@ -16,7 +18,10 @@ const ProfEvaluation = () => {
       );
       setEvaluationData(res.data);
     } catch (err) {
-      console.error("강의 평가 조회 실패", err);
+      showModal({
+        type: "alert",
+        message: "강의 평가를 불러오는데 실패했습니다.",
+      });
     } finally {
       setLoading(false);
     }
@@ -27,7 +32,10 @@ const ProfEvaluation = () => {
       const res = await api.get(`/evaluation/professor/subjects`);
       setSubjects(res.data);
     } catch (err) {
-      console.error("강의 목록 조회 실패", err);
+      showModal({
+        type: "alert",
+        message: "강의 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
 

@@ -1,27 +1,37 @@
 import { useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const ChangePw = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
-
+  const { showModal } = useModal();
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
     if (newPassword !== confirmPw) {
-      alert("새 비밀번호와 확인이 일치하지 않습니다.");
+      showModal({
+        type: "alert",
+        message: "새 비밀번호와 확인이 일치하지 않습니다.",
+      });
       return;
     }
     try {
       const payload = { oldPassword, newPassword };
       await api.put("/user/update/pw", payload);
-      alert("비밀번호 변경 완료! (API 연동 전 임시 기능)");
+      showModal({
+        type: "alert",
+        message: "비밀번호가 변경되었습니다.",
+      });
       setOldPassword("");
       setNewPassword("");
       setConfirmPw("");
     } catch (error) {
-      alert("비밀번호 변경 실패" + error.response.data);
+      showModal({
+        type: "alert",
+        message: error.response?.data?.message || error.message,
+      });
     }
   };
 

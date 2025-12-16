@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { courseApi } from "../../api/gradeApi";
+import CoursePlanPage from "../Course/CoursePlanPage";
+import { useModal } from "../ModalContext";
 
 const CourseListPage = () => {
   const [subjects, setSubjects] = useState([]);
@@ -16,7 +18,9 @@ const CourseListPage = () => {
     name: "",
     deptId: "",
   });
-
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [showSyllabus, setShowSyllabus] = useState(false);
+  const { showModal } = useModal();
   // 초기 로딩
   useEffect(() => {
     loadDepartments();
@@ -31,7 +35,10 @@ const CourseListPage = () => {
       const res = await courseApi.getDeptList();
       setDepartments(res.data || []);
     } catch (err) {
-      console.error("학과 목록 로딩 실패", err);
+      showModal({
+        type: "alert",
+        message: "학과 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
 
@@ -46,7 +53,10 @@ const CourseListPage = () => {
       setSubjects(res.data.content || []);
       setTotalPages(res.data.totalPages || 0);
     } catch (err) {
-      console.error(err);
+      showModal({
+        type: "alert",
+        message: "강좌 목록을 불러오는데 실패했습니다.",
+      });
       setSubjects([]);
     }
   };
@@ -61,12 +71,9 @@ const CourseListPage = () => {
     setAppliedFilters({ ...searchParams });
   };
 
-  const openSyllabus = (subjectId) => {
-    window.open(
-      `/course/syllabus/${subjectId}`,
-      "_blank",
-      "width=1000,height=900,left=200,top=50"
-    );
+  const openSyllabus = (courseId) => {
+    setSelectedCourseId(courseId);
+    setShowSyllabus(true);
   };
 
   return (
@@ -182,6 +189,14 @@ const CourseListPage = () => {
           다음 ▶
         </button>
       </div>
+      <CoursePlanPage
+        show={showSyllabus}
+        subjectId={selectedCourseId}
+        onClose={() => {
+          setShowSyllabus(false);
+          setSelectedCourseId(null);
+        }}
+      />
     </>
   );
 };

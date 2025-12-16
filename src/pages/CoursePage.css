@@ -189,6 +189,6 @@
 
   .course-table {
     font-size: 10px;
-    min-width: 500px; /* 테이블 최소 폭 */
+    /* min-width: 300px; 테이블 최소 폭 */
   }
 }

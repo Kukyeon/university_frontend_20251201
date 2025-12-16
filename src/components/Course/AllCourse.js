@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
 import { courseApi } from "../../api/gradeApi";
-// import "./CoursePage.css"; // CSS import
+import { useModal } from "../ModalContext";
+import CoursePlanPage from "./CoursePlanPage";
 
-const AllCourse = () => {
+const AllCourse = ({ role }) => {
   const [year, setYear] = useState("");
   const [semester, setSemester] = useState("");
   const [department, setDepartment] = useState("");
@@ -12,6 +13,9 @@ const AllCourse = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [departments, setDepartments] = useState([]);
+  const { showModal } = useModal();
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [showSyllabus, setShowSyllabus] = useState(false);
 
   // 학과 목록 로딩
   useEffect(() => {
@@ -20,7 +24,10 @@ const AllCourse = () => {
         const res = await courseApi.getDeptList();
         setDepartments(res.data || []);
       } catch (err) {
-        console.error("학과 목록 로딩 실패", err);
+        showModal({
+          type: "alert",
+          message: "학과 목록을 불러오는데 실패했습니다.",
+        });
       }
     };
     loadDepartments();
@@ -45,7 +52,10 @@ const AllCourse = () => {
       setCourses(res.data.content || []);
       setTotalPages(res.data.totalPages || 0);
     } catch (err) {
-      console.error("강좌 목록 로딩 실패", err);
+      showModal({
+        type: "alert",
+        message: "강좌 목록을 불러오는데 실패했습니다.",
+      });
       setCourses([]);
     }
   };
@@ -56,11 +66,8 @@ const AllCourse = () => {
   };
 
   const openSyllabus = (courseId) => {
-    window.open(
-      `/course/syllabus/${courseId}`,
-      "_blank",
-      "width=1000,height=900,left=200,top=50"
-    );
+    setSelectedCourseId(courseId);
+    setShowSyllabus(true);
   };
 
   return (
@@ -182,6 +189,15 @@ const AllCourse = () => {
           다음 ▶
         </button>
       </div>
+      <CoursePlanPage
+        role={role}
+        show={showSyllabus}
+        subjectId={selectedCourseId}
+        onClose={() => {
+          setShowSyllabus(false);
+          setSelectedCourseId(null);
+        }}
+      />
     </>
   );
 };

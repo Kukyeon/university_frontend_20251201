@@ -3,6 +3,8 @@
   background-color: #fff;
   border-radius: 12px;
   padding: 25px;
+  width: 100%;
+  box-sizing: border-box;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
 }
@@ -66,7 +68,9 @@
   .section-card {
     padding: 16px;
   }
-
+  .section-card table {
+    width: 100%;
+  }
   .section-card table td,
   .section-card table th {
     padding: 6px 8px;

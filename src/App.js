@@ -31,7 +31,6 @@ import AdminSubjectPage from "./pages/AdminSubjectPage";
 import GradePage from "./pages/GradePage";
 import StudentSchedulePage from "./pages/StudentSchedulePage";
 import ProfessorSchedulePage from "./pages/ProfessorSchedulePage";
-import CoursePlanPage from "./pages/CoursePlanPage";
 import StudentCounselingDetail from "./components/Schedule/StudentCounselingDetail";
 import ProfessorCounselingDetail from "./components/Counseling/ProfessorCounselingDetail";
 import CounselingRecordForm from "./components/Counseling/CounselingRecordForm";
@@ -294,12 +293,6 @@ function App() {
               element={<AdminSubjectPage user={user} />}
             />
             <Route path="/grade" element={<GradePage user={user} />} />
-
-            {/* 4. 강의계획서 (별도 페이지) */}
-            <Route
-              path="/course/syllabus/:subjectId"
-              element={<CoursePlanPage />}
-            />
           </Route>
           <Route
             path="/login"

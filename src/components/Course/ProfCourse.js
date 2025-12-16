@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import CourseStudentList from "./CourseStudentList";
+import CoursePlanPage from "./CoursePlanPage";
 
-const ProfCourse = () => {
+const ProfCourse = ({ role }) => {
   const [subYear, setSubYear] = useState(""); // 초기값 빈 문자열 → 전체 조회
   const [semester, setSemester] = useState(""); // 초기값 빈 문자열 → 전체 조회
   const [courses, setCourses] = useState([]);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
-  const navigate = useNavigate();
+  const [syllabusCourseId, setSyllabusCourseId] = useState(null);
+  const [showSyllabus, setShowSyllabus] = useState(false);
   // 초기 전체 데이터 로딩
   useEffect(() => {
     getSubjectList(); // 처음엔 필터 없이 전체 조회
@@ -36,11 +38,8 @@ const ProfCourse = () => {
   };
 
   const openSyllabus = (courseId) => {
-    window.open(
-      `/course/syllabus/${courseId}`,
-      "_blank",
-      "width=1000,height=900,left=200,top=50"
-    );
+    setSyllabusCourseId(courseId);
+    setShowSyllabus(true);
   };
   const goBack = () => {
     setSelectedCourseId(null);
@@ -136,6 +135,15 @@ const ProfCourse = () => {
               </tbody>
             </table>
           </div>
+          <CoursePlanPage
+            role={role}
+            show={showSyllabus}
+            subjectId={syllabusCourseId}
+            onClose={() => {
+              setShowSyllabus(false);
+              setSyllabusCourseId(null);
+            }}
+          />
         </>
       )}
     </div>

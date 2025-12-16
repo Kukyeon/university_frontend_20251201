@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { getScheduleList } from "../../api/scheduleApi";
+import { useModal } from "../ModalContext";
 
 const AcademicCalendar = () => {
   const [schedule, setSchedule] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { showModal } = useModal();
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
         const data = await getScheduleList();
         setSchedule(data);
-      } catch (error) {
-        console.error("학사일정 로드 실패:", error);
+      } catch (err) {
+        showModal({
+          type: "alert",
+          message: err.response?.data?.message || err.message,
+        });
       } finally {
         setIsLoading(false);
       }

@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { dashboardApi } from "../api/aiApi";
+import { useModal } from "../components/ModalContext";
 
 const AdminDashboard = () => {
   const [risks, setRisks] = useState([]);
   const [checkedIds, setCheckedIds] = useState(new Set());
-
+  const { showModal } = useModal();
   useEffect(() => {
     dashboardApi
       .getAllRiskList()
       .then((res) => setRisks(res.data))
-      .catch(() => alert("데이터 로딩 실패"));
+      .catch(() =>
+        showModal({
+          type: "alert",
+          message: "학생목록을 불러오는데 실패했습니다.",
+        })
+      );
   }, []);
 
   const handleCheck = (id) => {
@@ -21,37 +27,42 @@ const AdminDashboard = () => {
 
   const handleBulkDelete = async () => {
     if (checkedIds.size === 0) {
-      alert("선택된 학생이 없습니다.");
+      showModal({
+        type: "alert",
+        message: "선택된 학생이 없습니다.",
+      });
       return;
     }
-    if (
-      !window.confirm(
-        `선택한 ${checkedIds.size}명을 목록에서 삭제하시겠습니까?`
-      )
-    )
-      return;
-
-    try {
-      await Promise.all(
-        Array.from(checkedIds).map((id) => dashboardApi.deleteRisk(id))
-      );
-      setRisks((prev) => prev.filter((item) => !checkedIds.has(item.id)));
-      setCheckedIds(new Set());
-      alert("삭제 완료!");
-    } catch {
-      alert("삭제 중 오류 발생");
-    }
+    showModal({
+      type: "confirm",
+      message: `선택한 ${checkedIds.size}명을 목록에서 삭제하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await Promise.all(
+            Array.from(checkedIds).map((id) => dashboardApi.deleteRisk(id))
+          );
+          setRisks((prev) => prev.filter((item) => !checkedIds.has(item.id)));
+          setCheckedIds(new Set());
+          showModal({
+            type: "alert",
+            message: "삭제 완료하였습니다.",
+          });
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: "삭제에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <>
       <h3>중도이탈 위험학생 전체 리스트</h3>
       <button onClick={handleBulkDelete}>선택 항목 삭제</button>
-      <div className="table-wrapper" style={{ overflowX: "auto" }}>
-        <table
-          className="course-table"
-          style={{ width: "100%", borderCollapse: "collapse" }}
-        >
+      <div className="table-wrapper">
+        <table className="course-table">
           <thead>
             <tr>
               <th></th>
@@ -68,9 +79,7 @@ const AdminDashboard = () => {
           <tbody>
             {risks.length === 0 ? (
               <tr>
-                <td colSpan="9" style={{ textAlign: "center" }}>
-                  데이터가 없습니다.
-                </td>
+                <td>데이터가 없습니다.</td>
               </tr>
             ) : (
               risks.map((risk) => (
@@ -81,7 +90,7 @@ const AdminDashboard = () => {
                     verticalAlign: "top",
                   }}
                 >
-                  <td style={{ textAlign: "center" }}>
+                  <td>
                     <input
                       type="checkbox"
                       checked={checkedIds.has(risk.id)}
@@ -122,7 +131,7 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 
