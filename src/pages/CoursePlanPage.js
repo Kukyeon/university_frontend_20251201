@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { courseApi } from '../api/gradeApi'; // api.js 경로 확인
+import api from '../api/axiosConfig';
 
-const CoursePlanPage = () => {
+const CoursePlanPage = ({user, role}) => {
   const { subjectId } = useParams();
   const [syllabus, setSyllabus] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // 수정 모드 상태 관리
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({}); // 입력 폼 데이터
   
   // 로그인한 유저 역할 확인 (수정 버튼 표시용)
-  // 실제로는 JWT 토큰 파싱이나 Context에서 가져오는 것이 좋음
-  const userRole = localStorage.getItem("userRole"); // "PROFESSOR" or "STUDENT"
 
   useEffect(() => {
     const loadData = async () => {
@@ -25,6 +28,89 @@ const CoursePlanPage = () => {
     };
     loadData();
   }, [subjectId]);
+
+ useEffect(() => {
+    if(!loading && syllabus) {
+        console.log("=== 권한 체크 디버깅 ===");
+        console.log("받은 role:", role);
+        console.log("받은 user:", user);
+        console.log("강의 계획서 교수ID:", syllabus.professorId);
+    }
+  }, [loading, syllabus, user, role]);
+
+ const canEdit = () => {
+    // 1. 데이터가 없으면 false
+    if (!syllabus || !user) return false;
+
+    // 2. 역할 확인 (props로 받은 role 사용)
+    // 문자열 비교 시 공백 제거 및 소문자 변환 등으로 안전하게 비교 추천
+    if (String(role).trim() !== 'professor') {
+        return false;
+    }
+
+    // 3. ID 비교
+    // user 객체 구조가 { id: ... } 인지 { user: { id: ... } } 인지에 따라 다름
+    // 안전하게 둘 다 체크 (user.id가 없으면 user.user.id 확인)
+    const myId = user.id || (user.user && user.user.id);
+    const profId = syllabus.professorId; // 혹은 syllabus.professorid (소문자 주의)
+
+    if (!myId || !profId) return false;
+
+    return Number(myId) === Number(profId);
+  };
+
+  // 2. 수정 버튼 클릭 시 -> 수정 모드 진입 및 데이터 복사
+  const handleEditClick = () => {
+    setFormData({
+      overview: syllabus.overview || "",
+      objective: syllabus.objective || "",
+      textbook: syllabus.textbook || "",
+      program: syllabus.program || "",
+    });
+    setIsEditing(true);
+  };
+
+  // 3. 취소 버튼 클릭 시 -> 수정 모드 해제
+  const handleCancelClick = () => {
+    if (window.confirm("수정을 취소하시겠습니까? 작성 중인 내용은 저장되지 않습니다.")) {
+      setIsEditing(false);
+    }
+  };
+
+  // 4. 입력 값 변경 핸들러
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // 5. 저장 버튼 클릭 시 (API 호출)
+  const handleSaveClick = async () => {
+    if (!window.confirm("입력한 내용으로 강의계획서를 수정하시겠습니까?")) return;
+
+    try {
+      // Backend Controller: @PutMapping("/professor/subject/{subjectId}/syllabus")
+      // DTO 구조에 맞춰서 데이터 전송
+      await api.put(`/prof/subject/${subjectId}/syllabus`, {
+        ...syllabus, // 기존 정보(강의명, 시간 등) 유지
+        ...formData  // 수정된 정보(개요, 목표 등) 덮어쓰기
+      });
+
+      alert("성공적으로 수정되었습니다.");
+      
+      // 화면 갱신 (수정된 내용을 syllabus 상태에 반영)
+      setSyllabus((prev) => ({ ...prev, ...formData }));
+      setIsEditing(false);
+
+    } catch (err) {
+      console.error(err);
+      // 백엔드에서 보낸 에러 메시지(403 등) 표시
+      const msg = err.response?.data || "수정 중 오류가 발생했습니다.";
+      alert(msg);
+    }
+  };
 
   if (loading) return <div style={{textAlign:'center', marginTop:'50px'}}>로딩중...</div>;
   if (!syllabus) return <div style={{textAlign:'center', marginTop:'50px'}}>데이터가 없습니다.</div>;
@@ -112,45 +198,101 @@ const CoursePlanPage = () => {
         </table>
         <br />
 
-        {/* === 테이블 3: 상세 정보 === */}
+        {/* === 테이블 3: 상세 정보 (★ 수정 가능 영역) === */}
         <table border="1" style={styles.syllabusTable}>
           <colgroup>
             <col style={{ width: '14%' }} />
             <col />
           </colgroup>
           <tbody>
+            {/* 강의 개요 */}
             <tr>
               <td style={styles.tdLabel}>강의 개요</td>
               <td style={styles.alignLeft}>
-                 {/* 줄바꿈 처리를 위해 pre-wrap 사용 */}
-                 <div style={{whiteSpace: 'pre-wrap'}}>{syllabus.overview}</div>
+                {isEditing ? (
+                  <textarea
+                    name="overview"
+                    value={formData.overview}
+                    onChange={handleChange}
+                    style={styles.textarea}
+                  />
+                ) : (
+                  <div style={{whiteSpace: 'pre-wrap'}}>{syllabus.overview}</div>
+                )}
               </td>
             </tr>
+            
+            {/* 강의 목표 */}
             <tr>
               <td style={styles.tdLabel}>강의 목표</td>
               <td style={styles.alignLeft}>
-                 <div style={{whiteSpace: 'pre-wrap'}}>{syllabus.objective}</div>
+                {isEditing ? (
+                  <textarea
+                    name="objective"
+                    value={formData.objective}
+                    onChange={handleChange}
+                    style={styles.textarea}
+                  />
+                ) : (
+                  <div style={{whiteSpace: 'pre-wrap'}}>{syllabus.objective}</div>
+                )}
               </td>
             </tr>
+            
+            {/* 교재 정보 */}
             <tr>
               <td style={styles.tdLabel}>교재 정보</td>
-              <td style={styles.alignLeft}>{syllabus.textbook}</td>
+              <td style={styles.alignLeft}>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="textbook"
+                    value={formData.textbook}
+                    onChange={handleChange}
+                    style={styles.input}
+                  />
+                ) : (
+                  syllabus.textbook
+                )}
+              </td>
             </tr>
+
+            {/* 주간 계획 */}
             <tr>
               <td style={styles.tdLabel}>주간 계획</td>
               <td style={styles.alignLeft}>
-                 <div style={{whiteSpace: 'pre-wrap'}}>{syllabus.program}</div>
+                {isEditing ? (
+                  <textarea
+                    name="program"
+                    value={formData.program}
+                    onChange={handleChange}
+                    style={styles.textarea}
+                  />
+                ) : (
+                  <div style={{whiteSpace: 'pre-wrap'}}>{syllabus.program}</div>
+                )}
               </td>
             </tr>
           </tbody>
         </table>
 
         {/* 교수님일 경우 수정 버튼 표시 */}
-        {userRole === 'PROFESSOR' && (
-          <div style={{ marginTop: '10px', textAlign: 'right', width: '800px', margin: '10px auto' }}>
-            <button onClick={() => alert("수정 페이지로 이동")} style={styles.button}>
-              수정하기
-            </button>
+      {canEdit() && (
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            {isEditing ? (
+              <>
+                <button onClick={handleSaveClick} style={{...styles.button, marginRight: '10px'}}>
+                  저장
+                </button>
+                <button onClick={handleCancelClick} style={{...styles.button, backgroundColor: '#666'}}>
+                  취소
+                </button>
+              </>
+            ) : (
+              <button onClick={handleEditClick} style={styles.button}>
+                수정하기
+              </button>
+            )}
           </div>
         )}
 

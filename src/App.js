@@ -286,10 +286,10 @@ function App() {
           {/* 4. 강의계획서 (별도 페이지) */}
           <Route
             path="/course/syllabus/:subjectId"
-            element={<CoursePlanPage />}
+            element={<CoursePlanPage user={user} role={role} />}
           />
         </Route>
-        <Route
+          <Route
           path="/login"
           element={<Login setUser={setUser} setRole={setRole} />}
         />
