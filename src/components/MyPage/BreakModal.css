@@ -1,0 +1,60 @@
+.break-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.break-modal-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 10px;
+  width: 500px;
+  position: relative;
+}
+
+.break-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.break-modal-title {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.break-modal-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.break-modal-table td {
+  padding: 6px;
+  border: 1px solid #ddd;
+}
+
+.break-modal-text {
+  margin-top: 20px;
+}
+
+.break-modal-date {
+  text-align: right;
+  margin-top: 10px;
+}
+
+.break-modal-actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.break-modal-actions button {
+  margin: 0 6px;
+}

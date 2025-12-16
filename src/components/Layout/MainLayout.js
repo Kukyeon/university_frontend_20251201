@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "../Home/Header";
 import Footer from "../Home/Footer";
+import Chatbot from "../Chatbot/Chatbot";
 
 const MainLayout = ({ user, role, logout }) => {
   return (
@@ -10,6 +11,7 @@ const MainLayout = ({ user, role, logout }) => {
         <Outlet />
       </main>
       <Footer />
+      {role === "student" && <Chatbot user={user} />}
     </>
   );
 };

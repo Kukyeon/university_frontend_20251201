@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { courseApi } from "../../api/gradeApi";
 import EnrollmentTable from "./EnrollmentTable";
+import { useModal } from "../ModalContext";
 
 const EnrollmentPage = ({ setPageHeader }) => {
   const [subjects, setSubjects] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
+  const { showModal } = useModal();
   const [departments, setDepartments] = useState([]);
   const [searchParams, setSearchParams] = useState({
     type: "",
@@ -30,7 +31,7 @@ const EnrollmentPage = ({ setPageHeader }) => {
   // 2. 헤더 텍스트 변경
   useEffect(() => {
     if (period === 0) setPageHeader("예비 수강신청");
-    else if (period === 1) setPageHeader("본 수강신청 (선착순)");
+    else if (period === 1) setPageHeader("본 수강신청");
     else if (period === 2) setPageHeader("수강신청 종료");
   }, [period, setPageHeader]);
 
@@ -54,7 +55,10 @@ const EnrollmentPage = ({ setPageHeader }) => {
       // 3. 내 상태 조회 (기간에 따라 장바구니 목록 또는 수강 목록이 옴)
       await loadMyStatus();
     } catch (err) {
-      console.error("초기 로딩 실패:", err);
+      showModal({
+        type: "alert",
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
 
@@ -66,7 +70,10 @@ const EnrollmentPage = ({ setPageHeader }) => {
       const ids = res.data.map((item) => item.subject.id);
       setMyEnrolledIds(ids);
     } catch (err) {
-      console.error("내역 확인 실패", err);
+      showModal({
+        type: "alert",
+        message: "수강신청 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
 
@@ -82,44 +89,51 @@ const EnrollmentPage = ({ setPageHeader }) => {
       setSubjects(res.data.content || []);
       setTotalPages(res.data.totalPages || 0);
     } catch (err) {
-      console.error("강의 목록 조회 실패", err);
+      showModal({
+        type: "alert",
+        message: "강좌 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
 
   // ★ 수강신청/장바구니 버튼 핸들러
   const handleRegister = async (subject) => {
     if (period === 2) {
-      alert("🚫 수강신청 기간이 아닙니다.");
+      showModal({
+        type: "alert",
+        message: "수강신청 기간이 아닙니다.",
+      });
       return;
     }
 
-    // 기간에 따른 메시지 분기
-    let confirmMsg = "";
-    if (period === 0) {
-      confirmMsg = `[${subject.name}] 강의를 장바구니에 담으시겠습니까?`;
-    } else {
-      confirmMsg = `[${subject.name}] 강의를 수강신청 하시겠습니까? (선착순)`;
-    }
+    showModal({
+      type: "confirm",
+      message:
+        period === 0
+          ? `[${subject.name}] 강의를 장바구니에 담으시겠습니까?`
+          : `[${subject.name}] 강의를 수강신청 하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await courseApi.register(subject.id);
 
-    if (!window.confirm(confirmMsg)) return;
+          showModal({
+            type: "alert",
+            message:
+              period === 0
+                ? "예비 수강신청 목록에 추가되었습니다."
+                : "수강신청이 완료되었습니다.",
+          });
 
-    try {
-      // 같은 API(/register)를 호출하지만, 서버 내부에서 기간(period)에 따라 다르게 처리함
-      await courseApi.register(subject.id);
-
-      const successMsg =
-        period === 0 ? "🛒 장바구니 담기 성공!" : "✅ 수강신청 성공!";
-      alert(successMsg);
-
-      // 성공 후 상태 업데이트 (버튼 비활성화를 위해 ID 추가)
-      setMyEnrolledIds((prev) => [...prev, subject.id]);
-
-      // 인원수(basketCount 또는 numOfStudent)가 변했으므로 목록 다시 불러오기
-      loadData(page);
-    } catch (err) {
-      const msg = err.response?.data || "요청 실패";
-      alert("❌ " + msg);
-    }
+          setMyEnrolledIds((prev) => [...prev, subject.id]);
+          loadData(page);
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: err.response?.data || "요청에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   const handleInputChange = (e) => {
@@ -143,8 +157,8 @@ const EnrollmentPage = ({ setPageHeader }) => {
       <div className="enrollment-header-info">
         {period === 0 && (
           <p className="info-text basket">
-            ※ 지금은 <strong>예비 수강신청(장바구니)</strong> 기간입니다. 미리
-            담아둔 과목은 본 수강신청 때 빠르게 신청할 수 있습니다.
+            ※ 지금은 <strong>예비 수강신청</strong> 기간입니다. 미리 담아둔
+            과목은 본 수강신청 때 빠르게 신청할 수 있습니다.
           </p>
         )}
         {period === 1 && (
@@ -162,7 +176,7 @@ const EnrollmentPage = ({ setPageHeader }) => {
 
       {period === 2 ? (
         <div className="enrollment-empty">
-          <h2>⛔ 수강신청 기간이 아닙니다.</h2>
+          <h2>수강신청 기간이 아닙니다.</h2>
         </div>
       ) : (
         <>

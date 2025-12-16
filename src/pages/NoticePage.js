@@ -3,6 +3,7 @@ import { getNoticeList } from "../api/noticeApi";
 import NoticeForm from "../components/Notice/NoticeForm";
 import NoticeDetail from "../components/Notice/NoticeDetail";
 import { useLocation, useParams } from "react-router-dom";
+import { useModal } from "../components/ModalContext";
 
 const NoticePage = ({ role }) => {
   const location = useLocation();
@@ -15,9 +16,17 @@ const NoticePage = ({ role }) => {
   const [selectedNoticeId, setSelectedNoticeId] = useState(
     state.noticeId || null
   );
+  const { showModal } = useModal();
   const fetchList = async () => {
-    const data = await getNoticeList(page, keyword, searchType);
-    setPageData(data);
+    try {
+      const data = await getNoticeList(page, keyword, searchType);
+      setPageData(data);
+    } catch (err) {
+      showModal({
+        type: "alert",
+        message: err.response?.data?.message || err.message,
+      });
+    }
   };
   useEffect(() => {
     if (view === "list") fetchList();
@@ -56,31 +65,29 @@ const NoticePage = ({ role }) => {
       <h3>공지사항</h3>
 
       {/* 검색 */}
-      <div className="filter-container">
-        <div className="department-form" style={{ marginBottom: "15px" }}>
-          <select
-            value={searchType}
-            onChange={(e) => setSearchType(e.target.value)}
-          >
-            <option value="title">제목</option>
-            <option value="content">제목 + 내용</option>
-          </select>
+      <div className="form-row" style={{ marginBottom: "15px" }}>
+        <select
+          value={searchType}
+          onChange={(e) => setSearchType(e.target.value)}
+        >
+          <option value="title">제목</option>
+          <option value="content">제목 + 내용</option>
+        </select>
 
-          <input
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            placeholder="검색어 입력"
-          />
-          <button
-            className="search-btn"
-            onClick={() => {
-              setPage(0);
-              fetchList();
-            }}
-          >
-            검색
-          </button>
-        </div>
+        <input
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          placeholder="검색어 입력"
+        />
+        <button
+          className="search-btn"
+          onClick={() => {
+            setPage(0);
+            fetchList();
+          }}
+        >
+          검색
+        </button>
       </div>
 
       {role === "staff" && (

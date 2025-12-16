@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import BreakAppModal from "./BreakModal";
+import { useModal } from "../ModalContext";
 
 const BreakHistory = ({ user, role }) => {
   const [leaveHistory, setLeaveHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedApp, setSelectedApp] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { showModal } = useModal();
   useEffect(() => {
     const fetchLeaveHistory = async () => {
       try {
         const res = await api.get("/break/list");
         setLeaveHistory(res.data);
       } catch (err) {
-        console.error(err);
-        alert("휴학 내역을 불러오는 중 오류가 발생했습니다.");
+        showModal({
+          type: "alert",
+          message: "휴학 내역을 불러오는 중 오류가 발생했습니다.",
+        });
       } finally {
         setLoading(false);
       }
@@ -26,7 +29,7 @@ const BreakHistory = ({ user, role }) => {
 
   const handleView = (app) => {
     setSelectedApp(app);
-    setShowModal(true);
+    setIsModalOpen(true);
   };
 
   if (loading) return <p>로딩중...</p>;
@@ -73,7 +76,10 @@ const BreakHistory = ({ user, role }) => {
 
       <BreakAppModal
         show={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedApp(null);
+        }}
         app={selectedApp}
         role={role}
         onDeleted={() => {
@@ -81,6 +87,7 @@ const BreakHistory = ({ user, role }) => {
             prev.filter((item) => item.id !== selectedApp.id)
           );
           setSelectedApp(null);
+          setIsModalOpen(false);
         }}
       />
     </>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const Classroom = () => {
   const [classrooms, setClassrooms] = useState([]);
@@ -7,10 +8,17 @@ const Classroom = () => {
   const [colleges, setColleges] = useState([]);
   const [newCollegeId, setNewCollegeId] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
-
+  const { showModal } = useModal();
   const getColleges = async () => {
-    const res = await api.get("/admin/college");
-    setColleges(res.data);
+    try {
+      const res = await api.get("/admin/college");
+      setColleges(res.data);
+    } catch (err) {
+      showModal({
+        type: "alert",
+        message: "단과대 목록을 불러오는데 실패했습니다.",
+      });
+    }
   };
 
   useEffect(() => {
@@ -27,50 +35,72 @@ const Classroom = () => {
     } catch (err) {
       console.error(err);
       setClassrooms([]);
-      alert("강의실 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message: "강의실 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
 
   const handleAddRoom = async () => {
     if (!newRoom || !newCollegeId)
-      return alert("강의실명과 단과대를 선택하세요");
+      return showModal({
+        type: "alert",
+        message: "단과대와 강의실명을 입력해주세요.",
+      });
     try {
       await api.post("/admin/room", {
         id: newRoom,
         college: { id: newCollegeId },
       });
-      alert(`${newRoom} 등록 완료!`);
+      showModal({
+        type: "alert",
+        message: `${newRoom} 등록 완료!`,
+      });
       setNewRoom("");
       setNewCollegeId("");
       setShowAddForm(false);
       getList();
     } catch (err) {
-      console.error(err);
-      alert("등록 실패");
+      showModal({
+        type: "alert",
+        message: "등록에 실패하였습니다.",
+      });
     }
   };
 
   const handleDeleteRoom = async (id) => {
-    try {
-      await api.delete(`/admin/room/${id}`);
-      alert("삭제 완료!");
-      getList();
-    } catch (err) {
-      console.error(err);
-      alert("삭제 실패");
-    }
+    showModal({
+      type: "confirm",
+      message: `${id}을 삭제 하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/admin/room/${id}`);
+          showModal({
+            type: "alert",
+            message: "강의실을 삭제하였습니다.",
+          });
+          getList(); // 삭제 후 리스트 갱신
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: "강의실 삭제에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   return (
     <>
       <h3>강의실 관리</h3>
 
-      <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
+      <div className="form-row">
         <button onClick={() => setShowAddForm((prev) => !prev)}>등록</button>
       </div>
 
       {showAddForm && (
-        <div className="department-form" style={{ marginBottom: "15px" }}>
+        <div className="form-row">
           <input
             type="text"
             placeholder="강의실을 입력해주세요"
@@ -92,26 +122,30 @@ const Classroom = () => {
         </div>
       )}
 
-      <table>
-        <thead>
-          <tr>
-            <th>강의실</th>
-            <th>단과대ID</th>
-            <th>삭제</th>
-          </tr>
-        </thead>
-        <tbody>
-          {classrooms.map((room) => (
-            <tr key={room.id}>
-              <td>{room.id}</td>
-              <td>{room.college.name}</td>
-              <td>
-                <button onClick={() => handleDeleteRoom(room.id)}>삭제</button>
-              </td>
+      <div className="table-wrapper">
+        <table className="course-table">
+          <thead>
+            <tr>
+              <th>강의실</th>
+              <th>단과대ID</th>
+              <th>삭제</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {classrooms.map((room) => (
+              <tr key={room.id}>
+                <td>{room.id}</td>
+                <td>{room.college.name}</td>
+                <td>
+                  <button onClick={() => handleDeleteRoom(room.id)}>
+                    삭제
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { deleteSchedule, getScheduleDetail } from "../../api/scheduleApi";
+import { useModal } from "../ModalContext";
 
 const ScheduleDetail = ({ id, onEdit, onDelete }) => {
   const [schedule, setSchedule] = useState(null);
+  const { showModal } = useModal();
 
   useEffect(() => {
     if (!id) return;
@@ -11,8 +13,14 @@ const ScheduleDetail = ({ id, onEdit, onDelete }) => {
       try {
         const data = await getScheduleDetail(id);
         setSchedule(data);
-      } catch (error) {
-        console.error("상세 조회 실패:", error.message);
+      } catch (err) {
+        showModal({
+          type: "alert",
+          message:
+            err.response?.data?.message ||
+            err.message ||
+            "상세조회에 실패했습니다.",
+        });
       }
     };
 
@@ -20,16 +28,28 @@ const ScheduleDetail = ({ id, onEdit, onDelete }) => {
   }, [id]);
 
   const handleDeleteClick = async () => {
-    if (window.confirm("이 일정을 정말로 삭제하시겠습니까?")) {
-      try {
-        await deleteSchedule(id);
-        alert("일정이 삭제되었습니다.");
-        onDelete();
-      } catch (error) {
-        console.error("일정 삭제 실패:", error.message);
-        alert("일정 삭제에 실패했습니다.");
-      }
-    }
+    showModal({
+      type: "confirm",
+      message: "이 일정을 정말로 삭제하시겠습니까?",
+      onConfirm: async () => {
+        try {
+          await deleteSchedule(id);
+          showModal({
+            type: "alert",
+            message: "일정이 삭제되었습니다.",
+          });
+          onDelete();
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message:
+              err.response?.data?.message ||
+              err.message ||
+              "일정 삭제에 실패했습니다.",
+          });
+        }
+      },
+    });
   };
 
   if (!schedule) return <div>로딩중...</div>;
@@ -37,8 +57,8 @@ const ScheduleDetail = ({ id, onEdit, onDelete }) => {
   const year = schedule.startDay?.substring(0, 4) || "확인 불가";
 
   return (
-    <div className="schedule-detail-container">
-      <h3 className="schedule-detail-title">{year}년 학교 학사일정</h3>
+    <>
+      <p className="schedule-detail-title">{year}년 학교 학사일정</p>
 
       <div className="schedule-detail-row">
         <div className="schedule-detail-label">시작날짜</div>
@@ -72,7 +92,7 @@ const ScheduleDetail = ({ id, onEdit, onDelete }) => {
           삭제
         </button>
       </div>
-    </div>
+    </>
   );
 };
 export default ScheduleDetail;

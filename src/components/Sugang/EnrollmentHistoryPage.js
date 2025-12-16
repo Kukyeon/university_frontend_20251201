@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { courseApi } from "../../api/gradeApi";
+import { useModal } from "../ModalContext";
 
 const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
   // 1. 상태 관리
@@ -7,7 +8,7 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
   const [successList, setSuccessList] = useState([]);
   const [period, setPeriod] = useState(null); // 0:장바구니, 1:본수강, 2:종료
   const [totalCredits, setTotalCredits] = useState(0);
-
+  const { showModal } = useModal();
   // 2. 초기 데이터 로드
   useEffect(() => {
     loadInitData();
@@ -42,7 +43,10 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
         setSuccessList([]);
       }
     } catch (err) {
-      console.error(err);
+      showModal({
+        type: "alert",
+        message: err.response?.data || "요청에 실패하였습니다.",
+      });
     }
   };
 
@@ -50,41 +54,57 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
 
   // 장바구니 -> 실제 신청 (기간 1일 때만 동작)
   const handleRegisterFromBasket = async (subject) => {
-    if (!window.confirm(`[${subject.name}] 강의를 신청하시겠습니까? (선착순)`))
-      return;
-    try {
-      await courseApi.register(subject.id);
-      alert("✅ 신청 성공!");
-      loadInitData(); // 목록 갱신 (성공 목록으로 이동)
-    } catch (err) {
-      alert("❌ 신청 실패: " + (err.response?.data || "오류"));
-    }
+    showModal({
+      type: "confirm",
+      message: `[${subject.name}] 강의를 신청하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await courseApi.register(subject.id);
+          showModal({
+            type: "alert",
+            message: "수강신청 성공",
+          });
+          loadInitData(); // 목록 갱신 (성공 목록으로 이동)
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: err.response?.data || "요청에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
-
-  const handleDeleteBasket = async (subjectId) => {
-    if (!window.confirm("장바구니에서 삭제하시겠습니까?")) return;
-    try {
-      await courseApi.cancel(subjectId);
-      alert("🗑️ 삭제 완료");
-      loadInitData();
-    } catch {
-      alert("삭제 실패");
-    }
-  };
-
-  const handleCancelSuccess = async (subjectId) => {
+  const handleCancel = async (subjectId) => {
     if (period === 2) {
-      alert("수강신청 기간이 종료되어 취소할 수 없습니다.");
+      showModal({
+        type: "alert",
+        message: "수강신청 기간이 종료되었습니다.",
+      });
       return;
     }
-    if (!window.confirm("정말 수강을 취소하시겠습니까?")) return;
-    try {
-      await courseApi.cancel(subjectId);
-      alert("취소 완료");
-      loadInitData();
-    } catch {
-      alert("취소 실패");
-    }
+    const msg =
+      period === 0
+        ? "예비 수강신청을 취소하시겠습니까?"
+        : "수강신청을 취소하시겠습니까?";
+    showModal({
+      type: "confirm",
+      message: msg,
+      onConfirm: async () => {
+        try {
+          await courseApi.cancel(subjectId);
+          showModal({
+            type: "alert",
+            message: "수강신청이 취소 되었습니다.",
+          });
+          loadInitData();
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: err.response?.data || "요청에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   return (
@@ -123,7 +143,7 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
       {(period === 0 || period === 1) && (
         <section className="section">
           <h3>
-            장바구니 목록{" "}
+            예비 수강신청 목록{" "}
             {period === 1 && (
               <span
                 className="section-note text-red"
@@ -153,7 +173,7 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
                 {basketList.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="empty-row">
-                      장바구니가 비었습니다.
+                      예비수강 신청 내역이 없습니다.
                     </td>
                   </tr>
                 ) : (
@@ -204,7 +224,7 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
                             // [기간 0] 삭제 버튼만 존재
                             <button
                               className="btn-danger"
-                              onClick={() => handleDeleteBasket(sub.id)}
+                              onClick={() => handleCancel(sub.id)}
                             >
                               삭제
                             </button>
@@ -264,7 +284,7 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
                 {successList.length === 0 ? (
                   <tr>
                     <td colSpan="8" className="empty-row">
-                      신청된 내역이 없습니다.
+                      수강신청 내역이 없습니다.
                     </td>
                   </tr>
                 ) : (
@@ -288,7 +308,7 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
                           ) : (
                             <button
                               className="btn-danger"
-                              onClick={() => handleCancelSuccess(sub.id)}
+                              onClick={() => handleCancel(sub.id)}
                             >
                               취소
                             </button>

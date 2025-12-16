@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const TuitionHistory = ({ user }) => {
   const [tuitionHistory, setTuitionHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { showModal } = useModal();
   useEffect(() => {
     const fetchTuitionHistory = async () => {
       try {
@@ -12,7 +14,10 @@ const TuitionHistory = ({ user }) => {
         console.log(res.data);
       } catch (err) {
         console.error(err);
-        alert("휴학 내역을 불러오는 중 오류가 발생했습니다.");
+        showModal({
+          type: "alert",
+          message: "등록금 내역을 불러오는 중 오류가 발생했습니다.",
+        });
       } finally {
         setLoading(false);
       }

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const MyInfo = ({ user, userData, setUserData, role }) => {
   const [editMode, setEditMode] = useState(false);
+  const { showModal } = useModal();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -12,18 +14,29 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
   const handleSave = async () => {
     try {
       const res = await api.put("/user/update", userData);
-      alert("저장 완료! (API 연결 전 임시 기능)");
       setEditMode(false);
       setUserData(res.data);
+      showModal({
+        type: "alert",
+        message: "수정완료",
+      });
     } catch (err) {
       console.error(err);
-      alert("저장 실패: " + err.response?.data || err.message);
+      showModal({
+        type: "alert",
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
 
   const renderInput = (field, value) =>
     editMode ? (
-      <input name={field} value={value || ""} onChange={handleChange} />
+      <input
+        name={field}
+        value={value || ""}
+        required
+        onChange={handleChange}
+      />
     ) : (
       value
     );

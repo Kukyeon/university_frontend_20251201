@@ -7,12 +7,13 @@ import GradeTotal from "../components/Grade/GradeTotal";
 import EvaluationForm from "../components/Evaluation/EvaluationForm";
 import Modal from "../components/Modal";
 import api from "../api/axiosConfig";
+import { useModal } from "../components/ModalContext";
 
 const GradePage = () => {
   const [activeTab, setActiveTab] = useState("this"); // this | semester | total
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const { showModal } = useModal();
   const [selectedEval, setSelectedEval] = useState(null);
   const [year, setYear] = useState(2025);
   const [semester, setSemester] = useState(1);
@@ -57,8 +58,11 @@ const GradePage = () => {
       } else {
         setData({ gradeList: [], mygradeList: [] });
       }
-    } catch (e) {
-      alert("서버 연결 오류가 발생했습니다.");
+    } catch (err) {
+      showModal({
+        type: "alert",
+        message: err.response?.data?.message || err.message,
+      });
       setData({ gradeList: [], mygradeList: [] });
     } finally {
       setLoading(false);

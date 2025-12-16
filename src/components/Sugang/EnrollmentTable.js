@@ -1,5 +1,3 @@
-import React from "react";
-
 const EnrollmentTable = ({
   subjects,
   myEnrolledIds,
@@ -35,56 +33,29 @@ const EnrollmentTable = ({
             // 기간 1일 때만 실제 인원(numOfStudent)과 정원(capacity) 비교
             const isFull = period === 1 && sub.numOfStudent >= sub.capacity;
             const isClosed = isFull;
+            const isDisabled = isClosed || isApplied;
 
             // 버튼 텍스트 및 상태 로직
             let buttonText = "";
-            let isDisabled = false;
-            let btnStyle = {};
 
             if (isApplied) {
               buttonText = period === 0 ? "담기완료" : "신청완료";
-              isDisabled = true;
-              btnStyle = { backgroundColor: "#adb5bd", cursor: "default" };
             } else {
               if (period === 0) {
                 // 장바구니 기간: 마감 없음, 무조건 담기 가능
-                buttonText = "장바구니";
-                btnStyle = {
-                  backgroundColor: "#fcc419",
-                  color: "#fff",
-                  fontWeight: "bold",
-                };
+                buttonText = "예비 신청";
               } else {
                 // 본 수강 기간: 마감 시 버튼 비활성화
                 buttonText = isClosed ? "마감" : "신청";
-                isDisabled = isClosed;
-                btnStyle = isClosed
-                  ? { backgroundColor: "#868e96", cursor: "not-allowed" }
-                  : {
-                      backgroundColor: "#0d6efd",
-                      color: "#fff",
-                      fontWeight: "bold",
-                    };
               }
             }
 
             return (
-              <tr
-                key={sub.id}
-                style={{ backgroundColor: isApplied ? "#f1f3f5" : "white" }}
-              >
+              <tr key={sub.id}>
                 <td>{sub.department?.name}</td>
                 <td>{sub.id}</td>
                 <td>{sub.type}</td>
-                <td
-                  style={{
-                    textAlign: "left",
-                    paddingLeft: "15px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {sub.name}
-                </td>
+                <td>{sub.name}</td>
                 <td>{sub.professor?.name}</td>
                 <td>{sub.grades}</td>
                 <td>
@@ -95,9 +66,7 @@ const EnrollmentTable = ({
                 <td>
                   {period === 0 ? (
                     // 기간 0: 찜한 인원수 표시 (basketCount가 없으면 0 처리)
-                    <span style={{ color: "#f08c00", fontWeight: "bold" }}>
-                      {sub.basketCount || 0}
-                    </span>
+                    <span>{sub.basketCount || 0}</span>
                   ) : (
                     // 기간 1: 실제 경쟁률 표시
                     <span
@@ -116,10 +85,14 @@ const EnrollmentTable = ({
                     onClick={() => handleRegister(sub)}
                     disabled={isDisabled}
                     style={{
-                      border: "none",
-                      padding: "5px 10px",
-                      borderRadius: "4px",
-                      ...btnStyle,
+                      backgroundColor: isApplied
+                        ? "#adb5bd"
+                        : period === 0
+                        ? "#ff6f61"
+                        : isFull
+                        ? "#868e96"
+                        : "#0d6efd",
+                      cursor: isDisabled ? "not-allowed" : "pointer",
                     }}
                   >
                     {buttonText}

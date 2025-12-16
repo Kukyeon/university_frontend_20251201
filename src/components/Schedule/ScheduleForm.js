@@ -5,6 +5,7 @@ import {
   updateSchedule,
   getScheduleDetail,
 } from "../../api/scheduleApi";
+import { useModal } from "../ModalContext";
 
 const ScheduleForm = ({ id, onSubmit }) => {
   const [form, setForm] = useState({
@@ -12,12 +13,19 @@ const ScheduleForm = ({ id, onSubmit }) => {
     endDay: "",
     information: "",
   });
-
+  const { showModal } = useModal();
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
-        const data = await getScheduleDetail(id);
-        setForm(data);
+        try {
+          const data = await getScheduleDetail(id);
+          setForm(data);
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: err.response?.data?.message || "불러오는데 실패했습니다.",
+          });
+        }
       };
       fetchData();
     }
@@ -30,9 +38,28 @@ const ScheduleForm = ({ id, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (id) await updateSchedule(id, form);
-    else await createSchedule(form);
-    onSubmit();
+    try {
+      if (id) {
+        await updateSchedule(id, form);
+        showModal({
+          type: "alert",
+          message: "일정이 수정되었습니다.",
+        });
+      } else {
+        await createSchedule(form);
+        showModal({
+          type: "alert",
+          message: "일정이 등록되었습니다.",
+        });
+      }
+
+      onSubmit(); // 부모에서 목록 갱신 or 모달 닫기
+    } catch (err) {
+      showModal({
+        type: "alert",
+        message: err.response?.data?.message || "저장 중 오류가 발생했습니다.",
+      });
+    }
   };
 
   return (
@@ -64,9 +91,7 @@ const ScheduleForm = ({ id, onSubmit }) => {
           onChange={handleChange}
         />
       </div>
-      <button type="submit" className="btn-save">
-        저장
-      </button>
+      <button type="submit">저장</button>
     </form>
   );
 };
