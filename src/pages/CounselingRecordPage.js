@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import CounselingRecordView from "../components/Counseling/CounselingRecordView";
+
 import api from "../api/axiosConfig";
+// import CounselingRecordBoard from "../components/Counseling/CounselingRecordBoard";
 
 const CounselingRecordPage = ({ user }) => {
   const [records, setRecords] = useState([]);
@@ -16,7 +17,7 @@ const CounselingRecordPage = ({ user }) => {
   return (
     <div style={{ padding: "20px" }}>
       <h1>상담 기록 조회</h1>
-      <CounselingRecordView records={records} />
+      {/* <CounselingRecordBoard records={records} /> */}
     </div>
   );
 };

@@ -12,7 +12,8 @@ const formatDateTime = (dateTimeStr) => {
   ).padStart(2, "0")}`;
 };
 
-const StudentScheduleList = ({ studentId, onSelect }) => {
+const StudentScheduleList = ({ studentId, onSelect, listRefreshKey }) => {
+  // key props를 refreshKey로 받음
   const [schedules, setSchedules] = useState([]);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
       }
     };
     fetchSchedules();
-  }, [studentId]);
+  }, [studentId, listRefreshKey]);
 
   const handleCancel = async (scheduleId) => {
     if (!window.confirm("예약을 취소하시겠습니까?")) return;
@@ -54,13 +55,14 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
       <ul className="schedule-list">
         {schedules.map((s) => (
           // 💡 클래스 적용
-          <li key={s.id} className={`schedule-item status-${s.status}`}>
+          <li key={s.scheduleId} className={`schedule-item status-${s.status}`}>
             <span
               onClick={() => {
                 // 🚨 콘솔에 찍히는지 확인
+                const scheduleId = s.scheduleId;
                 const profId = s.professorId || s.profId || s.professor?.id;
-                onSelect(s.scheduleId, s.profId);
-                console.log("--- 항목 클릭됨 ---", s.id, profId);
+                onSelect(scheduleId, s.profId);
+                console.log("--- 항목 클릭됨 ---", scheduleId, profId);
               }}
               className="schedule-info-clickable" // 💡 클래스 적용
             >
@@ -77,7 +79,7 @@ const StudentScheduleList = ({ studentId, onSelect }) => {
             <button
               onClick={() => handleCancel(s.scheduleId)}
               className="cancel-btn" // 💡 클래스 적용
-              disabled={s.status !== "확인됨"}
+              disabled={s.status !== "확인됨" && s.status !== "CONFIRMED"}
             >
               취소
             </button>
