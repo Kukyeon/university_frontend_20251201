@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const TuitionNotice = () => {
   const [loading, setLoading] = useState(false);
-
+  const { showModal } = useModal();
   const handleSend = async () => {
     setLoading(true);
     try {
       const res = await api.post("/tuition/create");
-      alert(res.data.message); // JSON 반환 기준
+      showModal({
+        type: "alert",
+        message: res.data.message,
+      });
     } catch (err) {
-      console.error(err);
-      alert("등록금 고지서 발송 실패");
+      showModal({
+        type: "alert",
+        message: "등록금 고지서 발송 실패",
+      });
     } finally {
       setLoading(false);
     }

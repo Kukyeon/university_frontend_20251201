@@ -7,6 +7,7 @@ import Classroom from "../components/Registration/ClassRoom";
 import Course from "../components/Registration/Course";
 import CollegeTuition from "../components/Registration/CollegeTuition";
 import "./AcademicRegister.css";
+import AdminDashboard from "./AdminDashboard";
 const AcademicRegistration = () => {
   const [activeTab, setActiveTab] = useState("college");
 
@@ -16,6 +17,7 @@ const AcademicRegistration = () => {
     { key: "classroom", label: "강의실" },
     { key: "course", label: "강의" },
     { key: "collegeTuition", label: "단대별 등록금" },
+    { key: "dashBoard", label: "위험학생" },
   ];
 
   const sidebar = (
@@ -39,6 +41,7 @@ const AcademicRegistration = () => {
       {activeTab === "classroom" && <Classroom />}
       {activeTab === "course" && <Course />}
       {activeTab === "collegeTuition" && <CollegeTuition />}
+      {activeTab === "dashBoard" && <AdminDashboard />}
     </SectionLayout>
   );
 };

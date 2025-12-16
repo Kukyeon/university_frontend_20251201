@@ -10,6 +10,7 @@ import TuitionNotice from "../components/Academic/TuitionNotice";
 import BreakManagement from "../components/Academic/BreakManagement";
 import CoursePeriod from "../components/Academic/CoursePeriod";
 import "./Academic.css";
+import AdminPage from "./AdminPage";
 
 const Academic = ({ role }) => {
   const [activeTab, setActiveTab] = useState("studentList");
@@ -64,6 +65,12 @@ const Academic = ({ role }) => {
       >
         수강 신청 기간 설정
       </li>
+      <li
+        className={activeTab === "admin" ? "active" : ""}
+        onClick={() => setActiveTab("admin")}
+      >
+        위험군 학생
+      </li>
     </ul>
   );
 
@@ -77,6 +84,7 @@ const Academic = ({ role }) => {
       {activeTab === "tuitionNotice" && <TuitionNotice />}
       {activeTab === "breakManagement" && <BreakManagement role={role} />}
       {activeTab === "coursePeriod" && <CoursePeriod />}
+      {activeTab === "admin" && <AdminPage />}
     </SectionLayout>
   );
 };

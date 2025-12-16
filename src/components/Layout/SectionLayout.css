@@ -3,6 +3,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  box-sizing: border-box;
 }
 
 /* ===== Layout (구조 담당) ===== */
@@ -14,7 +15,8 @@
 /* ===== Sidebar ===== */
 .section-sidebar {
   width: 220px;
-  flex-shrink: 0;
+  min-width: 160px;
+  flex-shrink: 1;
   background-color: #fff;
   border-radius: 12px;
   padding: 20px;
@@ -53,7 +55,14 @@
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
-
+.page select {
+  min-width: 100px;
+  max-width: 150px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
 /* ===== Mobile ===== */
 @media (max-width: 900px) {
   .section-layout {

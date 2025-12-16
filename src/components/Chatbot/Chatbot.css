@@ -1,0 +1,131 @@
+/* 플로팅 버튼 */
+.chat-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 챗봇 창 */
+.chat-window {
+  position: fixed;
+  bottom: 120px;
+  right: 30px;
+  width: 400px;
+  max-width: 90vw;
+  height: 500px;
+  max-height: 80vh;
+  background-color: white;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* 헤더 */
+.chat-header {
+  padding: 12px;
+  background-color: #0d6efd;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  font-size: 18px;
+}
+
+/* 메시지 영역 */
+.chat-body {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message {
+  padding: 6px 10px;
+  border-radius: 12px;
+  max-width: 80%;
+  word-break: break-word;
+}
+
+.message.user {
+  align-self: flex-end;
+  background-color: #0d6efd;
+  color: white;
+}
+
+.message.ai {
+  align-self: flex-start;
+  background-color: #e9ecef;
+  color: black;
+}
+
+/* 입력 영역 */
+.chat-input {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.chat-input button {
+  margin-left: 8px;
+  padding: 8px 16px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .chat-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 16px;
+  }
+
+  .chat-window {
+    width: 90vw;
+    height: 60vh;
+    bottom: 80px;
+    right: 5%;
+  }
+
+  .chat-header {
+    font-size: 16px;
+  }
+
+  .chat-input input {
+    font-size: 13px;
+  }
+
+  .chat-input button {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}

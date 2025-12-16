@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const Course = () => {
   const [subjects, setSubjects] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
-
+  const { showModal } = useModal();
   const [form, setForm] = useState({
     id: "",
     name: "",
@@ -32,8 +33,10 @@ const Course = () => {
       const data = Array.isArray(res.data) ? res.data : res.data.content;
       setSubjects(data || []);
     } catch (err) {
-      console.error(err);
-      alert("강의 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message: "강의 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
 
@@ -44,7 +47,10 @@ const Course = () => {
   const handleAdd = async () => {
     try {
       await api.post("/admin/subject", form);
-      alert("강의 등록 완료");
+      showModal({
+        type: "alert",
+        message: "강의를 등록하였습니다.",
+      });
       setShowAddForm(false);
       setForm({
         id: "",
@@ -63,19 +69,33 @@ const Course = () => {
       });
       getSubjects();
     } catch (err) {
-      alert("등록 실패");
+      showModal({
+        type: "alert",
+        message: "강의 등록에 실패했습니다.",
+      });
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await api.delete(`/admin/subject/${id}`);
-      alert("삭제 완료!");
-      getSubjects();
-    } catch (err) {
-      console.error(err);
-      alert("삭제 실패");
-    }
+  const handleDelete = async (id, name) => {
+    showModal({
+      type: "confirm",
+      message: `${name} 강의를 삭제 하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/admin/subject/${id}`);
+          showModal({
+            type: "alert",
+            message: "강의를 삭제하였습니다.",
+          });
+          getSubjects();
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: "강의 삭제에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   const selectSubjectToEdit = (sub) => {
@@ -87,12 +107,18 @@ const Course = () => {
   const handleEdit = async () => {
     try {
       await api.put(`/admin/subject/${form.id}`, form);
-      alert("수정 완료!");
+      showModal({
+        type: "alert",
+        message: "수정되었습니다.",
+      });
       setShowEditForm(false);
       getSubjects();
     } catch (err) {
       console.error(err);
-      alert("수정 실패");
+      showModal({
+        type: "alert",
+        message: "수정에 실패하였습니다.",
+      });
     }
   };
 
@@ -100,9 +126,8 @@ const Course = () => {
     <div>
       <h3>강의 관리</h3>
 
-      <div className="form-actions" style={{ marginBottom: "15px" }}>
+      <div className="form-actions">
         <button
-          className="primary-btn"
           onClick={() => {
             setShowAddForm(!showAddForm);
             setShowEditForm(false);
@@ -111,7 +136,6 @@ const Course = () => {
           등록
         </button>
         <button
-          className="primary-btn"
           onClick={() => {
             setShowEditForm(!showEditForm);
             setShowAddForm(false);
@@ -339,7 +363,7 @@ const Course = () => {
                 <td>
                   <button
                     className="primary-btn"
-                    onClick={() => handleDelete(sub.id)}
+                    onClick={() => handleDelete(sub.id, sub.name)}
                   >
                     삭제
                   </button>

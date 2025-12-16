@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const CollegeTuition = () => {
   const [colleges, setColleges] = useState([]);
@@ -9,7 +10,7 @@ const CollegeTuition = () => {
     collegeId: "",
     amount: "",
   });
-
+  const { showModal } = useModal();
   useEffect(() => {
     getColleges();
   }, []);
@@ -17,14 +18,14 @@ const CollegeTuition = () => {
   const getColleges = async () => {
     try {
       const res = await api.get("/admin/tuition");
-      console.log(res);
-      setColleges(res.data || []);
+      setColleges(res.data);
     } catch (err) {
-      console.log(err);
-      alert("단과대 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message: "단과대 목록을 불러오는데 실패했습니다.",
+      });
     }
   };
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -32,41 +33,65 @@ const CollegeTuition = () => {
   const handleAdd = async () => {
     try {
       await api.post("/admin/tuition", form);
-      alert("등록금 등록 완료");
+      showModal({
+        type: "alert",
+        message: "등록금을 등록하였습니다.",
+      });
       setShowAddForm(false);
       setForm({ collegeId: "", amount: "" });
       getColleges();
     } catch (err) {
       console.log(err);
-      alert("등록 실패");
+      showModal({
+        type: "alert",
+        message: "등록금 등록에 실패했습니다.",
+      });
     }
   };
 
   const handleEdit = async () => {
-    if (!form.collegeId) {
-      alert("수정할 항목을 선택해주세요");
-      return;
-    }
+    if (!form.collegeId)
+      return showModal({
+        type: "alert",
+        message: "수정할 단과대를 선택해주세요.",
+      });
     try {
       await api.put(`/admin/tuition`, form);
-      alert("수정 완료");
+      showModal({
+        type: "alert",
+        message: "수정되었습니다.",
+      });
       setShowEditForm(false);
       getColleges();
     } catch (err) {
       console.log(err);
-      alert("수정 실패");
+      showModal({
+        type: "alert",
+        message: "수정에 실패하였습니다.",
+      });
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await api.delete(`/admin/tuition/${id}`);
-      alert("삭제 완료");
-      getColleges();
-    } catch (err) {
-      console.log(err);
-      alert("삭제 실패");
-    }
+  const handleDelete = async (id, name) => {
+    showModal({
+      type: "confirm",
+      message: `${name}의 등록금을 삭제 하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/admin/tuition/${id}`);
+          showModal({
+            type: "alert",
+            message: "등록금을 삭제하였습니다.",
+          });
+          getColleges();
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: "등록금 삭제에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   const selectToEdit = (item) => {
@@ -83,7 +108,7 @@ const CollegeTuition = () => {
     <>
       <h3>단대별 등록금 관리</h3>
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
+      <div className="form-row">
         <button
           onClick={() => {
             setShowAddForm(!showAddForm);
@@ -154,34 +179,40 @@ const CollegeTuition = () => {
       )}
 
       {/* 테이블 */}
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>단과대</th>
-            <th>등록금</th>
-            <th>삭제</th>
-          </tr>
-        </thead>
-        <tbody>
-          {colleges.map((d) => (
-            <tr key={d.collegeId}>
-              <td>{d.collegeId}</td>
-              <td>{d.collegeName}</td>
-              <td>
-                {d.amount != null ? d.amount.toLocaleString() + "원" : "미등록"}
-              </td>
-              <td>
-                {d.amount && (
-                  <button onClick={() => handleDelete(d.collegeId)}>
-                    삭제
-                  </button>
-                )}
-              </td>
+      <div className="table-wrapper">
+        <table className="course-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>단과대</th>
+              <th>등록금</th>
+              <th>삭제</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {colleges.map((d) => (
+              <tr key={d.collegeId}>
+                <td>{d.collegeId}</td>
+                <td>{d.collegeName}</td>
+                <td>
+                  {d.amount != null
+                    ? d.amount.toLocaleString() + "원"
+                    : "미등록"}
+                </td>
+                <td>
+                  {d.amount && (
+                    <button
+                      onClick={() => handleDelete(d.collegeId, d.collegeName)}
+                    >
+                      삭제
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };

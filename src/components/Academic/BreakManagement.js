@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import BreakAppModal from "../MyPage/BreakModal";
+import { useModal } from "../ModalContext";
 
 const BreakManagement = ({ role }) => {
   // 예시 신청 내역
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
-
+  const { showModal } = useModal();
   useEffect(() => {
     getLeaveList();
   }, []);
@@ -18,7 +19,13 @@ const BreakManagement = ({ role }) => {
       console.log(res.data);
     } catch (err) {
       console.error(err);
-      alert("휴학 신청 목록 조회 실패");
+      showModal({
+        type: "alert",
+        message:
+          err.response?.data?.message ||
+          err.message ||
+          "휴학 내역을 불러오는 중 오류가 발생했습니다.",
+      });
     }
   };
 
