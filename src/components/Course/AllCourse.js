@@ -4,7 +4,7 @@ import { courseApi } from "../../api/gradeApi";
 import { useModal } from "../ModalContext";
 import CoursePlanPage from "./CoursePlanPage";
 
-const AllCourse = ({ role }) => {
+const AllCourse = ({ role, user }) => {
   const [year, setYear] = useState("");
   const [semester, setSemester] = useState("");
   const [department, setDepartment] = useState("");
@@ -191,6 +191,7 @@ const AllCourse = ({ role }) => {
       </div>
       <CoursePlanPage
         role={role}
+        user={user}
         show={showSyllabus}
         subjectId={selectedCourseId}
         onClose={() => {
