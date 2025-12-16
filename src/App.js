@@ -41,6 +41,7 @@ import VideoRoom from "./components/Schedule/VideoRoom";
 import VideoRoomApp from "./VideoRoomApp";
 import MainLayout from "./components/Layout/MainLayout";
 import { ModalProvider } from "./components/ModalContext";
+import CoursePlanPage from "./components/Course/CoursePlanPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -293,7 +294,14 @@ function App() {
               element={<AdminSubjectPage user={user} />}
             />
             <Route path="/grade" element={<GradePage user={user} />} />
+
+            {/* 4. 강의계획서 (별도 페이지) */}
+            <Route
+              path="/course/syllabus/:subjectId"
+              element={<CoursePlanPage user={user} role={role} />}
+            />
           </Route>
+
           <Route
             path="/login"
             element={<Login setUser={setUser} setRole={setRole} />}
