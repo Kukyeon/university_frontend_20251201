@@ -95,11 +95,10 @@ const NotificationBell = ({ user, openChatbot }) => {
 
     try {
       // 읽음 처리 (API 호출) / 백엔드 isread 변경
-      if (!noti.isRead) {
+      if (!noti.Checked) {
         await notiApi.markAsRead(noti.id);
         setNotifications((prev) =>
-          // 'Checked' 대신 'isRead' 사용
-          prev.map((n) => (n.id === noti.id ? { ...n, isRead: true } : n))
+          prev.map((n) => (n.id === noti.id ? { ...n, Checked: true } : n))
         );
       }
 
@@ -162,7 +161,7 @@ const NotificationBell = ({ user, openChatbot }) => {
   };
 
   //  'Checked' 대신 'isRead' 사용
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => !n.Checked).length;
 
   return (
     <div className="noti-container">
@@ -194,7 +193,7 @@ const NotificationBell = ({ user, openChatbot }) => {
                   <li
                     key={noti.id}
                     //  'Checked' 대신 'isRead' 사용
-                    className={`noti-item ${noti.isRead ? "read" : "unread"}`}
+                    className={`noti-item ${noti.Checked ? "read" : "unread"}`}
                     onClick={() => handleClick(noti)}
                     style={{ cursor: "pointer" }}
                   >
