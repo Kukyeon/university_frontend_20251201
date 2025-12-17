@@ -61,7 +61,7 @@ const NoticeForm = ({ noticeId, onBack }) => {
   };
 
   return (
-    <form className="notice-form" onSubmit={handleSubmit}>
+    <form className="change-password-form" onSubmit={handleSubmit}>
       <h2 className="notice-form__title">
         {noticeId ? "공지 수정" : "공지 등록"}
       </h2>

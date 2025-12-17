@@ -68,30 +68,35 @@ const ProfDashboard = (user) => {
   // 4. 일괄 삭제 (선택된 것들)
   const handleBulkDelete = async () => {
     if (checkedIds.size === 0) {
-      alert("선택된 학생이 없습니다.");
+      showModal({
+        type: "alert",
+        message: "선택된 학생이 없습니다.",
+      });
       return;
     }
-    if (
-      !window.confirm(
-        `선택한 ${checkedIds.size}명을 목록에서 삭제하시겠습니까?`
-      )
-    )
-      return;
-
-    try {
-      // 여러 개를 한 번에 삭제 (Promise.all 사용)
-      const deletePromises = Array.from(checkedIds).map((id) =>
-        dashboardApi.deleteRisk(id)
-      );
-      await Promise.all(deletePromises);
-
-      // 화면 갱신
-      setRisks((prev) => prev.filter((item) => !checkedIds.has(item.id)));
-      setCheckedIds(new Set()); // 체크박스 초기화
-      alert("삭제 완료!");
-    } catch (err) {
-      alert("삭제 중 오류 발생");
-    }
+    showModal({
+      type: "confirm",
+      message: `선택한 ${checkedIds.size}명을 목록에서 삭제하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          const deletePromises = Array.from(checkedIds).map((id) =>
+            dashboardApi.deleteRisk(id)
+          );
+          await Promise.all(deletePromises);
+          setRisks((prev) => prev.filter((item) => !checkedIds.has(item.id)));
+          setCheckedIds(new Set());
+          showModal({
+            type: "alert",
+            message: "삭제 완료하였습니다.",
+          });
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: "삭제에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   // 5. 체크박스 핸들러
