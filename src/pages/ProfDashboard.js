@@ -157,7 +157,7 @@ const ProfDashboard = (user) => {
           </select> */}
 
         {/* 일괄 삭제 버튼 */}
-        <button>선택 항목 삭제</button>
+        <button onClick={handleBulkDelete}>선택 항목 삭제</button>
       </div>
 
       {/* 데이터 테이블 */}
