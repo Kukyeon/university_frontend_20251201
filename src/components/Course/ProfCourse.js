@@ -5,7 +5,7 @@ import CourseStudentList from "./CourseStudentList";
 import CoursePlanPage from "./CoursePlanPage";
 import { useModal } from "../ModalContext";
 
-const ProfCourse = ({ role }) => {
+const ProfCourse = ({ role, user }) => {
   const [subYear, setSubYear] = useState(""); // 초기값 빈 문자열 → 전체 조회
   const [semester, setSemester] = useState(""); // 초기값 빈 문자열 → 전체 조회
   const [courses, setCourses] = useState([]);
@@ -142,6 +142,7 @@ const ProfCourse = ({ role }) => {
           </div>
           <CoursePlanPage
             role={role}
+            user={user}
             show={showSyllabus}
             subjectId={syllabusCourseId}
             onClose={() => {

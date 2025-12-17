@@ -1,8 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import NotificationBell from "../Chatbot/NotificationBell";
 import "./StudentInfo.css";
 const StudentInfo = ({ user, role, logout }) => {
+  const { openChatbot } = useOutletContext();
   const renderAffiliation = () => {
     if (role === "student") {
       return user.department?.name;
@@ -13,6 +14,7 @@ const StudentInfo = ({ user, role, logout }) => {
     }
     return "";
   };
+  console.log("🔥 StudentInfo openChatbot:", openChatbot);
 
   return (
     <section className="student-info">
@@ -25,7 +27,7 @@ const StudentInfo = ({ user, role, logout }) => {
         {role !== "student" && (
           <h2 className="student-info__title">환영합니다</h2>
         )}
-        <NotificationBell user={user} />
+        <NotificationBell user={user} openChatbot={openChatbot} />
       </div>
 
       <div className="student-info__profile">
