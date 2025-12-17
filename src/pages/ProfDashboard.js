@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { dashboardApi } from "../api/aiApi";
 import { useNavigate } from "react-router-dom"; // 페이지 이동용
+import { useModal } from "../components/ModalContext";
 
 const ProfDashboard = (user) => {
   const navigate = useNavigate();
@@ -11,11 +12,14 @@ const ProfDashboard = (user) => {
   const [filteredRisks, setFilteredRisks] = useState([]); // 필터링된 데이터
   const [filterLevel, setFilterLevel] = useState("ALL"); // 필터 상태
   const [checkedIds, setCheckedIds] = useState(new Set()); // 체크된 항목들
-
+  const { showModal } = useModal();
   // 1. 데이터 로딩
   useEffect(() => {
     if (!user) {
-      alert("로그인이 필요합니다.");
+      showModal({
+        type: "alert",
+        message: "로그인이 필요합니다.",
+      });
       navigate("/login");
       return;
     }
@@ -41,7 +45,12 @@ const ProfDashboard = (user) => {
     dashboardApi
       .getRiskList(professorId)
       .then((res) => setRisks(res.data))
-      .catch((err) => alert("로딩 실패"));
+      .catch((err) =>
+        showModal({
+          type: "alert",
+          message: "학생 목록을 불러오는데 실패했습니다.",
+        })
+      );
   };
 
   // 3. 개별 삭제 (조치 완료)
@@ -98,7 +107,7 @@ const ProfDashboard = (user) => {
       {/* 헤더 & 컨트롤 패널 */}
       <h3>중도이탈 위험학생 리스트</h3>
 
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div>
         {/* 필터링 드롭다운 */}
         {/* <select 
             value={filterLevel} 
@@ -116,11 +125,8 @@ const ProfDashboard = (user) => {
       </div>
 
       {/* 데이터 테이블 */}
-      <div className="table-wrapper" style={{ overflowX: "auto" }}>
-        <table
-          className="course-table"
-          style={{ width: "100%", borderCollapse: "collapse" }}
-        >
+      <div className="table-wrapper">
+        <table className="course-table">
           <thead>
             <tr>
               <th>선택</th>
@@ -137,21 +143,13 @@ const ProfDashboard = (user) => {
           <tbody>
             {filteredRisks.length === 0 ? (
               <tr>
-                <td colSpan="9" style={{ textAlign: "center" }}>
-                  데이터가 없습니다.
-                </td>
+                <td>데이터가 없습니다.</td>
               </tr>
             ) : (
               filteredRisks.map((risk) => (
-                <tr
-                  key={risk.id}
-                  style={{
-                    borderBottom: "1px solid #ccc",
-                    verticalAlign: "top",
-                  }}
-                >
+                <tr key={risk.id}>
                   {/* 체크박스 */}
-                  <td style={{ textAlign: "center" }}>
+                  <td>
                     <input
                       type="checkbox"
                       checked={checkedIds.has(risk.id)}
@@ -185,7 +183,6 @@ const ProfDashboard = (user) => {
                     style={{
                       whiteSpace: "pre-wrap",
                       wordBreak: "break-word",
-                      maxWidth: "400px",
                     }}
                   >
                     {risk.reason}
@@ -199,23 +196,9 @@ const ProfDashboard = (user) => {
                             `/professor/counseling/write?studentId=${risk.studentId}`
                           )
                         }
-                        style={{
-                          padding: "5px 10px",
-                          background: "#4caf50",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
                       >
                         상담
                       </button>
-                      {/* <button 
-                      onClick={() => handleDelete(risk.id)}
-                      style={{ padding: "5px 10px", background: "#9e9e9e", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
-                    >
-                      완료
-                    </button> */}
                     </div>
                   </td>
                 </tr>

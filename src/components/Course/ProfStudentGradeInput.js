@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../ModalContext";
 
 const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
   const [form, setForm] = useState({
@@ -11,7 +12,7 @@ const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
     total: 0,
     grade: "A+",
   });
-
+  const { showModal } = useModal();
   // 초기값 세팅
   useEffect(() => {
     if (student) {
@@ -77,18 +78,24 @@ const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
         convertedMark: form.total,
         grade: form.grade,
       });
-      alert("성적 저장 완료!");
+      showModal({
+        type: "alert",
+        message: "성적 저장이 완료되었습니다.",
+      });
       goBack();
     } catch (error) {
       console.error(error);
-      alert("저장 실패");
+      showModal({
+        type: "alert",
+        message: "성적 저장이 실패하였습니다.",
+      });
     }
   };
 
   return (
-    <div className="grade-input-container">
-      <h2>학생 성적 기입</h2>
-      <button onClick={goBack}>← 학생 리스트로</button>
+    <>
+      <h3>학생 성적 기입</h3>
+      <button onClick={goBack}> 학생 리스트</button>
 
       <div>
         <p>
@@ -99,7 +106,7 @@ const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
         </p>
       </div>
 
-      <div className="grade-form">
+      <div className="form-row">
         <label>결석</label>
         <input
           type="number"
@@ -112,6 +119,8 @@ const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
             ⚠ 결석 5회 이상으로 F 처리됩니다.
           </p>
         )}
+      </div>
+      <div className="form-row">
         <label>지각</label>
         <input
           type="number"
@@ -119,7 +128,8 @@ const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
           value={form.late}
           onChange={handleChange}
         />
-
+      </div>
+      <div className="form-row">
         <label>과제점수</label>
         <input
           type="number"
@@ -127,7 +137,8 @@ const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
           value={form.assignment}
           onChange={handleChange}
         />
-
+      </div>
+      <div className="form-row">
         <label>중간시험</label>
         <input
           type="number"
@@ -135,7 +146,8 @@ const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
           value={form.midterm}
           onChange={handleChange}
         />
-
+      </div>
+      <div className="form-row">
         <label>기말시험</label>
         <input
           type="number"
@@ -143,16 +155,18 @@ const ProfStudentGradeInput = ({ student, courseId, goBack }) => {
           value={form.final}
           onChange={handleChange}
         />
-
+      </div>
+      <div className="form-row">
         <label>환산점수</label>
         <input type="number" name="total" value={form.total} readOnly />
-
+      </div>
+      <div className="form-row">
         <label>등급</label>
         <input type="text" name="grade" value={form.grade} readOnly />
       </div>
 
       <button onClick={handleSubmit}>저장</button>
-    </div>
+    </>
   );
 };
 
