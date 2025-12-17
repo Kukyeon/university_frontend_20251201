@@ -56,7 +56,7 @@ const ProfEvaluation = () => {
   return (
     <>
       <h3>내 강의 평가</h3>
-      <div className="department-form" style={{ marginBottom: "15px" }}>
+      <div className="form-row">
         <select
           value={selectedSubject}
           onChange={(e) => setSelectedSubject(e.target.value)}

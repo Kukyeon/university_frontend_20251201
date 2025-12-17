@@ -3,22 +3,31 @@ import { chatApi } from "../../api/aiApi";
 import { Link, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import "./Chatbot.css";
+import { useModal } from "../ModalContext";
 
-const Chatbot = ({ user }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Chatbot = ({ user, isOpen, onClose, initialMessage }) => {
+  // const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const studentId = user.id;
   const chatBodyRef = useRef(null);
-
+  const { showModal } = useModal();
   const handleClear = async () => {
     try {
       await chatApi.clearHistory(studentId);
       setMessages([]);
-      setIsOpen(false);
-      alert("대화가 종료되었습니다.");
+      // setIsOpen(false);
+      initialSentRef.current = false;
+      onClose();
+      showModal({
+        type: "alert",
+        message: "대화가 종료되었습니다.",
+      });
     } catch (err) {
-      alert("삭제 실패");
+      showModal({
+        type: "alert",
+        message: "대화삭제중 오류가 발생했습니다.",
+      });
     }
   };
 
@@ -37,9 +46,37 @@ const Chatbot = ({ user }) => {
         .flat();
       setMessages(history);
     } catch (err) {
-      console.error(err);
+      showModal({
+        type: "alert",
+        message: "대화를 불러오는 중 오류가 발생했습니다.",
+      });
     }
   };
+  const initialSentRef = useRef(false);
+
+  useEffect(() => {
+    if (!isOpen || !initialMessage) return;
+    if (initialSentRef.current) return;
+
+    initialSentRef.current = true;
+
+    setMessages((prev) => [...prev, { sender: "user", text: initialMessage }]);
+
+    (async () => {
+      try {
+        const res = await chatApi.ask(user.id, initialMessage);
+        setMessages((prev) => [
+          ...prev,
+          { sender: "ai", text: res.data.answer },
+        ]);
+      } catch (err) {
+        setMessages((prev) => [
+          ...prev,
+          { sender: "ai", text: "오류가 발생했습니다." },
+        ]);
+      }
+    })();
+  }, [isOpen, initialMessage]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -95,17 +132,17 @@ const Chatbot = ({ user }) => {
 
   return (
     <div>
-      {!isOpen && (
+      {/* {!isOpen && (
         <button className="chat-btn" onClick={() => setIsOpen(true)}>
           챗봇🤖
         </button>
-      )}
+      )} */}
 
       {isOpen && (
         <div className="chat-window">
           <div className="chat-header">
             <span>학사 도우미 AI</span>
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div>
               <button
                 onClick={handleClear}
                 style={{

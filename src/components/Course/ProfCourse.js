@@ -3,14 +3,16 @@ import api from "../../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import CourseStudentList from "./CourseStudentList";
 import CoursePlanPage from "./CoursePlanPage";
+import { useModal } from "../ModalContext";
 
-const ProfCourse = ({ role }) => {
+const ProfCourse = ({ role, user }) => {
   const [subYear, setSubYear] = useState(""); // 초기값 빈 문자열 → 전체 조회
   const [semester, setSemester] = useState(""); // 초기값 빈 문자열 → 전체 조회
   const [courses, setCourses] = useState([]);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [syllabusCourseId, setSyllabusCourseId] = useState(null);
   const [showSyllabus, setShowSyllabus] = useState(false);
+  const { showModal } = useModal();
   // 초기 전체 데이터 로딩
   useEffect(() => {
     getSubjectList(); // 처음엔 필터 없이 전체 조회
@@ -27,7 +29,10 @@ const ProfCourse = ({ role }) => {
       setCourses(res.data);
       console.log(res.data);
     } catch (err) {
-      console.error("내 강의 조회 실패", err);
+      showModal({
+        type: "alert",
+        message: "강의목록을 불러오는데 실패했습니다.",
+      });
       setCourses([]);
     }
   };
@@ -137,6 +142,7 @@ const ProfCourse = ({ role }) => {
           </div>
           <CoursePlanPage
             role={role}
+            user={user}
             show={showSyllabus}
             subjectId={syllabusCourseId}
             onClose={() => {
