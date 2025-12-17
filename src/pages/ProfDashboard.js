@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { dashboardApi } from "../api/aiApi";
+import { dashboardApi, notiApi } from "../api/aiApi";
 import { useNavigate } from "react-router-dom"; // 페이지 이동용
 
 const ProfDashboard = (user) => {
@@ -11,6 +11,12 @@ const ProfDashboard = (user) => {
   const [filteredRisks, setFilteredRisks] = useState([]); // 필터링된 데이터
   const [filterLevel, setFilterLevel] = useState("ALL"); // 필터 상태
   const [checkedIds, setCheckedIds] = useState(new Set()); // 체크된 항목들
+
+  // 교수 -> 학생 알림
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [targetStudent, setTargetStudent] = useState(null);
+  const [messageContent, setMessageContent] = useState("");
+  // 교수 -> 학생 알림
 
   // 1. 데이터 로딩
   useEffect(() => {
@@ -92,6 +98,45 @@ const ProfDashboard = (user) => {
     else newChecked.add(id);
     setCheckedIds(newChecked);
   };
+
+  // 교수 -> 학생 알림
+  const handleOpenNotificationModal = (risk) => {
+    setTargetStudent({
+      id: risk.studentId,
+      name: risk.studentName,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setMessageContent("");
+    setTargetStudent(null);
+  };
+
+  const handleSendNotification = async () => {
+    if (!messageContent.trim()) {
+      alert("전송할 메세지를 입력해주세요.");
+      return;
+    }
+    if (
+      !targetStudent ||
+      !window.confirm(
+        `${targetStudent.name} 학생에게 메세지를 전송하시겠습니까?`
+      )
+    ) {
+      return;
+    }
+    try {
+      await notiApi.sendDirectMessage(targetStudent.id, messageContent);
+      alert(`[${targetStudent.name}] 학생에게 메세지를 보냈습니다.`);
+      handleCloseModal();
+    } catch (err) {
+      alert("메세지 전송에 실패했습니다.");
+      console.error(err);
+    }
+  };
+  // 교수 -> 학생 알림
 
   return (
     <>
@@ -194,11 +239,7 @@ const ProfDashboard = (user) => {
                   <td>
                     <div>
                       <button
-                        onClick={() =>
-                          navigate(
-                            `/professor/counseling/write?studentId=${risk.studentId}`
-                          )
-                        }
+                        onClick={() => navigate("/professor-schedule")}
                         style={{
                           padding: "5px 10px",
                           background: "#4caf50",
@@ -209,6 +250,9 @@ const ProfDashboard = (user) => {
                         }}
                       >
                         상담
+                      </button>
+                      <button onClick={() => handleOpenNotificationModal(risk)}>
+                        메세지
                       </button>
                       {/* <button 
                       onClick={() => handleDelete(risk.id)}
@@ -224,6 +268,34 @@ const ProfDashboard = (user) => {
           </tbody>
         </table>
       </div>
+
+      {/*  메시지 전송 모달  */}
+      {isModalOpen && targetStudent && (
+        <div>
+          <div>
+            <h4>{targetStudent.name} 학생에게 메시지 전송</h4>
+            <p style={{ fontSize: "14px", color: "#666" }}>
+              메시지는 학생의 알림벨로 즉시 전송됩니다.
+            </p>
+            <textarea
+              value={messageContent}
+              onChange={(e) => setMessageContent(e.target.value)}
+              placeholder="학생에게 보낼 메시지를 입력하세요. (예: '교수님께 상담 신청해주세요.')"
+              rows="4"
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+              }}
+            >
+              <button onClick={handleCloseModal}>취소</button>
+              <button onClick={handleSendNotification}>전송</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
