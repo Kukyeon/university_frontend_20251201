@@ -154,66 +154,64 @@ const EnrollmentPage = ({ setPageHeader }) => {
         {period === 2 && "수강신청 종료"}
       </h3>
       {/* 기간별 상단 안내 메시지 */}
-      <div className="enrollment-header-info">
+      <div>
         {period === 0 && (
-          <p className="info-text basket">
+          <p>
             ※ 지금은 <strong>예비 수강신청</strong> 기간입니다. 미리 담아둔
             과목은 본 수강신청 때 빠르게 신청할 수 있습니다.
           </p>
         )}
         {period === 1 && (
-          <p className="info-text enroll">
+          <p>
             ※ <strong>본 수강신청</strong> 기간입니다. 선착순으로 마감되니
             신중하게 신청하세요.
           </p>
         )}
         {period === 2 && (
-          <p className="info-text end">
+          <p>
             ※ 수강신청이 <strong>종료</strong>되었습니다.
           </p>
         )}
       </div>
 
       {period === 2 ? (
-        <div className="enrollment-empty">
+        <div>
           <h2>수강신청 기간이 아닙니다.</h2>
         </div>
       ) : (
         <>
           {/* 검색 필터 영역 */}
-          <div className="filter-container">
-            <div className="department-form">
-              <select
-                name="type"
-                value={searchParams.type}
-                onChange={handleInputChange}
-              >
-                <option value="">전체 구분</option>
-                <option value="전공">전공</option>
-                <option value="교양">교양</option>
-              </select>
+          <div className="department-form">
+            <select
+              name="type"
+              value={searchParams.type}
+              onChange={handleInputChange}
+            >
+              <option value="">전체 구분</option>
+              <option value="전공">전공</option>
+              <option value="교양">교양</option>
+            </select>
 
-              <select
-                name="deptId"
-                value={searchParams.deptId}
-                onChange={handleInputChange}
-              >
-                <option value="">전체 학과</option>
-                {departments.map((dept) => (
-                  <option key={dept.id} value={dept.id}>
-                    {dept.name}
-                  </option>
-                ))}
-              </select>
+            <select
+              name="deptId"
+              value={searchParams.deptId}
+              onChange={handleInputChange}
+            >
+              <option value="">전체 학과</option>
+              {departments.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
 
-              <input
-                name="name"
-                value={searchParams.name}
-                onChange={handleInputChange}
-                placeholder="강의명 검색"
-              />
-              <button onClick={handleSearch}>검색</button>
-            </div>
+            <input
+              name="name"
+              value={searchParams.name}
+              onChange={handleInputChange}
+              placeholder="강의명 검색"
+            />
+            <button onClick={handleSearch}>검색</button>
           </div>
           {/* 테이블 컴포넌트 호출 */}
           {/* EnrollmentTable 내부에서 period에 따라 '담은인원' vs '신청인원'을 다르게 보여줍니다 */}

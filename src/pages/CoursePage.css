@@ -24,17 +24,23 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px; /* PC용 여유 있는 간격 */
-  align-items: center;
+  align-items: baseline;
 }
 
 .department-form input,
 .department-form select {
   min-width: 100px;
   max-width: 150px;
+  height: 32px;
   padding: 6px 10px;
   font-size: 14px;
   border-radius: 6px;
   border: 1px solid #ccc;
+}
+.department-form input,
+.department-form select,
+.department-form button {
+  box-sizing: border-box;
 }
 
 .department-form button {

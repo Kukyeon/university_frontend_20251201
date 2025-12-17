@@ -10,7 +10,7 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
   };
-
+  console.log(userData);
   const handleSave = async () => {
     try {
       const res = await api.put("/user/update", userData);
@@ -28,6 +28,29 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
       });
     }
   };
+  const combinedChanges = [
+    ...(userData?.statList?.map((stat) => ({
+      date: stat.fromDate,
+      type: stat.status,
+      detail:
+        stat.status === "휴학"
+          ? userData.breakApps.find((b) => b.id === stat.breakAppId)?.type
+          : "",
+      approval:
+        stat.status === "재학"
+          ? "승인"
+          : userData.breakApps.find((b) => b.id === stat.breakAppId)?.status,
+      returnSemester:
+        stat.status === "휴학"
+          ? (() => {
+              const b = userData.breakApps.find(
+                (b) => b.id === stat.breakAppId
+              );
+              return b ? `${b.toYear}년 ${b.toSemester}학기` : "-";
+            })()
+          : "-",
+    })) || []),
+  ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const renderInput = (field, value) =>
     editMode ? (
@@ -181,8 +204,8 @@ const MyInfo = ({ user, userData, setUserData, role }) => {
                 </tr>
               </thead>
               <tbody>
-                {userData?.academicChanges?.length > 0 ? (
-                  userData.academicChanges.map((change, idx) => (
+                {combinedChanges.length > 0 ? (
+                  combinedChanges.map((change, idx) => (
                     <tr key={idx}>
                       <td>{change.date}</td>
                       <td>{change.type}</td>

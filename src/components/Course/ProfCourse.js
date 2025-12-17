@@ -65,32 +65,30 @@ const ProfCourse = ({ role, user }) => {
       {!selectedCourseId && (
         <>
           <h3>내 강의 조회</h3>
-          <div className="filter-container">
-            <div className="department-form" style={{ marginBottom: "15px" }}>
-              <label>연도</label>
-              <select
-                value={subYear}
-                onChange={(e) => setSubYear(e.target.value)}
-              >
-                <option value="">전체</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-              </select>
+          <div className="department-form" style={{ marginBottom: "15px" }}>
+            <label>연도</label>
+            <select
+              value={subYear}
+              onChange={(e) => setSubYear(e.target.value)}
+            >
+              <option value="">전체</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+            </select>
 
-              <label>학기</label>
-              <select
-                value={semester}
-                onChange={(e) => setSemester(e.target.value)}
-              >
-                <option value="">전체</option>
-                <option value="1">1학기</option>
-                <option value="2">2학기</option>
-              </select>
+            <label>학기</label>
+            <select
+              value={semester}
+              onChange={(e) => setSemester(e.target.value)}
+            >
+              <option value="">전체</option>
+              <option value="1">1학기</option>
+              <option value="2">2학기</option>
+            </select>
 
-              <button className="search-btn" onClick={handleSearch}>
-                조회
-              </button>
-            </div>
+            <button className="search-btn" onClick={handleSearch}>
+              조회
+            </button>
           </div>
           <div className="table-wrapper">
             <table className="course-table">

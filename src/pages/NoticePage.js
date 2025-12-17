@@ -12,11 +12,19 @@ const NoticePage = ({ role }) => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [searchType, setSearchType] = useState("title");
-  const [view, setView] = useState(state.view ? "detail" : "list"); // list / write / detail
+  const [view, setView] = useState(
+    state.view === "detail" && state.noticeId ? "detail" : "list"
+  ); // list / write / detail
   const [selectedNoticeId, setSelectedNoticeId] = useState(
-    state.noticeId || null
+    state.noticeId ?? null
   );
   const { showModal } = useModal();
+  useEffect(() => {
+    if (view === "detail" && !selectedNoticeId) {
+      setView("list");
+    }
+  }, [view, selectedNoticeId]);
+
   const fetchList = async () => {
     try {
       const data = await getNoticeList(page, keyword, searchType);
@@ -28,6 +36,7 @@ const NoticePage = ({ role }) => {
       });
     }
   };
+
   useEffect(() => {
     if (view === "list") fetchList();
   }, [page, view]);
@@ -65,7 +74,7 @@ const NoticePage = ({ role }) => {
       <h3>공지사항</h3>
 
       {/* 검색 */}
-      <div className="form-row" style={{ marginBottom: "15px" }}>
+      <div className="department-form">
         <select
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
