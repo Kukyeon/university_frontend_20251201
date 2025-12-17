@@ -1627,73 +1627,96 @@ select {
 }
 
 /* ------------------------------------------- */
-/* --- DatePicker/Calendar 스타일 --- */
+/* --- ⭐️ 기깔나게 바뀐 DatePicker/Calendar 스타일 --- */
 /* ------------------------------------------- */
 
 .calendar-group {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin: 30px 0;
+  background-color: #fff;
 }
 
 .react-datepicker {
-  /* 기존 스타일 유지 */
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  font-family: inherit;
-
-  /* ⭐️ [확장] 캘린더 전체 크기 및 가독성 확장 */
-  font-size: 1.2rem; /* 전체 글꼴 크기 키우기 */
-  padding: 15px; /* 내부 패딩 증가 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-/* 캘린더 헤더 (월/연도 부분) */
-.react-datepicker__header {
-  background-color: #f7f7f7; /* 배경색 */
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-}
-
-/* 월/연도 제목 폰트 크기 확대 */
-.react-datepicker__current-month {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-/* 요일 (Su, Mo, Tu...) */
-.react-datepicker__day-name {
-  width: 3.5rem; /* 요일 셀 너비 확장 */
-  line-height: 3.5rem; /* 요일 셀 높이 확장 */
-  margin: 0.166rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
-/* 날짜 셀 */
-.react-datepicker__day {
-  width: 3.5rem; /* 날짜 셀 너비 확장 */
-  line-height: 3.5rem; /* 날짜 셀 높이 확장 */
-  margin: 0.166rem;
+  /* 기존 border 제거 및 폰트 개선 */
+  border: none !important;
+  border-radius: 12px;
+  padding: 15px;
+  font-family: "Pretendard", -apple-system, sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* 더 부드러운 그림자 */
   font-size: 1.2rem;
-  border-radius: 50%; /* 날짜를 원형으로 만들어 시각적 강조 */
-  transition: background-color 0.15s;
 }
 
-/* 선택된 날짜 스타일 (상담 예약 버튼 테마색 사용) */
+/* 캘린더 헤더 (2025.12 > 부분) */
+.react-datepicker__header {
+  background-color: white !important;
+  border-bottom: none !important;
+  padding-top: 20px;
+}
+
+/* 년.월 제목 스타일 */
+.react-datepicker__current-month {
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 15px;
+  letter-spacing: -1px;
+  color: #222;
+}
+
+/* 요일 구분선 및 스타일 */
+.react-datepicker__day-names {
+  margin-top: 10px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 15px;
+}
+
+.react-datepicker__day-name {
+  width: 4rem !important; /* 이미지처럼 넓게 */
+  line-height: 2.5rem !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: #888 !important;
+}
+
+/* 일요일 빨간색 포인트 */
+.react-datepicker__day-name:first-child {
+  color: #ff4d4f !important;
+}
+
+/* 날짜 숫자 셀 스타일 */
+.react-datepicker__day {
+  width: 4rem !important; /* 이미지처럼 넓게 */
+  line-height: 4rem !important; /* 높이도 맞춰서 시원하게 */
+  margin: 0.2rem !important;
+  font-size: 1.2rem !important;
+  border-radius: 12px !important; /* 둥근 네모 형태 */
+  transition: all 0.2s ease;
+  color: #333;
+}
+
+/* 오늘 날짜 (초록색 포인트) */
+.react-datepicker__day--today {
+  font-weight: 800 !important;
+  background-color: #ebfff1 !important;
+  color: #1ed760 !important;
+}
+
+/* 선택된 날짜 (이미지 스타일 반영) */
 .react-datepicker__day--selected {
-  background-color: #ff6b6b !important; /* 강한 색상으로 선택 표시 */
+  background-color: #1ed760 !important; /* 기깔나는 초록색 */
   color: white !important;
   font-weight: bold;
+  box-shadow: 0 4px 10px rgba(30, 215, 96, 0.3);
 }
 
-/* Hover 스타일 */
-.react-datepicker__day:not(.react-datepicker__day--selected):not(
-    .react-datepicker__day--disabled
-  ):hover {
-  background-color: #f0f0f0;
-  border-radius: 50%;
+/* 마우스 호버 효과 */
+.react-datepicker__day:hover:not(.react-datepicker__day--selected) {
+  background-color: #f5f5f5 !important;
+}
+
+/* 과거 날짜 등 비활성화 */
+.react-datepicker__day--disabled {
+  color: #ddd !important;
 }
 
 /* ------------------------------------------- */
@@ -1701,14 +1724,14 @@ select {
 /* ------------------------------------------- */
 
 .time-slots-container {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .time-slots-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  justify-content: flex-start; /* 좌측 정렬 */
+  gap: 12px;
+  justify-content: flex-start;
 }
 
 /* 🚨 [기존] 교수 관리 페이지 컨테이너 스타일 */
@@ -1722,38 +1745,46 @@ select {
 
 /* 🚨 [기존] 시간 슬롯 버튼 (공통) */
 .btn-time-slot {
-  padding: 10px 15px;
+  padding: 12px 18px;
   margin: 0;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px; /* 조금 더 부드럽게 수정 */
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
+  font-size: 1.05rem; /* 가독성 위해 약간 확대 */
+  transition: all 0.2s;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 120px; /* 버튼 최소 너비 설정 */
+  min-width: 110px;
+  background-color: #fff;
 }
 
 /* 🚨 [기존] 교수 관리 상태에 따른 스타일 */
 .btn-time-slot.available {
-  background-color: #e6ffe6; /* 연한 녹색 (클릭 시 닫기) */
+  background-color: #e6ffe6;
   border-color: #4caf50;
   color: #333;
 }
 
 .btn-time-slot.closed,
 .btn-time-slot.not_registered {
-  background-color: #f8f8f8; /* 연한 회색 (클릭 시 열기) */
+  background-color: #f8f8f8;
   border-color: #ccc;
   color: #999;
 }
 
 .btn-time-slot.booked {
-  background-color: #ffdddd; /* 연한 빨강 (예약됨) */
+  background-color: #ffdddd;
   border-color: #f44336;
   color: #333;
   cursor: not-allowed;
+}
+
+/* 학생 예약 페이지 전용 버튼 (Checked 상태 등) */
+.btn-time-slot:hover:not(.booked) {
+  border-color: #1ed760;
+  color: #1ed760;
+  transform: translateY(-2px);
 }
 
 .slot-action-label {
