@@ -1626,7 +1626,9 @@ select {
   flex-grow: 1;
 }
 
+/* ------------------------------------------- */
 /* --- DatePicker/Calendar 스타일 --- */
+/* ------------------------------------------- */
 
 .calendar-group {
   display: flex;
@@ -1635,13 +1637,68 @@ select {
 }
 
 .react-datepicker {
+  /* 기존 스타일 유지 */
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 10px;
   font-family: inherit;
+
+  /* ⭐️ [확장] 캘린더 전체 크기 및 가독성 확장 */
+  font-size: 1.2rem; /* 전체 글꼴 크기 키우기 */
+  padding: 15px; /* 내부 패딩 증가 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* --- 시간 슬롯 버튼 목록 --- */
+/* 캘린더 헤더 (월/연도 부분) */
+.react-datepicker__header {
+  background-color: #f7f7f7; /* 배경색 */
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+/* 월/연도 제목 폰트 크기 확대 */
+.react-datepicker__current-month {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* 요일 (Su, Mo, Tu...) */
+.react-datepicker__day-name {
+  width: 3.5rem; /* 요일 셀 너비 확장 */
+  line-height: 3.5rem; /* 요일 셀 높이 확장 */
+  margin: 0.166rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* 날짜 셀 */
+.react-datepicker__day {
+  width: 3.5rem; /* 날짜 셀 너비 확장 */
+  line-height: 3.5rem; /* 날짜 셀 높이 확장 */
+  margin: 0.166rem;
+  font-size: 1.2rem;
+  border-radius: 50%; /* 날짜를 원형으로 만들어 시각적 강조 */
+  transition: background-color 0.15s;
+}
+
+/* 선택된 날짜 스타일 (상담 예약 버튼 테마색 사용) */
+.react-datepicker__day--selected {
+  background-color: #ff6b6b !important; /* 강한 색상으로 선택 표시 */
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Hover 스타일 */
+.react-datepicker__day:not(.react-datepicker__day--selected):not(
+    .react-datepicker__day--disabled
+  ):hover {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+}
+
+/* ------------------------------------------- */
+/* --- 기존 시간 슬롯 버튼 목록 (유지) --- */
+/* ------------------------------------------- */
 
 .time-slots-container {
   margin-top: 20px;
@@ -1654,7 +1711,7 @@ select {
   justify-content: flex-start; /* 좌측 정렬 */
 }
 
-/* 🚨 [추가] 교수 관리 페이지 컨테이너 스타일 */
+/* 🚨 [기존] 교수 관리 페이지 컨테이너 스타일 */
 .professor-time-manager-container {
   padding: 20px;
   border: 1px solid #eee;
@@ -1663,7 +1720,7 @@ select {
   margin-bottom: 30px;
 }
 
-/* 🚨 [추가] 시간 슬롯 버튼 (공통) */
+/* 🚨 [기존] 시간 슬롯 버튼 (공통) */
 .btn-time-slot {
   padding: 10px 15px;
   margin: 0;
@@ -1678,7 +1735,7 @@ select {
   min-width: 120px; /* 버튼 최소 너비 설정 */
 }
 
-/* 🚨 [추가] 교수 관리 상태에 따른 스타일 */
+/* 🚨 [기존] 교수 관리 상태에 따른 스타일 */
 .btn-time-slot.available {
   background-color: #e6ffe6; /* 연한 녹색 (클릭 시 닫기) */
   border-color: #4caf50;

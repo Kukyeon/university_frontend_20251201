@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { notiApi } from "../../api/aiApi"; // 이건 기존 API (조회/삭제용)
-import { EventSourcePolyfill } from "event-source-polyfill"; // ★ 추가
+import { notiApi } from "../../api/aiApi";
+import { EventSourcePolyfill } from "event-source-polyfill";
 import "./NotificationBell.css";
 import { useModal } from "../ModalContext";
 
@@ -10,6 +10,7 @@ const NotificationBell = ({ user, openChatbot }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { showModal } = useModal();
+
   // 1. 초기 데이터 로드 (새로고침 시 기존 알림 가져오기)
   useEffect(() => {
     if (user) {
@@ -30,7 +31,6 @@ const NotificationBell = ({ user, openChatbot }) => {
   useEffect(() => {
     if (!user) return;
 
-    // SSE 연결 객체 생성 (토큰 헤더 포함)
     const token = localStorage.getItem("token"); // 또는 쿠키 등 토큰 저장 위치
     const eventSource = new EventSourcePolyfill(
       "http://localhost:8888/api/notification/subscribe", // 백엔드 주소 확인
@@ -43,7 +43,6 @@ const NotificationBell = ({ user, openChatbot }) => {
       }
     );
 
-    // 연결 성공 시
     eventSource.onopen = () => {
       console.log("🔔 실시간 알림 서버 연결 성공");
     };
@@ -78,7 +77,9 @@ const NotificationBell = ({ user, openChatbot }) => {
 
   // ... (handleClick, handleDelete, render 부분은 기존과 동일) ...
   const isChatbotNotification = (noti) => {
-    return noti.content?.includes("[상담 권장]");
+    return (
+      noti.type !== "PROFESSOR_MESSAGE" && noti.content?.includes("[상담 권장]")
+    );
   };
   const buildChatbotMessage = (noti) => {
     if (noti.content?.includes("[상담 권장]")) {
@@ -89,30 +90,49 @@ const NotificationBell = ({ user, openChatbot }) => {
 
   // 3. 알림 클릭 처리
   const handleClick = async (noti) => {
-    // [디버깅] 클릭된 데이터 확인
     console.log("👉 클릭된 알림 데이터:", noti);
     console.log("👉 이동하려는 URL:", noti.url);
 
     try {
-      // 읽음 처리 (API 호출)
+      // 읽음 처리 (API 호출) / 백엔드 isread 변경
       if (!noti.Checked) {
         await notiApi.markAsRead(noti.id);
         setNotifications((prev) =>
           prev.map((n) => (n.id === noti.id ? { ...n, Checked: true } : n))
         );
       }
+
+      // 챗봇 알림 처리 (기존 유지)
       if (isChatbotNotification(noti)) {
         openChatbot(buildChatbotMessage(noti));
         setIsOpen(false);
         return;
       }
+
       // [핵심] URL이 있을 때만 이동
       if (noti.url) {
+        //  교수 메시지인 경우 확인 Alert 표시
+        if (noti.type === "PROFESSOR_MESSAGE") {
+          const senderName = noti.senderName
+            ? noti.senderName + " 교수님"
+            : "교수님";
+
+          const isConfirmed = window.confirm(
+            `${senderName}이(가) 보낸 알림입니다.\n상담 페이지로 이동하시겠습니까?`
+          );
+
+          if (!isConfirmed) {
+            console.log("페이지 이동 취소됨.");
+            return; // '아니오'를 누르면 여기서 함수 종료
+          }
+        }
+
+        // 페이지 이동 실행
         console.log("🚀 페이지 이동 시도:", noti.url);
         navigate(noti.url);
         setIsOpen(false); // 창 닫기
       } else {
-        console.warn("⚠️ 이동할 URL이 없습니다. (DB에 url 컬럼이 비어있음)");
+        console.warn("⚠️ 이동할 URL이 없습니다.");
         showModal({
           type: "alert",
           message: "이동할 링크가 없는 알림입니다.",
@@ -140,11 +160,11 @@ const NotificationBell = ({ user, openChatbot }) => {
     }
   };
 
+  //  'Checked' 대신 'isRead' 사용
   const unreadCount = notifications.filter((n) => !n.Checked).length;
 
   return (
     <div className="noti-container">
-      {/* ... (UI 렌더링 코드는 기존 그대로 유지) ... */}
       <div className="noti-icon-wrapper" onClick={() => setIsOpen(!isOpen)}>
         <span className="material-symbols-outlined noti-icon">
           notifications
@@ -159,25 +179,39 @@ const NotificationBell = ({ user, openChatbot }) => {
             {notifications.length === 0 ? (
               <li className="noti-empty">새로운 알림이 없습니다.</li>
             ) : (
-              notifications.map((noti) => (
-                <li
-                  key={noti.id}
-                  className={`noti-item ${noti.Checked ? "read" : "unread"}`}
-                  onClick={() => handleClick(noti)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <p className="noti-content">{noti.content}</p>
-                  <button
-                    onClick={(e) => handleDelete(e, noti.id)}
-                    className="delete-btn"
+              notifications.map((noti) => {
+                //  알림 내용 포맷팅 로직
+                let displayContent = noti.content;
+
+                if (noti.type === "PROFESSOR_MESSAGE" && noti.senderName) {
+                  displayContent = `[${noti.senderName} 교수님 메시지] ${noti.content}`;
+                } else if (noti.type === "AI_RISK" || !noti.type) {
+                  displayContent = `[AI 알림] ${noti.content}`;
+                }
+
+                return (
+                  <li
+                    key={noti.id}
+                    //  'Checked' 대신 'isRead' 사용
+                    className={`noti-item ${noti.Checked ? "read" : "unread"}`}
+                    onClick={() => handleClick(noti)}
+                    style={{ cursor: "pointer" }}
                   >
-                    x
-                  </button>
-                  <span className="noti-date">
-                    {new Date(noti.createdAt).toLocaleDateString()}
-                  </span>
-                </li>
-              ))
+                    {/*  포맷팅된 내용 표시 */}
+                    <p className="noti-content">{displayContent}</p>
+
+                    <button
+                      onClick={(e) => handleDelete(e, noti.id)}
+                      className="delete-btn"
+                    >
+                      x
+                    </button>
+                    <span className="noti-date">
+                      {new Date(noti.createdAt).toLocaleDateString()}
+                    </span>
+                  </li>
+                );
+              })
             )}
           </ul>
         </div>
