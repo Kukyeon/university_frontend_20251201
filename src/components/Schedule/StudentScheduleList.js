@@ -73,13 +73,13 @@ const StudentScheduleList = ({ studentId, onSelect, listRefreshKey }) => {
               )}
               <span className="schedule-time">
                 {formatDateTime(s.startTime)} ~ {formatDateTime(s.endTime)}
-              </span>{" "}
+              </span>
               | <span className="schedule-status">{s.status}</span>
             </span>
             <button
               onClick={() => handleCancel(s.scheduleId)}
               className="cancel-btn" // 💡 클래스 적용
-              disabled={s.status !== "확인됨" && s.status !== "CONFIRMED"}
+              disabled={s.status !== "확인됨" && s.status !== "COMPLETED"}
             >
               취소
             </button>
