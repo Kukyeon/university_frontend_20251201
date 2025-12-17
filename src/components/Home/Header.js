@@ -33,7 +33,7 @@ const Header = ({ user, logout, role }) => {
       ? [
           { label: "수강", path: "/sugang" },
           { label: "성적", path: "/grade" },
-          { label: "상담", path: "/grade" },
+          { label: "상담", path: "/student-schedule" },
         ]
       : []),
     { label: "학사정보", path: "/academicPage" },

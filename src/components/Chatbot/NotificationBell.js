@@ -95,10 +95,10 @@ const NotificationBell = ({ user, openChatbot }) => {
 
     try {
       // 읽음 처리 (API 호출)
-      if (!noti.isRead) {
+      if (!noti.Checked) {
         await notiApi.markAsRead(noti.id);
         setNotifications((prev) =>
-          prev.map((n) => (n.id === noti.id ? { ...n, isRead: true } : n))
+          prev.map((n) => (n.id === noti.id ? { ...n, Checked: true } : n))
         );
       }
       if (isChatbotNotification(noti)) {
@@ -140,7 +140,7 @@ const NotificationBell = ({ user, openChatbot }) => {
     }
   };
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => !n.Checked).length;
 
   return (
     <div className="noti-container">
@@ -162,7 +162,7 @@ const NotificationBell = ({ user, openChatbot }) => {
               notifications.map((noti) => (
                 <li
                   key={noti.id}
-                  className={`noti-item ${noti.isRead ? "read" : "unread"}`}
+                  className={`noti-item ${noti.Checked ? "read" : "unread"}`}
                   onClick={() => handleClick(noti)}
                   style={{ cursor: "pointer" }}
                 >
