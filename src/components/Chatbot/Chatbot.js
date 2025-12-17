@@ -162,7 +162,11 @@ const Chatbot = ({ user, isOpen, onClose, initialMessage }) => {
 
           <div className="chat-body" ref={chatBodyRef}>
             {messages.map((msg, idx) => (
-              <div key={idx} className={`message ${msg.sender}`}>
+              <div
+                key={idx}
+                className={`message ${msg.sender}`}
+                
+              >
                 {msg.sender === "ai" ? (
                   <ReactMarkdown components={MarkdownComponents}>
                     {msg.text}
