@@ -97,19 +97,18 @@ const NoticePage = ({ role }) => {
         >
           검색
         </button>
+        {role === "staff" && (
+          <button
+            className="search-btn"
+            onClick={() => {
+              setSelectedNoticeId(null); // ★ 초기화
+              setView("write");
+            }}
+          >
+            새 글 등록
+          </button>
+        )}
       </div>
-
-      {role === "staff" && (
-        <button
-          className="search-btn"
-          onClick={() => {
-            setSelectedNoticeId(null); // ★ 초기화
-            setView("write");
-          }}
-        >
-          새 글 등록
-        </button>
-      )}
 
       {/* 목록 */}
       <div className="table-wrapper">

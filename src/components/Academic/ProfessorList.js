@@ -46,25 +46,23 @@ const ProfessorList = () => {
   return (
     <>
       <h3>교수 명단 조회</h3>
-      <div className="filter-container">
-        <div className="form-row">
-          <input
-            type="text"
-            value={searchDept}
-            onChange={(e) => setSearchDept(e.target.value)}
-            placeholder="학과 번호"
-          />
+      <div className="department-form">
+        <input
+          type="text"
+          value={searchDept}
+          onChange={(e) => setSearchDept(e.target.value)}
+          placeholder="학과 번호"
+        />
 
-          <input
-            type="text"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="사번"
-          />
-          <button onClick={getSerchList} className="search-btn">
-            조회
-          </button>
-        </div>
+        <input
+          type="text"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          placeholder="사번"
+        />
+        <button onClick={getSerchList} className="search-btn">
+          조회
+        </button>
       </div>
       <div className="table-wrapper">
         <table className="course-table">

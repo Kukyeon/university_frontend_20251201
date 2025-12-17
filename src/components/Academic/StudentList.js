@@ -65,28 +65,26 @@ const StudentList = () => {
   return (
     <>
       <h3>학생 명단 조회</h3>
-      <div className="filter-container">
-        <div className="form-row">
-          <input
-            type="text"
-            value={searchDept}
-            onChange={(e) => setSearchDept(e.target.value)}
-            placeholder="학과 번호"
-          />
+      <div className="department-form">
+        <input
+          type="text"
+          value={searchDept}
+          onChange={(e) => setSearchDept(e.target.value)}
+          placeholder="학과 번호"
+        />
 
-          <input
-            type="text"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="학번"
-          />
-          <button onClick={getSerchList} className="search-btn">
-            조회
-          </button>
-          <button onClick={handleUpdateGrades} disabled={loading}>
-            {loading ? "업데이트 중..." : "새학기 적용"}
-          </button>
-        </div>
+        <input
+          type="text"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          placeholder="학번"
+        />
+        <button onClick={getSerchList} className="search-btn">
+          조회
+        </button>
+        <button onClick={handleUpdateGrades} disabled={loading}>
+          {loading ? "업데이트 중..." : "새학기 적용"}
+        </button>
       </div>
       <div className="table-wrapper">
         <table className="course-table">

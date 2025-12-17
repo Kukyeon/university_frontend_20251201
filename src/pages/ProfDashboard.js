@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { dashboardApi, notiApi } from "../api/aiApi";
 import { useNavigate } from "react-router-dom"; // 페이지 이동용
+import { useModal } from "../components/ModalContext";
 
 const ProfDashboard = (user) => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const ProfDashboard = (user) => {
   const [filteredRisks, setFilteredRisks] = useState([]); // 필터링된 데이터
   const [filterLevel, setFilterLevel] = useState("ALL"); // 필터 상태
   const [checkedIds, setCheckedIds] = useState(new Set()); // 체크된 항목들
-
+  const { showModal } = useModal();
   // 교수 -> 학생 알림
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [targetStudent, setTargetStudent] = useState(null);

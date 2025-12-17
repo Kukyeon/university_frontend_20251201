@@ -234,24 +234,22 @@ const Course = () => {
     <div>
       <h3>강의 관리</h3>
 
-      <div className="form-actions">
-        <button
-          onClick={() => {
-            setShowAddForm(!showAddForm);
-            setShowEditForm(false);
-          }}
-        >
-          등록
-        </button>
-        <button
-          onClick={() => {
-            setShowEditForm(!showEditForm);
-            setShowAddForm(false);
-          }}
-        >
-          수정
-        </button>
-      </div>
+      <button
+        onClick={() => {
+          setShowAddForm(!showAddForm);
+          setShowEditForm(false);
+        }}
+      >
+        등록
+      </button>
+      <button
+        onClick={() => {
+          setShowEditForm(!showEditForm);
+          setShowAddForm(false);
+        }}
+      >
+        수정
+      </button>
 
       {showAddForm && <CourseForm onSubmit={handleAdd} />}
       {showEditForm && <CourseForm onSubmit={handleEdit} isEdit />}
