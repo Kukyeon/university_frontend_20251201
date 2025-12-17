@@ -129,7 +129,7 @@ const CollegeTuition = () => {
 
       {/* 등록 폼 */}
       {showAddForm && (
-        <div className="form-row">
+        <div className="department-form">
           <select
             name="collegeId"
             value={form.collegeId}
@@ -154,7 +154,7 @@ const CollegeTuition = () => {
 
       {/* 수정 폼 */}
       {showEditForm && (
-        <div className="form-row">
+        <div className="department-form">
           <select
             value={form.collegeId || ""}
             onChange={(e) => {

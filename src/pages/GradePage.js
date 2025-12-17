@@ -40,7 +40,7 @@ const GradePage = () => {
 
       if (activeTab === "this") {
         res = await api.get("/grade/thisSemester", {
-          params: { year: 2025, semester: 1 },
+          params: { year: 2025, semester: 2 },
         });
       } else if (activeTab === "semester") {
         res = await api.get("/grade/semester", {
@@ -117,42 +117,31 @@ const GradePage = () => {
 
           {activeTab === "semester" && (
             <>
-              <div className="filter-container">
-                <div
-                  className="department-form"
-                  style={{ marginBottom: "15px" }}
+              <div className="department-form">
+                <select value={year} onChange={(e) => setYear(+e.target.value)}>
+                  <option value="2023">2023년</option>
+                  <option value="2024">2024년</option>
+                  <option value="2025">2025년</option>
+                </select>
+
+                <select
+                  value={semester}
+                  onChange={(e) => setSemester(+e.target.value)}
                 >
-                  <select
-                    value={year}
-                    onChange={(e) => setYear(+e.target.value)}
-                  >
-                    <option value="2023">2023년</option>
-                    <option value="2024">2024년</option>
-                    <option value="2025">2025년</option>
-                  </select>
+                  <option value="1">1학기</option>
+                  <option value="2">2학기</option>
+                </select>
 
-                  <select
-                    value={semester}
-                    onChange={(e) => setSemester(+e.target.value)}
-                  >
-                    <option value="1">1학기</option>
-                    <option value="2">2학기</option>
-                  </select>
+                <select value={type} onChange={(e) => setType(e.target.value)}>
+                  <option value="">전체</option>
+                  <option value="전공">전공</option>
+                  <option value="교양">교양</option>
+                </select>
 
-                  <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                  >
-                    <option value="">전체</option>
-                    <option value="전공">전공</option>
-                    <option value="교양">교양</option>
-                  </select>
-
-                  <button onClick={loadData}>조회</button>
-                </div>
-
-                <GradeBySemester data={data} />
+                <button onClick={loadData}>조회</button>
               </div>
+
+              <GradeBySemester data={data} />
             </>
           )}
 

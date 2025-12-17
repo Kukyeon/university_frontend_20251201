@@ -74,47 +74,42 @@ const AllCourse = ({ role, user }) => {
     <>
       <h3>전체 강의 조회</h3>
       {/* 검색 필터 */}
-      <div className="filter-container">
-        <div className="department-form">
-          <select value={year} onChange={(e) => setYear(e.target.value)}>
-            <option value="">전체/연도</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-          </select>
+      <div className="department-form">
+        <select value={year} onChange={(e) => setYear(e.target.value)}>
+          <option value="">전체/연도</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+        </select>
 
-          <select
-            value={semester}
-            onChange={(e) => setSemester(e.target.value)}
-          >
-            <option value="">전체/학기</option>
-            <option value="1학기">1학기</option>
-            <option value="2학기">2학기</option>
-          </select>
+        <select value={semester} onChange={(e) => setSemester(e.target.value)}>
+          <option value="">전체/학기</option>
+          <option value="1학기">1학기</option>
+          <option value="2학기">2학기</option>
+        </select>
 
-          <select
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-          >
-            <option value="">전체/학과</option>
-            {departments.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.name}
-              </option>
-            ))}
-          </select>
+        <select
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
+        >
+          <option value="">전체/학과</option>
+          {departments.map((dept) => (
+            <option key={dept.id} value={dept.id}>
+              {dept.name}
+            </option>
+          ))}
+        </select>
 
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="강의명을 입력하세요"
-            onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-          />
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="강의명을 입력하세요"
+          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+        />
 
-          <button className="search-btn" onClick={handleSearch}>
-            조회
-          </button>
-        </div>
+        <button className="search-btn" onClick={handleSearch}>
+          조회
+        </button>
       </div>
 
       <p className="total-count">강의 목록 [총 {courses.length}건]</p>

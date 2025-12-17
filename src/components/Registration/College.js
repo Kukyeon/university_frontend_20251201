@@ -68,7 +68,7 @@ const College = () => {
   return (
     <>
       <h3>단과대학 관리</h3>
-      <div className="form-row">
+      <div className="department-form">
         <input
           type="text"
           placeholder="신규 단과대학 이름"

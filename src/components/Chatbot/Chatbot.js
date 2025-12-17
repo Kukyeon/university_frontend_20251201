@@ -165,7 +165,7 @@ const Chatbot = ({ user, isOpen, onClose, initialMessage }) => {
               <div
                 key={idx}
                 className={`message ${msg.sender}`}
-                style={{ whiteSpace: "pre-wrap" }}
+                
               >
                 {msg.sender === "ai" ? (
                   <ReactMarkdown components={MarkdownComponents}>
