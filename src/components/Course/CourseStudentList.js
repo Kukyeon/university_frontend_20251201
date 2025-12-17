@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
 import ProfStudentGradeInput from "./ProfStudentGradeInput";
+import { useModal } from "../ModalContext";
 
 const CourseStudentList = ({ courseId, goBack }) => {
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
-
+  const { showModal } = useModal();
   useEffect(() => {
     loadStudents();
   }, []);
@@ -27,7 +28,10 @@ const CourseStudentList = ({ courseId, goBack }) => {
       setStudents(dataWithIds);
       console.log(res);
     } catch (err) {
-      console.error("학생 불러오기 실패", err);
+      showModal({
+        type: "alert",
+        message: "학생목록을 불러오는데 실패했습니다.",
+      });
       setStudents([]);
     }
   };
@@ -57,8 +61,8 @@ const CourseStudentList = ({ courseId, goBack }) => {
       {/* 🔥 학생 리스트 화면 */}
       {!selectedStudent && (
         <div className="student-list-container">
-          <h2>학생 리스트 조회</h2>
-          <button onClick={goBack}>← 강의 목록으로</button>
+          <h3>학생 리스트 조회</h3>
+          <button onClick={goBack}>강의 목록으로</button>
           <div className="table-wrapper">
             <table className="course-table">
               <thead>
