@@ -394,12 +394,12 @@ $(document).ready(function () {
                   );
                   // Add a 'mute' button
                   $("#videolocal").append(
-                    '<button class="btn btn-warning btn-xs" id="mute" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;">Mute</button>'
+                    '<button class="btn btn-warning btn-xs" id="mute" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;">음소거</button>'
                   );
                   $("#mute").click(toggleMute);
                   // Add an 'unpublish' button
                   $("#videolocal").append(
-                    '<button class="btn btn-warning btn-xs" id="unpublish" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;">Unpublish</button>'
+                    '<button class="btn btn-warning btn-xs" id="unpublish" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;">화면중지</button>'
                   );
                   $("#unpublish").click(unpublishOwnFeed);
                 }
@@ -448,7 +448,7 @@ $(document).ready(function () {
                 );
                 mystream = null;
                 $("#videolocal").html(
-                  '<button id="publish" class="btn btn-primary">Publish</button>'
+                  '<button id="publish" class="btn btn-primary">화면 송출</button>'
                 );
                 $("#publish").click(function () {
                   publishOwnFeed(true);
@@ -967,12 +967,23 @@ function unpublishOwnFeed() {
 }
 
 function toggleMute() {
-  var muted = sfutest.isMuted();
+  var muted = sfutest.isAudioMuted();
   Janus.log((muted ? "Unmuting" : "Muting") + " local stream...");
-  if (muted) sfutest.unmute();
-  else sfutest.mute();
-  muted = sfutest.isMuted();
-  $("#mute").html(muted ? "Unmute" : "Mute");
+  var buttonText = $("#mute").html();
+
+  if (buttonText.includes("음소거 해제")) {
+    sfutest.send({ message: { request: "configure", audio: true } });
+    Janus.log("Unmuting local stream...");
+
+    $("#mute").html("음소거");
+  } else if (buttonText.includes("음소거")) {
+    sfutest.send({ message: { request: "configure", audio: false } });
+    Janus.log("Muting local stream...");
+
+    $("#mute").html("음소거 해제");
+  }
+  // muted = sfutest.isAudioMuted();
+  // $("#mute").html(muted ? "음소거 해재" : "음소거");
 }
 
 function unmute() {

@@ -52,20 +52,18 @@ const requestCounseling = async (method, url, data = {}, params = {}) => {
 export const setAvailability = (availabilityRequest) =>
   requestCounseling("post", "/availability", availabilityRequest);
 
-// 교수/학생별 예약 현황 조회
-export const getProfessorAvailability = () =>
+export const getProfessorAvailability = (professorId) =>
   requestCounseling("get", "/professor");
 
 // 학생 상담 예약
-export const bookAppointment = (availabilityId, studentId) =>
+export const bookAppointment = (availabilityId) =>
   requestCounseling("post", "/book", {
     availabilityId,
-    studentId,
   });
 
 // 모든 교수님의 예약 가능한 시간 조회 (학생 예약용)
-export const getAllAvailableTimes = () =>
-  requestCounseling("get", "/available-list");
+// export const getAllAvailableTimes = () =>
+//   requestCounseling("get", "/available-list");
 
 // 학생 예약 일정 조회
 export const getStudentSchedules = () => requestCounseling("get", "/student");
@@ -73,10 +71,6 @@ export const getStudentSchedules = () => requestCounseling("get", "/student");
 // 상담 일정 취소
 export const cancelAppointment = (scheduleId) =>
   requestCounseling("put", `/cancel/${scheduleId}`);
-
-// 상담 기록 검색
-export const searchRecords = (searchParams) =>
-  requestCounseling("get", "/records/search", {}, searchParams);
 
 // 상담 기록 저장
 export const saveRecord = (
@@ -88,6 +82,9 @@ export const saveRecord = (
 
 // 교수에게 신청된 상담 일정 목록 조회 (로그인된 교수 ID로 백엔드에서 자동 조회)
 export const getProfessorRequests = () => requestCounseling("get", "/requests");
+
+export const getProfessorAllSchedules = () =>
+  requestCounseling("get", "/professor/schedules");
 
 // 상담 일정 상태 변경 (승인/거절/완료)
 export const updateScheduleStatus = (scheduleId, newStatus) =>
@@ -102,3 +99,57 @@ export const getCounselingRecord = (scheduleId, studentId) => {
 export const getStudentCounselingRecord = (scheduleId) => {
   return requestCounseling("get", `/records/student/${scheduleId}`);
 };
+
+// 같은 학과 교수 목록
+export const getProfessorsByDepartment = (departmentId) =>
+  api.get(`/professors/department/${departmentId}`).then((res) => res.data);
+
+// 특정 교수 예약 가능 시간
+export const getAvailableTimesByProfessor = (professorId) =>
+  api
+    .get(`/schedules/available/professor/${professorId}`)
+    .then((res) => res.data);
+
+// 학과 전체 조회
+export const getDepartments = async () => {
+  try {
+    const res = await api.get("/departments");
+    return res.data;
+  } catch (err) {
+    console.error("🔥 학과 목록 조회 실패:", err);
+    throw err;
+  }
+};
+export const closeAvailability = (availabilityId) =>
+  requestCounseling("put", `/availability/close/${availabilityId}`);
+
+export const getProfessorsByMyDepartment = async () => {
+  try {
+    const res = await api.get("/prof/my-department"); // 정확한 백엔드 경로
+    return res.data;
+  } catch (err) {
+    console.error(
+      "🔥 내 학과 교수 목록 조회 실패:",
+      err.response?.data || err.message
+    );
+    const errorMessage =
+      err.response?.status === 401
+        ? "401: 인증 실패, 로그인 상태를 확인하세요."
+        : err.response?.data?.message || err.message;
+    throw new Error(errorMessage);
+  }
+};
+export const searchRecords = (searchParams, page = 0, size = 10) =>
+  requestCounseling(
+    "get",
+    "/records/search",
+    {},
+    {
+      ...searchParams,
+      page,
+      size,
+    }
+  );
+
+export const getProfessorConfirmedSchedules = () =>
+  requestCounseling("get", "/professor/schedules/confirmed");

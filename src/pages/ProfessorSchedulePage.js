@@ -1,57 +1,36 @@
-import React, { useState } from "react";
-import ProfessorAvailability from "../components/Schedule/ProfessorAvailability";
-import ProfessorAvailabilityList from "../components/Schedule/ProfessorAvailabilityList";
-import ProfessorScheduleRequests from "../components/Schedule/ProfessorScheduleRequests";
-import "./SchedulePage.css"; // 💡 이 파일을 import 해야 합니다.
+import React from "react";
+import ProfessorAvailabilityManager from "../components/Schedule/ProfessorAvailabilityManager"; // 🚨 [수정] 새 관리 컴포넌트 임포트
+import ProfessorScheduleList from "../components/Schedule/ProfessorScheduleList";
+
+import "../pages/SchedulePage.css";
+
+// import CounselingRecordBoard from "../components/Counseling/CounselingRecordBoard";
 
 const ProfessorSchedulePage = ({ user, role }) => {
   const professorId = user?.id;
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleRefresh = () => setRefreshKey((prev) => prev + 1);
-
-  if (role !== "professor" || !professorId) {
+  // role 기반 권한 검사는 상위 컴포넌트에서 처리한다고 가정
+  if (role?.toLowerCase() !== "professor" || !professorId) {
     return (
-      // 💡 클래스 적용
-      <div className="access-denied-message">
-        상담 관리는 교수만 접근 가능합니다.
-      </div>
+      <div className="error-message">상담 관리는 교수만 접근 가능합니다.</div>
     );
   }
 
   return (
-    // 💡 .page-container 적용
-    <div className="page-container">
-      {/* 💡 메인 내용 카드 적용 */}
-      <div className="page-card professor-schedule-card">
-        <h1 className="card-title">교수 상담 관리</h1>
+    <div className="schedule-page-container">
+      <h2>🧑‍🏫 교수 상담 관리 페이지</h2>
 
-        {/* 📌 상담 가능 시간 등록 */}
-        <div className="section-container">
-          <ProfessorAvailability
-            professorId={professorId}
-            onSaved={handleRefresh}
-          />
-        </div>
+      {/* 🚨 [수정] 달력 기반 관리 컴포넌트 렌더링 */}
+      <ProfessorAvailabilityManager professorId={user.id} />
 
-        {/* 📌 등록된 상담 가능 시간 목록 */}
-        <div className="section-container">
-          <h2 className="section-title">등록된 상담 가능 시간 목록</h2>
-          <ProfessorAvailabilityList
-            professorId={professorId}
-            key={refreshKey}
-          />
-        </div>
+      <hr className="divider" />
 
-        {/* 📌 예약 현황 */}
-        <div className="section-container">
-          <h2 className="section-title">예약 현황</h2>
-          <ProfessorScheduleRequests
-            professorId={professorId}
-            key={refreshKey}
-          />
-        </div>
-      </div>
+      {/* 학생들의 예약 요청 목록 (기존 코드 유지) */}
+      <ProfessorScheduleList professorId={user.id} />
+
+      <hr className="divider" />
+
+      {/* 상담 기록 조회 컴포넌트 (기존 코드 유지)
+      <CounselingRecordBoard /> */}
     </div>
   );
 };

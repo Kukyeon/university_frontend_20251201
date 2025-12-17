@@ -1361,3 +1361,346 @@
   background: #cccccc;
   cursor: not-allowed;
 }
+/* SchedulePage.css */
+
+/* --- 공통 요소 스타일 --- */
+
+/* 페이지 컨테이너 */
+.schedule-page-container,
+.counseling-record-view,
+.counseling-detail-page,
+.record-form-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.view-title,
+.form-title,
+.detail-page-title,
+.appointment-list-title {
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.divider {
+  border: none;
+  height: 1px;
+  background-color: #eee;
+  margin: 20px 0;
+}
+
+.loading-text,
+.info-message,
+.error-message {
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.loading-text {
+  background-color: #eaf6ff;
+  color: #007bff;
+}
+.info-message {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* --- 버튼 및 입력 필드 스타일 --- */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-start-video,
+.btn-edit-record,
+.btn-search,
+.btn-submit-availability,
+.btn-time-slot {
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
+  transition: background-color 0.2s, border-color 0.2s;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+}
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: 1px solid #6c757d;
+}
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: 1px solid #dc3545;
+}
+.btn-danger:hover {
+  background-color: #bd2130;
+}
+
+.btn-start-video {
+  background-color: #28a745;
+  color: white;
+  border: 1px solid #28a745;
+}
+.btn-start-video:hover {
+  background-color: #1e7e34;
+}
+
+.btn-edit-record {
+  background-color: #ffc107;
+  color: #333;
+  border: 1px solid #ffc107;
+}
+.btn-edit-record:hover {
+  background-color: #e0a800;
+}
+
+.btn-search {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+}
+.btn-search:hover {
+  background-color: #0056b3;
+}
+
+.form-input,
+.form-textarea,
+.search-input,
+.custom-datepicker-input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* --- 상담 상세 및 기록 스타일 --- */
+
+.schedule-info-group,
+.action-buttons-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.schedule-info-item {
+  padding: 10px 0;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #555;
+  margin-right: 10px;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.status-pending,
+.status-requested {
+  background-color: #ffc107;
+  color: #333;
+}
+.status-confirmed,
+.status-available {
+  background-color: #28a745;
+  color: white;
+}
+.status-canceled,
+.status-completed {
+  background-color: #6c757d;
+  color: white;
+}
+
+.counseling-notes-box {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 15px;
+  min-height: 100px;
+  white-space: pre-wrap;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.record-keywords .keywords-value {
+  color: #007bff;
+  font-style: italic;
+}
+
+/* --- 상담 기록 조회 스타일 --- */
+
+.record-list {
+  list-style: none;
+  padding: 0;
+}
+
+.record-item {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.student-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.consultation-date {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.record-notes {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.keyword-label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.keyword-value {
+  color: #28a745;
+  font-style: italic;
+}
+
+.search-form-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex-grow: 1;
+}
+
+/* --- DatePicker/Calendar 스타일 --- */
+
+.calendar-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.react-datepicker {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: inherit;
+}
+
+/* --- 시간 슬롯 버튼 목록 --- */
+
+.time-slots-container {
+  margin-top: 20px;
+}
+
+.time-slots-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start; /* 좌측 정렬 */
+}
+
+/* 🚨 [추가] 교수 관리 페이지 컨테이너 스타일 */
+.professor-time-manager-container {
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fff;
+  margin-bottom: 30px;
+}
+
+/* 🚨 [추가] 시간 슬롯 버튼 (공통) */
+.btn-time-slot {
+  padding: 10px 15px;
+  margin: 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px; /* 버튼 최소 너비 설정 */
+}
+
+/* 🚨 [추가] 교수 관리 상태에 따른 스타일 */
+.btn-time-slot.available {
+  background-color: #e6ffe6; /* 연한 녹색 (클릭 시 닫기) */
+  border-color: #4caf50;
+  color: #333;
+}
+
+.btn-time-slot.closed,
+.btn-time-slot.not_registered {
+  background-color: #f8f8f8; /* 연한 회색 (클릭 시 열기) */
+  border-color: #ccc;
+  color: #999;
+}
+
+.btn-time-slot.booked {
+  background-color: #ffdddd; /* 연한 빨강 (예약됨) */
+  border-color: #f44336;
+  color: #333;
+  cursor: not-allowed;
+}
+
+.slot-action-label {
+  font-size: 10px;
+  margin-top: 2px;
+  font-weight: normal;
+}
