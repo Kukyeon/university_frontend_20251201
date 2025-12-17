@@ -141,7 +141,7 @@ const Department = () => {
       </div>
       {/* 등록 폼 */}
       {showAddForm && (
-        <div className="form-row">
+        <div className="department-form">
           <input
             type="text"
             placeholder="학과를 입력해주세요"
@@ -165,7 +165,7 @@ const Department = () => {
 
       {/* 수정 폼 */}
       {showEditForm && (
-        <div className="form-row">
+        <div className="department-form">
           <select
             value={editDeptId}
             onChange={(e) => setEditDeptId(e.target.value)}

@@ -80,43 +80,41 @@ const CourseListPage = () => {
     <>
       <h3>강의 시간표 조회</h3>
       {/* 검색 필터 */}
-      <div className="filter-container">
-        <div className="department-form">
-          <select
-            name="type"
-            value={searchParams.type}
-            onChange={handleInputChange}
-          >
-            <option value="">전체</option>
-            <option value="전공">전공</option>
-            <option value="교양">교양</option>
-          </select>
+      <div className="department-form">
+        <select
+          name="type"
+          value={searchParams.type}
+          onChange={handleInputChange}
+        >
+          <option value="">전체</option>
+          <option value="전공">전공</option>
+          <option value="교양">교양</option>
+        </select>
 
-          <select
-            name="deptId"
-            value={searchParams.deptId}
-            onChange={handleInputChange}
-          >
-            <option value="">전체</option>
-            {departments.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.name}
-              </option>
-            ))}
-          </select>
+        <select
+          name="deptId"
+          value={searchParams.deptId}
+          onChange={handleInputChange}
+        >
+          <option value="">전체</option>
+          {departments.map((dept) => (
+            <option key={dept.id} value={dept.id}>
+              {dept.name}
+            </option>
+          ))}
+        </select>
 
-          <input
-            name="name"
-            value={searchParams.name}
-            onChange={handleInputChange}
-            placeholder="강의명을 입력하세요"
-            onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-          />
+        <input
+          name="name"
+          value={searchParams.name}
+          onChange={handleInputChange}
+          placeholder="강의명을 입력하세요"
+          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+        />
 
-          <button className="search-btn" onClick={handleSearch}>
-            검색
-          </button>
-        </div>
+        <button className="search-btn" onClick={handleSearch}>
+          검색
+        </button>
       </div>
 
       {/* 강의 테이블 */}

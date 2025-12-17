@@ -56,7 +56,7 @@ const ProfEvaluation = () => {
   return (
     <>
       <h3>내 강의 평가</h3>
-      <div className="form-row">
+      <div className="department-form">
         <select
           value={selectedSubject}
           onChange={(e) => setSelectedSubject(e.target.value)}

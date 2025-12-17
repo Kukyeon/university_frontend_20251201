@@ -100,7 +100,7 @@ const Classroom = () => {
       </div>
 
       {showAddForm && (
-        <div className="form-row">
+        <div className="department-form">
           <input
             type="text"
             placeholder="강의실을 입력해주세요"
