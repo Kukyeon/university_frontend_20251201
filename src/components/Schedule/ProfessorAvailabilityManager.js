@@ -135,7 +135,7 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
     };
   });
 
-  // 3. 슬롯 열기/닫기 핸들러 (🚨 API 전송 데이터 형식 수정)
+  // 3. 슬롯 열기/닫기 핸들러 ( API 전송 데이터 형식 수정)
   const handleSlotAction = async (slot) => {
     if (loading) return;
     setLoading(true);
@@ -146,7 +146,7 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
         if (!window.confirm(`${slot.time} (1시간) 슬롯을 등록하시겠습니까?`))
           return;
 
-        // 💡 [수정] UTC 문자열 대신 로컬 시간 기준 문자열 전송
+        //  UTC 문자열 대신 로컬 시간 기준 문자열 전송
         await setAvailability({
           startTime: getLocalDateTimeString(slot.startTime),
           endTime: getLocalDateTimeString(slot.endTime),
@@ -203,9 +203,7 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
 
   return (
     <div className="professor-time-manager-container">
-      <h3 className="appointment-list-title">
-        🗓️ 상담 가능 시간 관리 (1시간 단위)
-      </h3>
+      <h3 className="appointment-list-title">🗓️ 상담 가능 시간 관리</h3>
 
       {/* 캘린더 (날짜 선택) */}
       <div className="calendar-group">
@@ -218,9 +216,7 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
         />
       </div>
 
-      <p className="selected-date-info">
-        **선택 날짜:** {selectedDate.toLocaleDateString("ko-KR")}
-      </p>
+      <p className="selected-date-info">상담 가능한 시간</p>
 
       {/* 시간 슬롯 목록 */}
       <div className="time-slots-container">
