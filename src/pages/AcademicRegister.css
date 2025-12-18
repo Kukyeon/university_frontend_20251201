@@ -1,0 +1,99 @@
+.course-form {
+  margin-top: 16px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field label {
+  font-size: 12px;
+  color: #666;
+}
+
+.form-field input,
+.form-field select {
+  padding: 9px 12px;
+  font-size: 13px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+.inline {
+  display: flex;
+  gap: 8px;
+}
+
+.form-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 라디오 버튼 그룹 */
+.gender-radio-group {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.gender-radio-group label {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+  font-size: 14px;
+}
+
+/* 버튼 그룹 */
+.form-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+/* 테이블 */
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.course-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.course-table th,
+.course-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.course-table th {
+  background-color: #f5f5f5;
+}
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

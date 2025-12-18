@@ -1,0 +1,243 @@
+/* 기본 레이아웃 */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -10px; /* 열 간격 상쇄 */
+}
+
+.col-md-12 {
+  width: 100%;
+  padding: 10px;
+}
+
+.page-header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 9px;
+  margin: 20px 0 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 버튼 스타일 */
+.btn {
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-align: center;
+  font-size: 14px;
+}
+
+.btn-default {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+}
+
+/* 입력 필드 및 그룹 */
+.input-group {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.input-group-addon {
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  color: #555;
+  text-align: center;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+}
+
+.input-group .form-control {
+  border-radius: 0;
+}
+
+.input-group .btn {
+  border-radius: 0 4px 4px 0;
+}
+
+/* 레이블 (태그) */
+.label {
+  display: inline;
+  padding: 0.2em 0.6em 0.3em;
+  font-size: 75%; /* 기본 사이즈는 75%로 유지 */
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25em;
+  margin-right: 5px;
+}
+
+/* 💡 이름 텍스트 크기 확대 */
+.panel-heading .panel-title .label {
+  font-size: 1.2em; /* 주변 텍스트보다 20% 크게 설정 */
+  margin-left: 10px;
+}
+
+.label-info {
+  background-color: #5bc0de;
+}
+
+.label-warning {
+  background-color: #f0ad4e;
+}
+
+.label-primary {
+  background-color: #337ab7;
+}
+
+/* 비디오 패널 스타일 (주요 수정) */
+.video-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.video-col {
+  flex: 1; /* ⭐️ 무조건 1:1 */
+  min-width: 0; /* flex overflow 방지 */
+  display: flex;
+  padding: 5px; /* 비디오 간 간격 추가 */
+}
+
+.video-col .panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.panel-heading {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.panel-title {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 16px;
+  color: inherit;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 💡 스크롤 제거 및 16:9 비율 유지 (핵심 수정) */
+.panel-body {
+  padding: 0;
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 비율 (높이 / 너비 = 9/16 = 0.5625) */
+  height: 0; /* padding-bottom 트릭을 위한 설정 */
+  overflow: hidden; /* 내부 스크롤 방지 */
+}
+
+/* 비디오가 .panel-body를 꽉 채우도록 설정 */
+.panel-body > video {
+  position: absolute; /* .panel-body 내부에서 절대 위치 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 비디오가 화면을 꽉 채우도록 (짤릴 수 있음) */
+  border-radius: 8px;
+}
+
+/* 유틸리티 클래스 */
+.hide {
+  display: none !important;
+}
+
+.relative {
+  position: relative;
+}
+
+/* 비디오 없을 때 스타일 */
+.no-video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  font-size: 16px;
+  z-index: 1;
+}
+
+.no-video-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+/* 방 정보 및 사용자 이름 표시 스타일 */
+#room-display,
+#you-display {
+  margin: 10px 0;
+  padding: 5px;
+  background-color: #e0f7fa;
+  border: 1px solid #b2ebf2;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.room-info {
+  font-weight: bold;
+  color: #00796b;
+  margin-left: 5px;
+}

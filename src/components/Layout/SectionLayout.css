@@ -1,0 +1,127 @@
+/* ===== Container (폭 담당) ===== */
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* ===== Layout (구조 담당) ===== */
+.section-layout {
+  display: flex;
+  gap: 24px;
+}
+
+/* ===== Sidebar ===== */
+.section-sidebar {
+  width: 220px;
+  min-width: 160px;
+  flex-shrink: 1;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.section-sidebar h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.section-menu li {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.section-menu li.active,
+.section-menu li:hover {
+  background-color: #ff6f61;
+  color: #fff;
+}
+
+/* ===== Content ===== */
+.section-content {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.page select {
+  min-width: 100px;
+  max-width: 150px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+/* ===== Mobile ===== */
+@media (max-width: 900px) {
+  .section-layout {
+    flex-direction: column;
+  }
+  .section-sidebar {
+    width: 100%;
+    position: relative;
+    padding: 8px 12px;
+    box-shadow: none;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .section-sidebar h2 {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .section-sidebar::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width: 24px;
+    height: calc(100% - 40px);
+    pointer-events: none;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
+  }
+  .section-menu {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+
+    /* 스크롤바 숨기기 */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE */
+  }
+
+  .section-menu::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+
+  .section-menu li {
+    padding: 6px 12px;
+    font-size: 13px;
+    background-color: #f5f5f5;
+    white-space: nowrap;
+    word-break: keep-all;
+    flex-shrink: 0;
+  }
+  .section-menu li.active {
+    background-color: #ff6f61;
+    color: #fff;
+  }
+  .section-content {
+    padding: 12px;
+  }
+
+  .section-card {
+    padding: 16px;
+  }
+}

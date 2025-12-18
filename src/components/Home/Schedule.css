@@ -1,0 +1,77 @@
+/* Schedule.css */
+.schedule {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.schedule__title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.schedule__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.schedule__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.schedule__item:last-child {
+  border-bottom: none;
+}
+
+.schedule__item-title {
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.schedule__item-date {
+  color: #888;
+  font-size: 14px;
+  cursor: default;
+}
+
+.schedule__icon {
+  color: #0d4a8f;
+  margin-right: 8px;
+  cursor: default;
+}
+
+.schedule__item:hover {
+  background-color: #f0f8ff;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .schedule__title {
+    font-size: 24px;
+  }
+  .schedule__item {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 6px 0;
+  }
+  .schedule__item-title {
+    margin-bottom: 3px;
+  }
+  .schedule__item-date {
+    font-size: 12px;
+  }
+  .schedule__icon {
+    font-size: 18px;
+    margin-bottom: 3px;
+  }
+}

@@ -1,6 +1,12 @@
 .App {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 화면 전체 높이 */
 }
+/* html,
+body {
+  overflow-x: hidden;
+} */
 
 .App-logo {
   height: 40vmin;
@@ -15,7 +21,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,6 +32,24 @@
 
 .App-link {
   color: #61dafb;
+}
+.error-message {
+  color: #d93025; /* 선명한 빨간색 */
+  background-color: #fce8e6; /* 연한 빨간 배경 */
+  border-left: 4px solid #d93025; /* 강조선 */
+  padding: 6px 10px;
+  margin-top: 4px;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 에러 아이콘 추가 가능 */
+.error-message::before {
+  content: "⚠"; /* ⚠ 또는 ❗ 같은 아이콘 */
+  font-size: 0.9rem;
 }
 
 @keyframes App-logo-spin {

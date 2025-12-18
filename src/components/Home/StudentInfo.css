@@ -1,0 +1,126 @@
+/* StudentInfo.css */
+.student-info {
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #fefefe;
+  color: var(--text-color);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.student-info:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+}
+
+.student-info__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.student-info__title {
+  font-size: 24px;
+  margin-bottom: 15px;
+  cursor: default;
+}
+
+.student-info__profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  cursor: default;
+  margin-bottom: 15px;
+}
+
+.student-info__icon {
+  font-size: 60px;
+  color: var(--primary-color);
+}
+
+.student-info__details {
+  min-width: 180px;
+  text-align: left;
+  cursor: default;
+}
+
+.student-info__details p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.student-info__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.student-info__list-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 14px;
+  cursor: default;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.student-info__list-item:last-child {
+  border-bottom: none;
+}
+
+.student-info__actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.student-info__btn {
+  padding: 8px 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.student-info__btn:hover {
+  background-color: #ff4a3d;
+}
+
+.student-info__btn--logout {
+  background-color: #aaa;
+}
+
+.student-info__btn--logout:hover {
+  background-color: #888;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .student-info__profile {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .student-info__icon {
+    font-size: 50px;
+  }
+  .student-info__title {
+    font-size: 20px;
+  }
+  .student-info__details p {
+    font-size: 13px;
+  }
+  .student-info__list-item {
+    font-size: 13px;
+  }
+  .student-info__btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
