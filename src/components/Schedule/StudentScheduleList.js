@@ -68,7 +68,7 @@ const StudentScheduleList = ({ studentId, onSelect, listRefreshKey }) => {
             >
               {s.professorName && (
                 <span className="professor-name">
-                  {s.professorName} 교수님 |{" "}
+                  {s.professorName} 교수님 |
                 </span>
               )}
               <span className="schedule-time">
@@ -78,8 +78,7 @@ const StudentScheduleList = ({ studentId, onSelect, listRefreshKey }) => {
             </span>
             <button
               onClick={() => handleCancel(s.scheduleId)}
-              className="cancel-btn" // 💡 클래스 적용
-              disabled={s.status !== "확인됨" && s.status !== "COMPLETED"}
+              disabled={s.status === "상담 완료" || s.status === "COMPLETED"}
             >
               취소
             </button>
