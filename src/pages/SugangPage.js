@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import SectionLayout from "../components/Layout/SectionLayout";
-
-import CourseListPage from "../components/Sugang/CourseListPage";
-import EnrollmentPage from "../components/Sugang/EnrollmentPage";
-import EnrollmentHistoryPage from "../components/Sugang/EnrollmentHistoryPage";
+import CourseListPage from "../components/Sugang/CourseList";
+import EnrollmentHistoryPage from "../components/Sugang/EnrollmentHistory";
+import EnrollmentTable from "../components/Sugang/EnrollmentTable";
 
 const Sugang = ({ role }) => {
   const [activeTab, setActiveTab] = useState("강의 시간표 조회");
@@ -32,7 +31,10 @@ const Sugang = ({ role }) => {
       )}
 
       {activeTab === "수강 신청" && (
-        <EnrollmentPage setPageHeader={setPageHeader} pageHeader={pageHeader} />
+        <EnrollmentTable
+          setPageHeader={setPageHeader}
+          pageHeader={pageHeader}
+        />
       )}
 
       {activeTab === "수강 신청 내역 조회" && (

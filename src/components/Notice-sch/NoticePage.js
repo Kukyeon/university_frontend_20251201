@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getNoticeList } from "../api/noticeApi";
-import NoticeForm from "../components/Notice/NoticeForm";
-import NoticeDetail from "../components/Notice/NoticeDetail";
-import { useLocation, useParams } from "react-router-dom";
-import { useModal } from "../components/ModalContext";
+import { getNoticeList } from "../../api/noticeApi";
+import { useLocation } from "react-router-dom";
+import { useModal } from "../ModalContext";
+import Pagination from "../Layout/Pagination";
+import NoticeForm from "./NoticeForm";
+import NoticeDetail from "./NoticeDetail";
 
 const NoticePage = ({ role }) => {
   const location = useLocation();
@@ -41,8 +42,6 @@ const NoticePage = ({ role }) => {
     if (view === "list") fetchList();
   }, [page, view]);
 
-  console.log(pageData);
-  // 🔹 화면 분기
   if (view === "edit" || view === "write") {
     return (
       <NoticeForm
@@ -145,20 +144,11 @@ const NoticePage = ({ role }) => {
       </div>
 
       {/* 페이지네이션 */}
-      <div className="pagination">
-        <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-          이전
-        </button>
-        <span>
-          {page + 1} / {pageData.totalPages}
-        </span>
-        <button
-          disabled={page === pageData.totalPages - 1}
-          onClick={() => setPage(page + 1)}
-        >
-          다음
-        </button>
-      </div>
+      <Pagination
+        page={page}
+        totalPages={pageData.totalPages}
+        onPageChange={(newPage) => setPage(newPage)}
+      />
     </>
   );
 };

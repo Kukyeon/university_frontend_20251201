@@ -1,22 +1,45 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axiosConfig";
 import { useModal } from "../ModalContext";
+import Pagination from "../Layout/Pagination";
 
 const ProfEvaluation = () => {
   const [evaluationData, setEvaluationData] = useState([]);
   const [subjects, setSubjects] = useState([]); // 셀렉트용 과목 목록
   const [selectedSubject, setSelectedSubject] = useState("");
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const { showModal } = useModal();
+
+  useEffect(() => {
+    fetchEvaluation(selectedSubject); // 전체 평가
+  }, [page]);
+
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
+
   // 전체 평가 조회
   const fetchEvaluation = async (subjectName = "") => {
+    setLoading(true);
     try {
-      const res = await api.get(
-        subjectName
-          ? `/evaluation/subject/${subjectName}`
-          : `/evaluation/professor`
-      );
-      setEvaluationData(res.data);
+      const params = { page };
+      const url = subjectName
+        ? `/evaluation/subject/${subjectName}`
+        : `/evaluation/professor`;
+
+      const res = await api.get(url, { params });
+
+      // 5. PageResponse 구조 (content, totalPages) 적용
+      if (res.data.content) {
+        setEvaluationData(res.data.content);
+        setTotalPages(res.data.totalPages);
+      } else {
+        // 데이터가 없을 경우 처리
+        setEvaluationData([]);
+        setTotalPages(0);
+      }
     } catch (err) {
       showModal({
         type: "alert",
@@ -39,12 +62,8 @@ const ProfEvaluation = () => {
     }
   };
 
-  useEffect(() => {
-    fetchEvaluation(); // 전체 평가
-    fetchSubjects(); // 과목 목록
-  }, []);
-
   const handleSearch = () => {
+    setPage(0);
     fetchEvaluation(selectedSubject);
   };
 
@@ -90,6 +109,7 @@ const ProfEvaluation = () => {
           </tbody>
         </table>
       </div>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </>
   );
 };

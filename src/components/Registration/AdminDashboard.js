@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { dashboardApi } from "../api/aiApi";
-import { useModal } from "../components/ModalContext";
+import { useModal } from "../ModalContext";
+import { dashboardApi } from "../../api/aiApi";
 
 const AdminDashboard = () => {
   const [risks, setRisks] = useState([]);

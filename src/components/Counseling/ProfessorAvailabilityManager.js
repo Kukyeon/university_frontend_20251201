@@ -176,39 +176,38 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
   const getButtonClass = (status) => {
     switch (status) {
       case "AVAILABLE":
-        return "btn-time-slot available";
+        return "slot-button available";
       case "BOOKED":
-        return "btn-time-slot booked";
+        return "slot-button booked";
       case "CLOSED":
+        return "slot-button closed";
       case "NOT_REGISTERED":
-        return "btn-time-slot closed";
+        return "slot-button not-registered";
       default:
-        return "btn-time-slot";
+        return "slot-button";
     }
   };
 
   const getButtonLabel = (status) => {
     switch (status) {
       case "AVAILABLE":
-        return "열림 (클릭 시 닫기)";
+        return "열림";
       case "BOOKED":
-        return "예약됨 / 마감";
+        return "예약됨";
       case "CLOSED":
       case "NOT_REGISTERED":
-        return "닫힘 (클릭 시 열기)";
+        return "닫힘";
       default:
         return "관리";
     }
   };
 
   return (
-    <div className="professor-time-manager-container">
-      <h3 className="appointment-list-title">
-        🗓️ 상담 가능 시간 관리 (1시간 단위)
-      </h3>
+    <>
+      <h3>상담시간 관리</h3>
 
       {/* 캘린더 (날짜 선택) */}
-      <div className="calendar-group">
+      <div className="datepicker-wrapper">
         <DatePicker
           selected={selectedDate}
           onChange={(date) => setSelectedDate(date)}
@@ -218,14 +217,10 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
         />
       </div>
 
-      <p className="selected-date-info">
-        **선택 날짜:** {selectedDate.toLocaleDateString("ko-KR")}
-      </p>
-
       {/* 시간 슬롯 목록 */}
-      <div className="time-slots-container">
+      <div>
         {loading ? (
-          <div className="loading-text">⏳ 로딩 중...</div>
+          <div className="loading-text">로딩 중...</div>
         ) : timeSlots.length === 0 &&
           selectedDate.getTime() >= today.getTime() ? (
           <p className="info-message">
@@ -236,20 +231,18 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
             {timeSlots.map((slot) => (
               <button
                 key={slot.time}
-                className={getButtonClass(slot.status)}
                 onClick={() => handleSlotAction(slot)}
                 disabled={loading || slot.status === "BOOKED"}
+                className={getButtonClass(slot.status)}
               >
                 {slot.time}
-                <span className="slot-action-label">
-                  ({getButtonLabel(slot.status)})
-                </span>
+                <span>({getButtonLabel(slot.status)})</span>
               </button>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

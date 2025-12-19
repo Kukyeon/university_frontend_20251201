@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { adminApi } from "../api/aiApi"; // [핵심] api.js 사용
-import { useModal } from "../components/ModalContext";
+import { adminApi } from "../../api/aiApi";
+import { useModal } from "../ModalContext";
 
 const AdminPage = () => {
   const { showModal } = useModal();

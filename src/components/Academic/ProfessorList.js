@@ -1,23 +1,38 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import { useModal } from "../ModalContext";
+import Pagination from "../Layout/Pagination";
 
 const ProfessorList = () => {
   const [professors, setProfessors] = useState([]);
+  const [page, setPage] = useState(0); // 2. 현재 페이지 상태
+  const [totalPages, setTotalPages] = useState(0); // 3. 전체 페이지 상태
   const [searchDept, setSearchDept] = useState("");
   const [searchId, setSearchId] = useState("");
   const { showModal } = useModal();
   useEffect(() => {
-    getList();
-  }, []);
-  const getList = async () => {
+    fetchProfessors();
+  }, [page]);
+
+  const fetchProfessors = async () => {
     try {
-      const res = await api.get("/staff/list/professor");
-      const data =
-        res.data.content || (Array.isArray(res.data) ? res.data : [res.data]);
-      setProfessors(data);
+      const params = { page }; // 4. 페이지 번호 포함
+      if (searchDept) params.deptId = searchDept;
+      if (searchId) params.professorId = searchId;
+
+      const res = await api.get("/staff/list/professor", { params });
+
+      // PageResponse 구조에 맞춰 데이터 추출
+      if (res.data.content) {
+        setProfessors(res.data.content);
+        setTotalPages(res.data.totalPages);
+      } else {
+        // 단건 조회(사번 검색 등) 시 객체로 올 경우 대응
+        const data = Array.isArray(res.data) ? res.data : [res.data];
+        setProfessors(data);
+        setTotalPages(1);
+      }
     } catch (err) {
-      console.error(err);
       setProfessors([]);
       showModal({
         type: "alert",
@@ -25,23 +40,11 @@ const ProfessorList = () => {
       });
     }
   };
-  const getSerchList = async () => {
-    try {
-      const params = {};
-      if (searchDept) params.deptId = searchDept;
-      if (searchId) params.professorId = searchId;
 
-      const res = await api.get("/staff/list/professor", { params });
-      setProfessors(
-        res.data.content || (Array.isArray(res.data) ? res.data : [res.data])
-      ); // PageResponse 구조면 content 사용
-    } catch (err) {
-      setProfessors([]);
-      showModal({
-        type: "alert",
-        message: "교수 목록을 불러오는데 실패했습니다.",
-      });
-    }
+  // 조회 버튼 클릭 시 0페이지부터 다시 조회
+  const handleSearch = () => {
+    setPage(0);
+    fetchProfessors();
   };
   return (
     <>
@@ -60,7 +63,7 @@ const ProfessorList = () => {
           onChange={(e) => setSearchId(e.target.value)}
           placeholder="사번"
         />
-        <button onClick={getSerchList} className="search-btn">
+        <button onClick={handleSearch} className="search-btn">
           조회
         </button>
       </div>
@@ -104,6 +107,7 @@ const ProfessorList = () => {
           </tbody>
         </table>
       </div>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </>
   );
 };

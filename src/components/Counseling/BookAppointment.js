@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  getProfessorsByDepartment,
   getProfessorsByMyDepartment,
   getAvailableTimesByProfessor,
   bookAppointment, // 💡 bookAppointment API 함수
@@ -11,24 +10,20 @@ import "../../pages/SchedulePage.css";
 
 import ProfessorTimePicker from "./ProfessorTimePicker";
 
-const BookAppointment = ({ studentId, onBooked }) => {
+const BookAppointment = ({ user, onBooked }) => {
+  const studentId = user.id;
   const [professors, setProfessors] = useState([]);
   const [slots, setSlots] = useState([]);
-
   const [selectedProfessor, setSelectedProfessor] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [departmentName, setDepartmentName] = useState("내 학과");
   useEffect(() => {
+    if (!studentId) return;
     const fetchInitialData = async () => {
-      if (!studentId) return;
-
       try {
         setLoading(true); // 1. 본인 학과 정보 가져오기
-
         const profs = await getProfessorsByMyDepartment();
         setProfessors(profs);
       } catch (err) {
-        console.error("학과 또는 교수 목록 로드 실패:", err); // 401 에러가 뜨는 경우: 인증 실패 (토큰 문제)
         alert("상담 예약 정보를 불러오는 데 실패했습니다 (인증 확인 필요).");
       } finally {
         setLoading(false);
@@ -41,10 +36,8 @@ const BookAppointment = ({ studentId, onBooked }) => {
     setSelectedProfessor(prof);
     setSlots([]);
     setLoading(true);
-    console.log(`선택된 교수 ID: ${prof.id}`);
     try {
       const times = await getAvailableTimesByProfessor(prof.id);
-      console.log("서버로부터 받은 예약 가능 슬롯:", times);
       setSlots(times);
     } catch (e) {
       console.error("교수 예약 가능 시간 로드 실패:", e);
@@ -79,30 +72,40 @@ const BookAppointment = ({ studentId, onBooked }) => {
   if (!studentId)
     return <div className="info-message">로그인 후 이용해주세요.</div>;
   if (loading && professors.length === 0)
-    return <div className="loading-text">⏳ 내 학과 교수 목록 로딩 중...</div>;
+    return <div className="loading-text">내 학과 교수 목록 로딩 중...</div>;
 
   return (
-    <div className="book-appointment-container">
-      <h3 className="appointment-list-title">📅 상담 예약</h3>
+    <>
+      <h3>상담 예약</h3>
       {/* ② 교수 선택 */}
-      <>
-        <h4>교수 선택</h4>
-        {professors.length === 0 && !loading && (
-          <p>현재 학과에 등록된 교수님이 없습니다.</p>
-        )}
+      {professors.length === 0 && !loading && (
+        <p>현재 학과에 등록된 교수님이 없습니다.</p>
+      )}
 
-        <div className="button-group">
-          {professors.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => handleProfessorSelect(p)}
-              className={selectedProfessor?.id === p.id ? "selected" : ""}
-            >
-              {p.name} 교수님
-            </button>
-          ))}
-        </div>
-      </>
+      <div>
+        {professors.length === 0 && !loading ? (
+          <p>현재 학과에 등록된 교수님이 없습니다.</p>
+        ) : (
+          <select
+            value={selectedProfessor?.id || ""}
+            onChange={(e) => {
+              const prof = professors.find(
+                (p) => p.id === Number(e.target.value)
+              );
+              if (prof) handleProfessorSelect(prof);
+            }}
+          >
+            <option value="" disabled>
+              교수님 선택
+            </option>
+            {professors.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name} 교수님
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
       {/* ③ 달력 컴포넌트 렌더링 */}
       {selectedProfessor && (
         <ProfessorTimePicker
@@ -114,7 +117,7 @@ const BookAppointment = ({ studentId, onBooked }) => {
           bookAppointment={handleBook} // 💡 [추가] handleBook 함수를 prop으로 전달
         />
       )}
-    </div>
+    </>
   );
 };
 export default BookAppointment;

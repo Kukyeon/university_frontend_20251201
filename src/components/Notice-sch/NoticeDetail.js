@@ -37,47 +37,46 @@ const NoticeDetail = ({ noticeId, role, onBack, onEdit }) => {
   };
 
   return (
-    <div className="notice-detail">
-      <h2 className="notice-detail__title">
-        {" "}
-        <span className="notice-detail__category">{notice.category}</span>
+    <>
+      <h2 className="counseling-detail-header">
+        <span className="counseling-detail-category">{notice.category}</span>{" "}
         {notice.title}
       </h2>
 
-      <p className="notice-detail__meta">
-        <span className="notice-detail__views">
+      <p className="counseling-detail-info">
+        <span className="counseling-detail-views">
           조회수: {notice.views || 0}
         </span>
       </p>
 
       {notice.imageUrl && (
         <img
-          className="notice-detail__image"
+          className="counseling-detail-image"
           src={`http://localhost:8888${notice.imageUrl}`}
           alt="첨부 이미지"
         />
       )}
 
       <p
-        className="notice-detail__content"
+        className="counseling-detail-content"
         dangerouslySetInnerHTML={{ __html: notice.content }}
       />
 
-      <small className="notice-detail__created">
+      <small className="counseling-detail-info">
         작성일: {new Date(notice.createdTime).toLocaleString()}
       </small>
 
-      <div className="notice-detail__buttons">
+      <div className="counseling-detail-buttons">
         {role === "staff" && (
           <>
             <button
-              className="notice-detail__btn notice-detail__btn--edit"
+              className="counseling-detail-button counseling-detail-button--edit"
               onClick={() => onEdit(notice.id)}
             >
               수정
             </button>
             <button
-              className="notice-detail__btn notice-detail__btn--delete"
+              className="counseling-detail-button counseling-detail-button--delete"
               onClick={handleDelete}
             >
               삭제
@@ -85,13 +84,13 @@ const NoticeDetail = ({ noticeId, role, onBack, onEdit }) => {
           </>
         )}
         <button
-          className="notice-detail__btn notice-detail__btn--back"
+          className="counseling-detail-button counseling-detail-button--back"
           onClick={onBack}
         >
           목록
         </button>
       </div>
-    </div>
+    </>
   );
 };
 

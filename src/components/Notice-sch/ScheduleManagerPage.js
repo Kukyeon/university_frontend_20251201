@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import ScheduleList from "../components/Schedule/ScheduleList";
-import ScheduleForm from "../components/Schedule/ScheduleForm";
-import ScheduleDetail from "../components/Schedule/ScheduleDetail";
+import ScheduleList from "./ScheduleList";
+import ScheduleForm from "./ScheduleForm";
+import ScheduleDetail from "./ScheduleDetail";
 
 const ScheduleManagerPage = () => {
   const [viewMode, setViewMode] = useState("list");

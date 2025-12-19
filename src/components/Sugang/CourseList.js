@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { courseApi } from "../../api/gradeApi";
 import CoursePlanPage from "../Course/CoursePlanPage";
 import { useModal } from "../ModalContext";
+import Pagination from "../Layout/Pagination";
 
 const CourseListPage = () => {
   const [subjects, setSubjects] = useState([]);
@@ -173,20 +174,7 @@ const CourseListPage = () => {
       </div>
 
       {/* 페이지네이션 */}
-      <div className="pagination">
-        <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-          ◀ 이전
-        </button>
-        <span>
-          {page + 1} / {totalPages === 0 ? 1 : totalPages}
-        </span>
-        <button
-          disabled={page >= totalPages - 1}
-          onClick={() => setPage(page + 1)}
-        >
-          다음 ▶
-        </button>
-      </div>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       <CoursePlanPage
         show={showSyllabus}
         subjectId={selectedCourseId}

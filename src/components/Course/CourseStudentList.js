@@ -60,7 +60,7 @@ const CourseStudentList = ({ courseId, goBack }) => {
 
       {/* 🔥 학생 리스트 화면 */}
       {!selectedStudent && (
-        <div className="student-list-container">
+        <>
           <h3>학생 리스트 조회</h3>
           <button onClick={goBack}>강의 목록으로</button>
           <div className="table-wrapper">
@@ -102,7 +102,7 @@ const CourseStudentList = ({ courseId, goBack }) => {
               </tbody>
             </table>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

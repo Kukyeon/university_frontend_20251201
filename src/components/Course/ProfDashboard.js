@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { dashboardApi, notiApi } from "../api/aiApi";
 import { useNavigate } from "react-router-dom"; // 페이지 이동용
-import { useModal } from "../components/ModalContext";
+import { useModal } from "../ModalContext";
+import { dashboardApi, notiApi } from "../../api/aiApi";
 
 const ProfDashboard = (user) => {
   const navigate = useNavigate();
@@ -50,18 +50,6 @@ const ProfDashboard = (user) => {
       .then((res) => setRisks(res.data))
       .catch((err) => alert("로딩 실패"));
   };
-
-  // 3. 개별 삭제 (조치 완료)
-  // const handleDelete = async (id) => {
-  //   if (!window.confirm("이 학생을 목록에서 제외하시겠습니까?")) return;
-  //   try {
-  //     await dashboardApi.deleteRisk(id);
-  //     setRisks(prev => prev.filter(item => item.id !== id)); // 화면에서도 즉시 제거
-  //     alert("처리되었습니다.");
-  //   } catch (err) {
-  //     alert("삭제 실패");
-  //   }
-  // };
 
   // 4. 일괄 삭제 (선택된 것들)
   const handleBulkDelete = async () => {
@@ -144,29 +132,11 @@ const ProfDashboard = (user) => {
       {/* 헤더 & 컨트롤 패널 */}
       <h3>중도이탈 위험학생 리스트</h3>
 
-      <div style={{ display: "flex", gap: "10px" }}>
-        {/* 필터링 드롭다운 */}
-        {/* <select 
-            value={filterLevel} 
-            onChange={(e) => setFilterLevel(e.target.value)}
-            style={{ padding: "8px", borderRadius: "5px" }}
-          >
-            <option value="ALL">전체 보기</option>
-            <option value="심각">🔴 심각 단계만</option>
-            <option value="경고">🟠 경고 단계만</option>
-            <option value="주의">🟡 주의 단계만</option>
-          </select> */}
-
-        {/* 일괄 삭제 버튼 */}
-        <button>선택 항목 삭제</button>
-      </div>
+      <button onClick={handleBulkDelete}>선택 항목 삭제</button>
 
       {/* 데이터 테이블 */}
-      <div className="table-wrapper" style={{ overflowX: "auto" }}>
-        <table
-          className="course-table"
-          style={{ width: "100%", borderCollapse: "collapse" }}
-        >
+      <div className="table-wrapper">
+        <table className="course-table">
           <thead>
             <tr>
               <th>선택</th>
@@ -183,21 +153,13 @@ const ProfDashboard = (user) => {
           <tbody>
             {filteredRisks.length === 0 ? (
               <tr>
-                <td colSpan="9" style={{ textAlign: "center" }}>
-                  데이터가 없습니다.
-                </td>
+                <td>데이터가 없습니다.</td>
               </tr>
             ) : (
               filteredRisks.map((risk) => (
-                <tr
-                  key={risk.id}
-                  style={{
-                    borderBottom: "1px solid #ccc",
-                    verticalAlign: "top",
-                  }}
-                >
+                <tr key={risk.id}>
                   {/* 체크박스 */}
-                  <td style={{ textAlign: "center" }}>
+                  <td>
                     <input
                       type="checkbox"
                       checked={checkedIds.has(risk.id)}
@@ -206,13 +168,10 @@ const ProfDashboard = (user) => {
                   </td>
                   {/* 날짜 */}
                   <td>{risk.analyzedDate}</td>
-                  {/* <td style={{ fontWeight: 'bold' }}>{risk.departmentName}</td> */}
                   <td>{risk.studentId}</td>
                   <td>{risk.studentName}</td>
                   <td>{risk.grade}</td>
-                  {/* 점수 */}
                   <td>{risk.riskScore}점</td>
-                  {/* 상태 (색상 강조) */}
                   <td
                     style={{
                       color:
@@ -239,28 +198,9 @@ const ProfDashboard = (user) => {
                   {/* 버튼 그룹 */}
                   <td>
                     <div>
-                      <button
-                        onClick={() => navigate("/professor-schedule")}
-                        style={{
-                          padding: "5px 10px",
-                          background: "#4caf50",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        상담
-                      </button>
                       <button onClick={() => handleOpenNotificationModal(risk)}>
                         메세지
                       </button>
-                      {/* <button 
-                      onClick={() => handleDelete(risk.id)}
-                      style={{ padding: "5px 10px", background: "#9e9e9e", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
-                    >
-                      완료
-                    </button> */}
                     </div>
                   </td>
                 </tr>
