@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom"; // 페이지 이동용
 import { useModal } from "../ModalContext";
 import { dashboardApi, notiApi } from "../../api/aiApi";
+import Modal from "../Modal";
 
-const ProfDashboard = (user) => {
+const ProfDashboard = ({ user }) => {
   const navigate = useNavigate();
 
   const [professorId, setProfessorId] = useState(null);
@@ -18,24 +19,31 @@ const ProfDashboard = (user) => {
   const [targetStudent, setTargetStudent] = useState(null);
   const [messageContent, setMessageContent] = useState("");
   // 교수 -> 학생 알림
-
+  const loadData = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const res = await dashboardApi.getRiskList(user.id);
+      setRisks(res.data || []);
+    } catch (err) {
+      showModal({
+        type: "alert",
+        message: "목록을 불러오는 데 실패했습니다.",
+      });
+    }
+  }, [user?.id, showModal]);
   // 1. 데이터 로딩
   useEffect(() => {
     if (!user) {
-      alert("로그인이 필요합니다.");
+      showModal({
+        type: "alert",
+        message: "로그인이 필요합니다.",
+      });
       navigate("/login");
       return;
     }
-
-    setProfessorId(user.id);
-    setProfessorname(user.name);
-  }, [user, navigate]);
-
-  useEffect(() => {
     loadData();
-  }, []);
+  }, [user, navigate, loadData]);
 
-  // 2. 필터가 바뀌거나 데이터가 바뀌면 화면 갱신
   useEffect(() => {
     if (filterLevel === "ALL") {
       setFilteredRisks(risks);
@@ -43,49 +51,54 @@ const ProfDashboard = (user) => {
       setFilteredRisks(risks.filter((r) => r.riskLevel === filterLevel));
     }
   }, [filterLevel, risks]);
-
-  const loadData = () => {
-    dashboardApi
-      .getRiskList(professorId)
-      .then((res) => setRisks(res.data))
-      .catch((err) => alert("로딩 실패"));
-  };
-
-  // 4. 일괄 삭제 (선택된 것들)
-  const handleBulkDelete = async () => {
-    if (checkedIds.size === 0) {
-      alert("선택된 학생이 없습니다.");
-      return;
-    }
-    if (
-      !window.confirm(
-        `선택한 ${checkedIds.size}명을 목록에서 삭제하시겠습니까?`
-      )
-    )
-      return;
-
-    try {
-      // 여러 개를 한 번에 삭제 (Promise.all 사용)
-      const deletePromises = Array.from(checkedIds).map((id) =>
-        dashboardApi.deleteRisk(id)
-      );
-      await Promise.all(deletePromises);
-
-      // 화면 갱신
-      setRisks((prev) => prev.filter((item) => !checkedIds.has(item.id)));
-      setCheckedIds(new Set()); // 체크박스 초기화
-      alert("삭제 완료!");
-    } catch (err) {
-      alert("삭제 중 오류 발생");
+  const handleAllCheck = (e) => {
+    if (e.target.checked) {
+      setCheckedIds(new Set(filteredRisks.map((r) => r.id)));
+    } else {
+      setCheckedIds(new Set());
     }
   };
-
-  // 5. 체크박스 핸들러
   const handleCheck = (id) => {
     const newChecked = new Set(checkedIds);
     if (newChecked.has(id)) newChecked.delete(id);
     else newChecked.add(id);
     setCheckedIds(newChecked);
+  };
+  // 4. 일괄 삭제 (선택된 것들)
+  const handleBulkDelete = async () => {
+    if (checkedIds.size === 0) {
+      showModal({
+        type: "alert",
+        message: "학생을 선택해주세요.",
+      });
+      return;
+    }
+    showModal({
+      type: "confirm",
+      message: `선택한 ${checkedIds.size}명을 목록에서 삭제하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          // 여러 개를 한 번에 삭제 (Promise.all 사용)
+          const deletePromises = Array.from(checkedIds).map((id) =>
+            dashboardApi.deleteRisk(id)
+          );
+          await Promise.all(deletePromises);
+
+          // 화면 갱신
+          setRisks((prev) => prev.filter((item) => !checkedIds.has(item.id)));
+          setCheckedIds(new Set()); // 체크박스 초기화
+          showModal({
+            type: "alert",
+            message: "삭제 완료하였습니다.",
+          });
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: "삭제 중 오류가 발생했습니다.",
+          });
+        }
+      },
+    });
   };
 
   // 교수 -> 학생 알림
@@ -105,25 +118,32 @@ const ProfDashboard = (user) => {
 
   const handleSendNotification = async () => {
     if (!messageContent.trim()) {
-      alert("전송할 메세지를 입력해주세요.");
+      showModal({
+        type: "alert",
+        message: "메세지를 입력해주세요.",
+      });
       return;
     }
-    if (
-      !targetStudent ||
-      !window.confirm(
-        `${targetStudent.name} 학생에게 메세지를 전송하시겠습니까?`
-      )
-    ) {
-      return;
-    }
-    try {
-      await notiApi.sendDirectMessage(targetStudent.id, messageContent);
-      alert(`[${targetStudent.name}] 학생에게 메세지를 보냈습니다.`);
-      handleCloseModal();
-    } catch (err) {
-      alert("메세지 전송에 실패했습니다.");
-      console.error(err);
-    }
+    showModal({
+      type: "confirm",
+      message: `${targetStudent.name} 학생에게 메세지를 전송하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await notiApi.sendDirectMessage(targetStudent.id, messageContent);
+          showModal({
+            type: "alert",
+            message: `[${targetStudent.name}] 학생에게 메세지를 보냈습니다.`,
+          });
+          handleCloseModal();
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: "메세지 전송에 실패했습니다.",
+          });
+          console.error(err);
+        }
+      },
+    });
   };
   // 교수 -> 학생 알림
 
@@ -139,7 +159,16 @@ const ProfDashboard = (user) => {
         <table className="course-table">
           <thead>
             <tr>
-              <th>선택</th>
+              <th>
+                <input
+                  type="checkbox"
+                  onChange={handleAllCheck}
+                  checked={
+                    checkedIds.size > 0 &&
+                    checkedIds.size === filteredRisks.length
+                  }
+                />
+              </th>
               <th>분석 날짜</th>
               <th>학번</th>
               <th>이름</th>
@@ -153,7 +182,9 @@ const ProfDashboard = (user) => {
           <tbody>
             {filteredRisks.length === 0 ? (
               <tr>
-                <td>데이터가 없습니다.</td>
+                <td colSpan="9" className="no-data">
+                  데이터가 없습니다.
+                </td>
               </tr>
             ) : (
               filteredRisks.map((risk) => (
@@ -186,15 +217,7 @@ const ProfDashboard = (user) => {
                     {risk.riskLevel}
                   </td>
                   {/* 원인 (왼쪽 정렬) */}
-                  <td
-                    style={{
-                      whiteSpace: "pre-wrap",
-                      wordBreak: "break-word",
-                      maxWidth: "400px",
-                    }}
-                  >
-                    {risk.reason}
-                  </td>
+                  <td>{risk.reason}</td>
                   {/* 버튼 그룹 */}
                   <td>
                     <div>
@@ -212,30 +235,25 @@ const ProfDashboard = (user) => {
 
       {/*  메시지 전송 모달  */}
       {isModalOpen && targetStudent && (
-        <div>
+        <Modal onClose={handleCloseModal}>
+          <h4 style={{ marginTop: 0 }}>
+            {targetStudent?.name} 학생에게 메시지
+          </h4>
+          <textarea
+            className="modal-textarea" // CSS에서 width: 100% 설정
+            value={messageContent}
+            onChange={(e) => setMessageContent(e.target.value)}
+            placeholder="메시지를 입력하세요..."
+          />
           <div>
-            <h4>{targetStudent.name} 학생에게 메시지 전송</h4>
-            <p style={{ fontSize: "14px", color: "#666" }}>
-              메시지는 학생의 알림벨로 즉시 전송됩니다.
-            </p>
-            <textarea
-              value={messageContent}
-              onChange={(e) => setMessageContent(e.target.value)}
-              placeholder="학생에게 보낼 메시지를 입력하세요. (예: '교수님께 상담 신청해주세요.')"
-              rows="4"
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "10px",
-              }}
-            >
-              <button onClick={handleCloseModal}>취소</button>
-              <button onClick={handleSendNotification}>전송</button>
-            </div>
+            <button className="btn-secondary" onClick={handleCloseModal}>
+              취소
+            </button>
+            <button className="btn-primary" onClick={handleSendNotification}>
+              전송
+            </button>
           </div>
-        </div>
+        </Modal>
       )}
     </>
   );

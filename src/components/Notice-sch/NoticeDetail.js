@@ -4,10 +4,11 @@ import {
   deleteNotice,
   incrementNoticeViews,
 } from "../../api/noticeApi";
+import { useModal } from "../ModalContext";
 
 const NoticeDetail = ({ noticeId, role, onBack, onEdit }) => {
   const [notice, setNotice] = useState(null);
-
+  const { showModal } = useModal();
   useEffect(() => {
     const fetchAndIncrement = async () => {
       try {
@@ -24,16 +25,25 @@ const NoticeDetail = ({ noticeId, role, onBack, onEdit }) => {
   if (!notice) return <div>로딩중...</div>;
 
   const handleDelete = async () => {
-    if (window.confirm("정말로 이 공지사항을 삭제하시겠습니까?")) {
-      try {
-        await deleteNotice(noticeId);
-        alert("삭제되었습니다.");
-        onBack(); // 삭제 후 목록으로
-      } catch (error) {
-        console.error("삭제 실패:", error);
-        alert("삭제에 실패했습니다.");
-      }
-    }
+    showModal({
+      type: "confirm",
+      message: "이 공지사항을 삭제하시겠습니까?",
+      onConfirm: async () => {
+        try {
+          await deleteNotice(noticeId);
+          showModal({
+            type: "alert",
+            message: "삭제되었습니다.",
+          });
+          onBack(); // 삭제 후 목록으로
+        } catch (error) {
+          showModal({
+            type: "alert",
+            message: "삭제에 실패하였습니다.",
+          });
+        }
+      },
+    });
   };
 
   return (

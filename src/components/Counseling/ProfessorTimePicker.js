@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import ko from "date-fns/locale/ko";
+import { useModal } from "../ModalContext";
 // import "../../pages/SchedulePage.css";
 
 registerLocale("ko", ko);
@@ -23,25 +24,23 @@ const ProfessorTimePicker = ({
   bookAppointment, // 💡 [추가] 부모로부터 예약 함수를 받습니다.
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-
+  const { showModal } = useModal();
   const handleDateSelect = (date) => {
     setSelectedDate(date);
   }; // 💡 [완성] handleTimeClick 함수: 부모의 예약 함수를 호출합니다.
 
   const handleTimeClick = async (slotId, time) => {
-    if (
-      !window.confirm(
-        `[${time}] 슬롯에 상담을 신청하시겠습니까? (교수님의 승인이 필요합니다.)`
-      )
-    ) {
-      return;
-    }
-
-    try {
-      await bookAppointment(slotId, time); // 예약 성공 처리는 부모 컴포넌트(handleBook)에서 alert 및 목록 갱신을 수행함
-    } catch (error) {
-      console.error("예약 요청 오류:", error);
-    }
+    showModal({
+      type: "confirm",
+      message: `${time}시에 상담을 신청하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await bookAppointment(slotId, time); // 예약 성공 처리는 부모 컴포넌트(handleBook)에서 alert 및 목록 갱신을 수행함
+        } catch (error) {
+          console.error("예약 요청 오류:", error);
+        }
+      },
+    });
   };
 
   const selectedDateString = formatDateToYYYYMMDD(selectedDate); // 디버깅 로그 유지 (최종적으로는 삭제 권장)

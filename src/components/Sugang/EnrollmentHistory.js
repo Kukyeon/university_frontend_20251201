@@ -281,7 +281,7 @@ const EnrollmentHistoryPage = ({ setPageHeader, setActiveTab }) => {
                 </tr>
               </thead>
               <tbody>
-                {successList.length === 0 ? (
+                {successList?.length === 0 ? (
                   <tr>
                     <td colSpan="8" className="empty-row">
                       수강신청 내역이 없습니다.

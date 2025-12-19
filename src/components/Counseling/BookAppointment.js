@@ -9,6 +9,7 @@ import {
 import "../../pages/SchedulePage.css";
 
 import ProfessorTimePicker from "./ProfessorTimePicker";
+import { useModal } from "../ModalContext";
 
 const BookAppointment = ({ user, onBooked }) => {
   const studentId = user.id;
@@ -16,6 +17,7 @@ const BookAppointment = ({ user, onBooked }) => {
   const [slots, setSlots] = useState([]);
   const [selectedProfessor, setSelectedProfessor] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { showModal } = useModal();
   useEffect(() => {
     if (!studentId) return;
     const fetchInitialData = async () => {
@@ -24,7 +26,10 @@ const BookAppointment = ({ user, onBooked }) => {
         const profs = await getProfessorsByMyDepartment();
         setProfessors(profs);
       } catch (err) {
-        alert("상담 예약 정보를 불러오는 데 실패했습니다 (인증 확인 필요).");
+        showModal({
+          type: "alert",
+          message: "상담 예약 정보를 불러오는 데 실패했습니다.",
+        });
       } finally {
         setLoading(false);
       }
@@ -40,11 +45,10 @@ const BookAppointment = ({ user, onBooked }) => {
       const times = await getAvailableTimesByProfessor(prof.id);
       setSlots(times);
     } catch (e) {
-      console.error("교수 예약 가능 시간 로드 실패:", e);
-      console.error(
-        "🔥 예약 가능 시간 조회 실패:",
-        e.response?.data || e.message
-      );
+      showModal({
+        type: "alert",
+        message: "상담 예약 정보를 불러오는 데 실패했습니다.",
+      });
       setSlots([]);
     } finally {
       setLoading(false);
@@ -53,19 +57,20 @@ const BookAppointment = ({ user, onBooked }) => {
 
   const handleBook = async (availabilityId, time) => {
     try {
-      await bookAppointment(availabilityId); //
-      alert(
-        `✅ ${time} 슬롯에 예약 신청이 완료되었습니다. 교수님의 승인을 기다려주세요.`
-      ); // 예약 후 새로고침 (slots 재조회) // 예약 직후 해당 슬롯이 화면에서 사라지도록 슬롯 목록을 재로딩합니다.
-
+      await bookAppointment(availabilityId);
+      showModal({
+        type: "alert",
+        message: `예약 신청이 완료되었습니다.`,
+      });
       handleProfessorSelect(selectedProfessor); // 부모 컴포넌트(StudentSchedulePage)에게 목록 갱신을 요청합니다.
       if (onBooked) onBooked();
     } catch (e) {
-      // 💡 [수정] 오류 처리 메시지 개선
-      const errorMessage =
-        e.response?.data?.message ||
-        "예약 신청 중 알 수 없는 오류가 발생했습니다.";
-      alert(`❌ 예약 실패: ${errorMessage}`);
+      showModal({
+        type: "alert",
+        message:
+          e.response?.data?.message ||
+          "예약 신청 중 알 수 없는 오류가 발생했습니다.",
+      });
     }
   };
 

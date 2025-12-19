@@ -3,6 +3,7 @@ import SectionLayout from "../components/Layout/SectionLayout";
 import CourseListPage from "../components/Sugang/CourseList";
 import EnrollmentHistoryPage from "../components/Sugang/EnrollmentHistory";
 import EnrollmentTable from "../components/Sugang/EnrollmentTable";
+import EnrollmentPage from "../components/Sugang/Enrollment";
 
 const Sugang = ({ role }) => {
   const [activeTab, setActiveTab] = useState("강의 시간표 조회");
@@ -31,10 +32,7 @@ const Sugang = ({ role }) => {
       )}
 
       {activeTab === "수강 신청" && (
-        <EnrollmentTable
-          setPageHeader={setPageHeader}
-          pageHeader={pageHeader}
-        />
+        <EnrollmentPage setPageHeader={setPageHeader} pageHeader={pageHeader} />
       )}
 
       {activeTab === "수강 신청 내역 조회" && (

@@ -30,16 +30,10 @@ const ProfEvaluation = () => {
         : `/evaluation/professor`;
 
       const res = await api.get(url, { params });
-
-      // 5. PageResponse 구조 (content, totalPages) 적용
-      if (res.data.content) {
-        setEvaluationData(res.data.content);
-        setTotalPages(res.data.totalPages);
-      } else {
-        // 데이터가 없을 경우 처리
-        setEvaluationData([]);
-        setTotalPages(0);
-      }
+      const content =
+        res.data.content || (Array.isArray(res.data) ? res.data : []);
+      setEvaluationData(content);
+      setTotalPages(res.data.totalPages || 0);
     } catch (err) {
       showModal({
         type: "alert",

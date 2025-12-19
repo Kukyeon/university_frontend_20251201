@@ -4,9 +4,9 @@ import {
   getProfessorAllSchedules,
   updateScheduleStatus,
 } from "../../api/scheduleApi";
-import { useNavigate } from "react-router-dom";
 import "../../pages/SchedulePage.css";
 import { counselingApi } from "../../api/counselingApi";
+import { useModal } from "../ModalContext";
 
 // 날짜/시간 포맷팅 함수
 const formatDateTime = (dateTimeStr) => {
@@ -44,7 +44,7 @@ const ProfessorScheduleList = ({
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { showModal } = useModal();
   const fetchSchedules = async () => {
     setLoading(true);
     setError(null);
@@ -74,29 +74,39 @@ const ProfessorScheduleList = ({
   }, [professorId, filterStatus]);
 
   const handleStatusChange = async (scheduleId, newStatus) => {
-    const confirmMsg = `상태를 ${getStatusLabel(
-      newStatus
-    )}로 변경하시겠습니까?`;
-    if (!window.confirm(confirmMsg)) return;
-
-    try {
-      await updateScheduleStatus(scheduleId, newStatus);
-      alert(`상담 상태가 ${getStatusLabel(newStatus)}로 변경되었습니다.`);
-      fetchSchedules();
-    } catch (err) {
-      console.error("상태 변경 실패:", err);
-      alert("상태 변경 실패: " + (err.message || ""));
-    }
+    showModal({
+      type: "confirm",
+      message: `상태를 ${getStatusLabel(newStatus)}로 변경하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await updateScheduleStatus(scheduleId, newStatus);
+          showModal({
+            type: "alert",
+            message: `상담 상태가 ${getStatusLabel(
+              newStatus
+            )}로 변경되었습니다.`,
+          });
+          fetchSchedules();
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: err.message || "상담 상태 변경에 실패했습니다.",
+          });
+        }
+      },
+    });
   };
   const handleEnter = async (schedule) => {
     try {
       // 입장 가능 체크
       const res = await counselingApi.checkEntry(schedule.id);
       if (!res.data.canEnter) {
-        alert(res.data.reason);
+        showModal({
+          type: "alert",
+          message: res.data.reason,
+        });
         return;
       }
-
       // 입장 처리
       await counselingApi.enterRoom(schedule.id);
 
@@ -104,13 +114,17 @@ const ProfessorScheduleList = ({
       onSelectSchedule?.(schedule);
     } catch (err) {
       console.error("입장 오류:", err);
-      alert(err.response?.data?.message || "상담 입장 중 오류가 발생했습니다.");
+      showModal({
+        type: "alert",
+        message:
+          err.response?.data?.message || "상담 입장 중 오류가 발생했습니다.",
+      });
     }
   };
 
   if (loading)
-    return <div className="loading-text">⏳ 교수 일정 목록 로딩 중...</div>;
-  if (error) return <div className="error-message">🚨 {error}</div>;
+    return <div className="loading-text">교수 일정 목록 로딩 중...</div>;
+  if (error) return <div className="error-message">{error}</div>;
   if (schedules.length === 0)
     return <p className="info-message">표시할 상담 일정이 없습니다.</p>;
 
@@ -130,7 +144,8 @@ const ProfessorScheduleList = ({
           <tbody>
             {schedules.map((req) => {
               const isPending = req.status === "PENDING";
-              const isConfirmed = req.status === "CONFIRMED";
+              const isConfirmed =
+                req.status === "CONFIRMED" || req.status === "IN_PROGRESS";
               const isCompleted = req.status === "COMPLETED";
 
               return (
@@ -163,11 +178,17 @@ const ProfessorScheduleList = ({
                     )}
 
                     {isConfirmed && (
-                      <button onClick={() => handleEnter(req)}>
-                        상담 시작
+                      <button
+                        className="btn-enter"
+                        onClick={() => handleEnter(req)}
+                      >
+                        {req.status === "IN_PROGRESS"
+                          ? "상담 재개 (입장)"
+                          : "상담 시작"}
                       </button>
                     )}
 
+                    {/* 3. 완료되었을 때: 기록 보기 */}
                     {isCompleted && onSelectSchedule && (
                       <button onClick={() => onSelectSchedule(req)}>
                         상세 보기

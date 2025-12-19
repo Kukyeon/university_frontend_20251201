@@ -26,7 +26,6 @@ const CourseStudentList = ({ courseId, goBack }) => {
         grade: stu.grade ?? "A+",
       }));
       setStudents(dataWithIds);
-      console.log(res);
     } catch (err) {
       showModal({
         type: "alert",

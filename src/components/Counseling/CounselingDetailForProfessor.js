@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { getCounselingRecord, saveRecord } from "../../api/scheduleApi";
 import "./CounselingDetail.css";
+import { useModal } from "../ModalContext";
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${year}.${month}.${day} ${hours}:${minutes}`;
+};
 
 const CounselingDetailForProfessor = ({ schedule }) => {
   const [record, setRecord] = useState(null);
@@ -9,13 +21,16 @@ const CounselingDetailForProfessor = ({ schedule }) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-
+  const { showModal } = useModal();
   const scheduleId = schedule?.id;
   const studentId = schedule?.studentId;
   const studentName = schedule?.studentName;
 
   useEffect(() => {
-    if (!scheduleId || !studentId) return;
+    if (!scheduleId || !studentId) {
+      setLoading(false);
+      return;
+    }
 
     const fetchRecord = async () => {
       setLoading(true);
@@ -29,7 +44,6 @@ const CounselingDetailForProfessor = ({ schedule }) => {
           setError("상담 기록을 찾을 수 없습니다.");
         }
       } catch (err) {
-        console.error("상담 기록 조회 실패:", err);
         setError("상담 기록을 불러오는 데 실패했습니다.");
       } finally {
         setLoading(false);
@@ -39,33 +53,38 @@ const CounselingDetailForProfessor = ({ schedule }) => {
     fetchRecord();
   }, [scheduleId, studentId]);
 
+  const handleCancel = () => {
+    setNotes(record?.notes || ""); // 원래 기록으로 되돌림
+    setIsEditing(false);
+  };
   const handleSave = async () => {
-    if (!window.confirm("상담 기록을 저장/수정 하시겠습니까?")) return;
-    setSaving(true);
-    try {
-      await saveRecord(scheduleId, notes, record?.keywords);
-      alert("상담 기록이 성공적으로 업데이트되었습니다.");
-      setIsEditing(false);
-    } catch (err) {
-      alert("기록 저장 실패: " + err.message);
-    } finally {
-      setSaving(false);
-    }
+    showModal({
+      type: "confirm",
+      message: "상담 기록을 저장 하시겠습니까?",
+      onConfirm: async () => {
+        setSaving(true);
+        try {
+          await saveRecord(scheduleId, notes, record?.keywords);
+          showModal({
+            type: "alert",
+            message: "상담 기록이 수정 되었습니다.",
+          });
+          setIsEditing(false);
+        } catch (err) {
+          showModal({
+            type: "alert",
+            message: err.message || "저장에 실패했습니다.",
+          });
+        } finally {
+          setSaving(false);
+        }
+      },
+    });
   };
 
   if (loading) return <div>로딩 중...</div>;
-  if (error) return <div style={{ color: "red" }}>🚨 에러: {error}</div>;
+  if (error) return <div style={{ color: "red" }}>에러: {error}</div>;
   if (!record) return <div>상담 기록이 존재하지 않습니다.</div>;
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}.${month}.${day} ${hours}:${minutes}`;
-  };
 
   return (
     <>
@@ -98,13 +117,22 @@ const CounselingDetailForProfessor = ({ schedule }) => {
           수정
         </button>
       ) : (
-        <button
-          className="counseling-edit-button"
-          onClick={handleSave}
-          disabled={saving}
-        >
-          {saving ? "저장 중..." : "저장"}
-        </button>
+        <>
+          <button
+            className="counseling-edit-button"
+            onClick={handleSave}
+            disabled={saving}
+          >
+            {saving ? "저장 중..." : "저장"}
+          </button>
+          <button
+            className="counseling-cancel-button"
+            onClick={handleCancel}
+            disabled={saving}
+          >
+            취소
+          </button>
+        </>
       )}
     </>
   );

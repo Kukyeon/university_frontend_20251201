@@ -4,6 +4,7 @@ import {
   updateNotice,
   getNoticeDetail,
 } from "../../api/noticeApi";
+import { useModal } from "../ModalContext";
 
 const NoticeForm = ({ noticeId, onBack }) => {
   const [form, setForm] = useState({
@@ -13,6 +14,7 @@ const NoticeForm = ({ noticeId, onBack }) => {
     imageUrl: "",
   });
   const [file, setFile] = useState(null);
+  const { showModal } = useModal();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
@@ -59,7 +61,10 @@ const NoticeForm = ({ noticeId, onBack }) => {
       onBack(); // 등록/수정 후 목록으로
     } catch (err) {
       console.error("공지 저장 실패:", err);
-      alert("공지 저장에 실패했습니다.");
+      showModal({
+        type: "alert",
+        message: "저장에 실패했습니다.",
+      });
     }
   };
 

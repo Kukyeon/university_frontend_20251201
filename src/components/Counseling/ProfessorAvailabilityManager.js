@@ -7,6 +7,7 @@ import {
   setAvailability, // 슬롯 열기 (새 등록)
 } from "../../api/scheduleApi";
 import "../../pages/SchedulePage.css";
+import { useModal } from "../ModalContext";
 
 // YYYY-MM-DD 형식으로 포맷팅 (조회된 슬롯의 날짜 비교에 사용)
 const getLocalDateString = (date) => date.toISOString().split("T")[0];
@@ -37,17 +38,14 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [slots, setSlots] = useState([]); // 교수님의 모든 등록된 슬롯
   const [loading, setLoading] = useState(false);
+  const { showModal } = useModal();
 
   const fetchSlots = async () => {
     try {
       setLoading(true);
       const data = await getProfessorAvailability(professorId);
-      setSlots(data);
+      setSlots(data || []);
     } catch (err) {
-      console.error(
-        "🔥 가능 시간 조회 실패:",
-        err.response?.data || err.message
-      );
       setSlots([]);
     } finally {
       setLoading(false);
@@ -55,9 +53,7 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
   };
 
   useEffect(() => {
-    if (professorId) {
-      fetchSlots();
-    }
+    fetchSlots();
   }, [professorId]);
 
   // 1. 해당 날짜의 1시간 단위 가능 시간 목록 생성 (09:00 ~ 18:00 기준)
@@ -142,32 +138,62 @@ const ProfessorAvailabilityManager = ({ professorId }) => {
 
     try {
       if (slot.status === "NOT_REGISTERED" || slot.status === "CLOSED") {
-        // 슬롯 열기: 새로 등록
-        if (!window.confirm(`${slot.time} (1시간) 슬롯을 등록하시겠습니까?`))
-          return;
-
-        // 💡 [수정] UTC 문자열 대신 로컬 시간 기준 문자열 전송
-        await setAvailability({
-          startTime: getLocalDateTimeString(slot.startTime),
-          endTime: getLocalDateTimeString(slot.endTime),
+        showModal({
+          type: "confirm",
+          message: `${slot.time}시 상담을 등록하시겠습니까?`,
+          onConfirm: async () => {
+            try {
+              await setAvailability({
+                startTime: getLocalDateTimeString(slot.startTime),
+                endTime: getLocalDateTimeString(slot.endTime),
+              });
+              showModal({
+                type: "alert",
+                message: "상담 가능 시간이 등록되었습니다.",
+              });
+            } catch (err) {
+              showModal({
+                type: "alert",
+                message: err.message || "등록에 실패했습니다.",
+              });
+            }
+          },
         });
-        alert("가능 시간 등록 완료");
+        // 💡 [수정] UTC 문자열 대신 로컬 시간 기준 문자열 전송
       } else if (slot.status === "AVAILABLE") {
         // 슬롯 닫기: 예약 가능한 슬롯을 비활성화
-        if (!window.confirm(`${slot.time} (1시간) 슬롯을 닫으시겠습니까?`))
-          return;
-
-        await closeAvailability(slot.id);
-        alert("가능 시간 닫기 완료");
+        showModal({
+          type: "confirm",
+          message: `${slot.time}시를 상담을 닫으시겠습니까?`,
+          onConfirm: async () => {
+            try {
+              await closeAvailability(slot.id);
+              showModal({
+                type: "alert",
+                message: "상담 시간을 닫았습니다.",
+              });
+            } catch (err) {
+              showModal({
+                type: "alert",
+                message: err.message || "등록에 실패했습니다.",
+              });
+            }
+          },
+        });
       } else if (slot.status === "BOOKED") {
-        alert("이미 예약되었거나 처리 중인 시간은 닫거나 열 수 없습니다.");
+        showModal({
+          type: "alert",
+          message: "이미 예약되었거나 처리 중인 시간은 수정할 수 없습니다.",
+        });
         return;
       }
-
       // 갱신된 목록 다시 불러오기
       await fetchSlots();
     } catch (e) {
-      alert("처리 실패: " + (e.message || "서버 오류"));
+      showModal({
+        type: "alert",
+        message: e.message || "목록을 불러 올 수 없습니다.",
+      });
     } finally {
       setLoading(false);
     }

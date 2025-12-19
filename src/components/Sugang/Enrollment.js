@@ -145,7 +145,6 @@ const EnrollmentPage = ({ setPageHeader }) => {
     setPage(0);
     setAppliedFilters({ ...searchParams });
   };
-
   return (
     <>
       <h3>

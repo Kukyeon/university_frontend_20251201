@@ -32,7 +32,6 @@ function App() {
   };
   useEffect(() => {
     if (!token) {
-      console.log("로그인 필요");
       setUser(null);
       setRole(null);
       setLoading(false);
@@ -41,7 +40,6 @@ function App() {
     api
       .get("/user/me")
       .then((res) => {
-        console.log("로로로롤로!" + res.data);
         setUser(res.data.user);
         setRole(res.data.role);
       })

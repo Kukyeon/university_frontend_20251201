@@ -57,7 +57,7 @@ const CoursePage = ({ role, user }) => {
             <ProfCourse role={role} user={user} />
           )}
           {activeTab === "내 강의 평가" && <ProfEvaluation />}
-          {activeTab === "위험 학생 조회" && <ProfDashboard />}
+          {activeTab === "위험 학생 조회" && <ProfDashboard user={user} />}
         </>
       )}
     </SectionLayout>

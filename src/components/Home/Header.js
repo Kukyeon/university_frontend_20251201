@@ -9,7 +9,6 @@ const Header = ({ user, logout, role }) => {
   const location = useLocation();
 
   const toggleMobileMenu = () => {
-    console.log("햄버거 클릭");
     setMobileMenuOpen((prev) => !prev);
   };
 

@@ -4,7 +4,8 @@ import {
   getEvaluationDetail,
   getEvaluationQuestions,
 } from "../../api/evaluationApi";
-
+import { useModal } from "../ModalContext";
+import "./EvaluationForm.css";
 const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
   const [form, setForm] = useState({
     answer1: null,
@@ -17,6 +18,7 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
     improvements: "",
   });
   const [questions, setQuestions] = useState(null);
+  const { showModal } = useModal();
 
   useEffect(() => {
     // 1. 질문 데이터 가져오기
@@ -25,7 +27,13 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
         const qData = await getEvaluationQuestions();
         setQuestions(qData);
       } catch (error) {
-        console.error("평가 질문 로드 실패:", error);
+        showModal({
+          type: "alert",
+          message:
+            error.response?.data?.message ||
+            error.message ||
+            "평가지를 불러오는데 실패했습니다.",
+        });
       }
     };
 
@@ -50,20 +58,22 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
     e.preventDefault();
 
     try {
-      if (evaluationId && evaluationId !== 0) {
-        console.warn(
-          "수정 기능은 현재 백엔드/프론트엔드에 구현되어 있지 않습니다."
-        );
-      } else if (subjectId) {
+      if (subjectId) {
         await createEvaluation(subjectId, form);
         onSubmit();
       } else {
-        alert("평가할 과목 ID를 찾을 수 없습니다.");
+        showModal({
+          type: "alert",
+          message: "평가할 과목을 찾을 수 없습니다.",
+        });
         return;
       }
     } catch (error) {
       console.error("평가 제출 실패:", error);
-      alert(`제출 실패: ${error.response?.data?.message || error.message}`);
+      showModal({
+        type: "alert",
+        message: error.response?.data?.message || error.message,
+      });
     }
   };
 
@@ -79,30 +89,22 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
   if (!questions) return <div>평가 질문 로딩 중...</div>;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>평가 항목</h3>
+    <form onSubmit={handleSubmit} className="evaluation-container">
+      <h3 className="evaluation-title">강의 평가</h3>
 
       {Array.from({ length: 7 }, (_, i) => {
         const questionKey = `question${i + 1}`;
-        const questionText =
-          questions[questionKey] || `[질문 ${i + 1} 텍스트 없음]`;
+        const questionText = questions[questionKey] || `질문 ${i + 1}`;
         const answerName = `answer${i + 1}`;
 
         return (
-          <div
-            key={i}
-            style={{
-              marginBottom: "15px",
-              borderBottom: "1px solid #eee",
-              paddingBottom: "10px",
-            }}
-          >
-            <p style={{ fontWeight: "bold", margin: "5px 0" }}>
+          <div key={i} className="question-item">
+            <p className="question-text">
               {i + 1}. {questionText}
             </p>
-            <div style={{ display: "flex", gap: "15px", marginTop: "5px" }}>
+            <div className="answer-options">
               {answers.map((a) => (
-                <label key={a.value}>
+                <label key={a.value} className="answer-label">
                   <input
                     type="radio"
                     name={answerName}
@@ -125,29 +127,21 @@ const EvaluationForm = ({ evaluationId, subjectId, onSubmit }) => {
         );
       })}
 
-      <div style={{ marginTop: "20px" }}>
-        <p style={{ fontWeight: "bold" }}>개선사항 (자유 기술)</p>
+      <div className="improvement-section">
+        <p className="question-text">개선사항 (자유 기술)</p>
         <textarea
           name="improvements"
           value={form.improvements}
           onChange={handleChange}
-          rows={4}
-          style={{ width: "100%", padding: "10px", boxSizing: "border-box" }}
+          placeholder="강의 발전을 위한 소중한 의견을 남겨주세요."
         />
       </div>
-      <button
-        type="submit"
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          marginTop: "10px",
-        }}
-      >
-        제출하기
-      </button>
+
+      <div className="submit-container">
+        <button type="submit" className="submit-btn">
+          제출하기
+        </button>
+      </div>
     </form>
   );
 };

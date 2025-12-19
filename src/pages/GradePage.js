@@ -40,7 +40,7 @@ const GradePage = () => {
 
       if (activeTab === "this") {
         res = await api.get("/grade/thisSemester", {
-          params: { year: 2025, semester: 2 },
+          params: { year: 2025, semester: 1 },
         });
       } else if (activeTab === "semester") {
         res = await api.get("/grade/semester", {
